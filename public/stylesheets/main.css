@@ -1,0 +1,27 @@
+#hd {
+    text-align: center;
+}
+#main {
+    border-left: 3px solid;
+    border-right: 3px solid;
+    border-bottom: 3px solid;
+    height: 600px;
+}
+legend {
+	margin-left: 0.5em !important;
+	letter-spacing: normal;
+	word-spacing: normal;
+}
+fieldset {
+	border: 1px solid !important;
+}
+#entri {
+	margin-top: 0.5em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	margin-bottom: 0.5em;
+}
+.entriClass {
+	margin-right:5px;
+	padding: 0.3em;
+}

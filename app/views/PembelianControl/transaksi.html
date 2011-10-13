@@ -1,0 +1,45 @@
+#{extends 'menu.html' /}
+#{set title:'Pembelian' /}
+#{form @PembelianControl.savePembelian(), method:'POST', id:'pembelianForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Entri Pembelian</legend>
+<div class="yui3-u-1-6"><div class="entriClass">Tanggal Pembelian</div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="tglPembelian" name="tglPembelian" size="8"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass">Supplier</div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="idSupplier" name="idSupplier" class="autocomplete-relation" data-url="@{PembelianControl.autocompleteSupplier()}" size="50"/></div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/></div></div>
+</fieldset>
+</div>
+#{/form}
+<script>$(function() {
+$( "#tglPembelian" ).datepicker({dateFormat:'dd-mm-yy'});
+$('input.autocomplete-relation').each( function() {
+   var $input = $(this);
+ 
+   // Create a hidden input with the same form control name to submit the value.
+   var controlName = $input.attr('name');
+   var $hidden = $('<input type="hidden"/>').attr('name', controlName);
+   $input.after($hidden).attr('name', controlName + '_label');
+ 
+   // Set-up the autocomplete widget.
+   var serverUrl = $input.data('url');
+   $(this).autocomplete({
+      source: serverUrl,
+      focus: function(event, ui) {
+         // Set the text input value to the focused item's label, instead of the value.
+         $input.val(ui.item.label);
+         return false;
+      },
+      select: function(event, ui) {
+         // Save the selection item and value in the two inputs.
+         $input.val(ui.item.label);
+         $hidden.val(ui.item.value);
+         return false;
+      }
+   });
+});
+$('form').submit(function() {
+   $(this).find('input.autocomplete-relation').attr('disabled', 'disabled');
+});
+});</script>
+#{if hasil!=null}<script>alert("${hasil}");</script>#{/if}

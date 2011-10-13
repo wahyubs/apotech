@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="yui3-loading">
+    <head>
+        <title>#{get 'title' /}</title>
+        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/reset-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/grids-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/fonts-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/base-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/node-menunav.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/jquery-ui-1.8.16.custom.css'}">
+       #{get 'moreStyles' /}
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+        <script src="@{'/public/javascripts/jquery-1.6.2.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/jquery-ui-1.8.16.custom.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/oop-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-custom-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-core-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/selector-native-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/selector-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-core-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-delegate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-event-delegate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/pluginhost-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/pluginhost-config-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-pluginhost-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-style-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-screen-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-screen-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-style-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/classnamemanager-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-custom-complex-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/attribute-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/attribute-complex-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/base-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/plugin-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-simulate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-event-simulate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-synthetic-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-key-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-focus-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-focusmanager-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-menunav-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/intl-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        #{get 'moreScripts' /}
+    </head>
+    <body class="yui3-skin-sam">
+    <div class="yui3-g" id="hd">
+    <div class="yui3-u-1-5"></div>
+    <div class="yui3-u-3-5">
+    APOTEK
+    </div>
+    <div class="yui3-u-1-5"></div>
+    </div>
+    <div class="yui3-g" id="bd">
+    <div class="yui3-u-1-5"></div>
+    <div class="yui3-u-3-5" id="main">
+    	<div id="productsandservices" class="yui3-menu yui3-menu-horizontal">
+            <div class="yui3-menu-content">
+                <ul class="first-of-type">
+                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{Application.index()}">Home</a></li>
+                    <li>
+                        <a class="yui3-menu-label" href="#stok">Transaksi Stok</a>
+                        <div id="stok" class="yui3-menu">
+                            <div class="yui3-menu-content">
+                                <ul>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Stok Opname</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Monitoring Stok</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="yui3-menu-label" href="#pembelian">Pembelian</a>
+                        <div id="pembelian" class="yui3-menu">
+                            <div class="yui3-menu-content">
+                                <ul>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{PembelianControl.transaksi()}">Pembelian</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Retur Pembelian</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Transfer Stok</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="yui3-menu-label" href="#penjualan">Penjualan</a>
+                        <div id="penjualan" class="yui3-menu">
+                            <div class="yui3-menu-content">
+                                <ul>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Penjualan</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Retur Penjualan</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="yui3-menu-label" href="#laporan">Laporan</a>
+                        <div id="laporan" class="yui3-menu">
+                            <div class="yui3-menu-content">
+                                <ul>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Kartu Stok</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="yui3-menu-label" href="@{CRUD.index()}">Admin</a>
+                        <div id="admin" class="yui3-menu">
+                            <div class="yui3-menu-content">
+                                <ul>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{CRUD.index()}suppliers">Supplier</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{CRUD.index()}obatalats">Obat/Alkes</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Jenis Obat/Alkes</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">User</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#">Konfigurasi</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{Application.index(true)}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        #{doLayout /}
+    </div>
+    <div class="yui3-u-1-5"></div>
+    </div>
+    <script>
+	
+	    //  Call the "use" method, passing in "node-menunav".  This will load the
+	    //  script and CSS for the MenuNav Node Plugin and all of the required
+	    //  dependencies.
+	
+	    YUI().use('node-menunav', function(Y) {
+	
+	        //  Retrieve the Node instance representing the root menu
+	        //  (<div id="productsandservices">) and call the "plug" method
+	        //  passing in a reference to the MenuNav Node Plugin.
+	
+	        var menu = Y.one("#productsandservices");
+	
+	        menu.plug(Y.Plugin.NodeMenuNav);
+	
+	        //  Show the menu now that it is ready
+	
+	        menu.get("ownerDocument").get("documentElement").removeClass("yui3-loading");
+	
+	    });
+	
+	</script>
+    </body>
+</html>
