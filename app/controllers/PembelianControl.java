@@ -5,15 +5,21 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import models.Pembelian;
 import models.Supplier;
+import play.data.binding.As;
+import play.data.validation.Required;
 import play.mvc.Controller;
 import tool.AutocompleteValue;
 
 public class PembelianControl extends Controller {
-	public static int AUTOCOMPLETE_MAX = 10;
+	public static int AUTOCOMPLETE_MAX = 20;
 
-	public static void transaksi() {
-		render();
+	public static void transaksi(Date tglPembelian, String idSupplier,
+			String hasil) {
+		if (tglPembelian == null)
+			tglPembelian = new Date();
+		render(tglPembelian, idSupplier, hasil);
 	}
 
 	public static void autocompleteSupplier(final String term) {
@@ -29,9 +35,19 @@ public class PembelianControl extends Controller {
 		renderJSON(response);
 	}
 
-	public static void savePembelian(String tglPembelian, String idSupplier) {
-		// TODO:
+	public static void savePembelian(
+			@Required @As("dd-MM-yyyy") Date tglPembelian,
+			@Required String idSupplier) {
+		Pembelian pembelian = new Pembelian();
+		pembelian.setTglPembelian(tglPembelian);
+		pembelian.setIdSupplier((Supplier) Supplier.findById(idSupplier));
+		pembelian.validateAndSave();
+		if (validation.hasErrors()) {
+			params.flash(); // add http parameters to the flash scope
+			validation.keep(); // keep the errors for the next request
+			transaksi(null, null, null);
+		}
 		String hasil = "Pembelian Berhasil Disimpan!";
-		renderTemplate("PembelianControl/transaksi.html", hasil);
+		transaksi(tglPembelian, idSupplier, hasil);
 	}
 }

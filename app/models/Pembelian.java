@@ -8,11 +8,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import play.db.jpa.GenericModel;
 
@@ -33,6 +36,8 @@ public class Pembelian extends GenericModel {
 
 	@Id
 	@Column(name = "id_pembelian", length = 32)
+	@GeneratedValue(generator = "MyIdGenerator")
+	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")
 	private String idPembelian;
 
 	@Column(name = "tgl_pembelian", nullable = true, unique = false)
