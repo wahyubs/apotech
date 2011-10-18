@@ -12,8 +12,8 @@ public class StokObatAlat_ {
     public static volatile SingularAttribute<StokObatAlat, String> idStok;
 
     public static volatile SingularAttribute<StokObatAlat, Date> tglKadaluarsa;
-    public static volatile SingularAttribute<StokObatAlat, java.lang.Integer> jmlStok;
-    public static volatile SingularAttribute<StokObatAlat, String> stokGudang;
+    public static volatile SingularAttribute<StokObatAlat, java.lang.Integer> jmlStokApotek;
+    public static volatile SingularAttribute<StokObatAlat, java.lang.Integer> jmlStokGudang;
 
     public static volatile SingularAttribute<StokObatAlat, ObatAlat> idObatAlat;
 

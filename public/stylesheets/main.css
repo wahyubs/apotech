@@ -21,6 +21,18 @@ fieldset {
 	margin-right: 0.5em;
 	margin-bottom: 0.5em;
 }
+#detil {
+	margin-top: 0.5em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	margin-bottom: 0.5em;
+	text-align: center;
+	border: 2px solid;
+}
+.yui3-g .isi {
+	border: 1px solid #000;
+	text-align: center;
+}
 .entriClass {
 	margin-right:5px;
 	padding: 0.3em;

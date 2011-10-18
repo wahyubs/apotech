@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,13 +10,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import play.db.jpa.GenericModel;
-import tool.MyIdGenerator;
 
 /**
  * 
@@ -30,7 +32,7 @@ import tool.MyIdGenerator;
  */
 @Entity(name = "ObatAlat")
 @Table(name = "obat_alat")
-public class ObatAlat extends GenericModel {
+public class ObatAlat extends GenericModel implements IGeneratedModel{
 
 	@Id
 	@Column(name = "id_obat_alat", length = 32)
@@ -40,19 +42,27 @@ public class ObatAlat extends GenericModel {
 
 	@Column(name = "nama_obat_alat", length = 100, nullable = true, unique = false)
 	private String namaObatAlat;
+	
+	@Column(name="kode_obat_alat",  length=20,  nullable=true,  unique=false)
+    private String kodeObatAlat; 
 
 	@Column(name = "jenis_obat_alat", length = 1, nullable = true, unique = false)
 	private String jenisObatAlat;
 
 	@Column(name = "harga_terakhir", nullable = true, unique = false)
 	private java.lang.Integer hargaTerakhir;
+	
+	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
+	
+	@ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
+    private User_pegawai userId; 
 
 	@OneToMany(targetEntity = HargaObat.class, fetch = FetchType.LAZY, mappedBy = "idObatAlat", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
 	private Set<HargaObat> hargaObatIdObatAlat = new HashSet<HargaObat>();
 
 	@OneToMany(targetEntity = StokObatAlat.class, fetch = FetchType.LAZY, mappedBy = "idObatAlat", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
 	private Set<StokObatAlat> stokObatAlatIdObatAlat = new HashSet<StokObatAlat>();
 
 	/**
@@ -76,6 +86,14 @@ public class ObatAlat extends GenericModel {
 	public void setNamaObatAlat(String namaObatAlat) {
 		this.namaObatAlat = namaObatAlat;
 	}
+	
+	public String getKodeObatAlat() {
+        return kodeObatAlat;
+    }
+	
+    public void setKodeObatAlat (String kodeObatAlat) {
+        this.kodeObatAlat =  kodeObatAlat;
+    }
 
 	public String getJenisObatAlat() {
 		return jenisObatAlat;
@@ -92,6 +110,22 @@ public class ObatAlat extends GenericModel {
 	public void setHargaTerakhir(java.lang.Integer hargaTerakhir) {
 		this.hargaTerakhir = hargaTerakhir;
 	}
+	
+	public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
+	
+	public User_pegawai getUserId () {
+    	return userId;
+    }
+	
+    public void setUserId (User_pegawai userId) {
+    	this.userId = userId;
+    }
 
 	public Set<HargaObat> getHargaObatIdObatAlat() {
 		if (hargaObatIdObatAlat == null) {
@@ -126,5 +160,10 @@ public class ObatAlat extends GenericModel {
 
 	public String toString() {
 		return namaObatAlat + "";
+	}
+
+	@Override
+	public String getGeneratedValue() {
+		return idObatAlat;
 	}
 }

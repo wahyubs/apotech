@@ -1,0 +1,74 @@
+<div class="${_class}" id="${_id}">
+#{doBody /}
+</div>
+<script>
+$(function() {
+	$('#detilPembelian :input').live('keypress', function(event) {
+		if(event.which=9) {
+			var pos = $(this).getTabIndex();
+			var maxPos = $(this).getMaxTabIndex();
+			i = pos + 1; // get the next item
+			if( i >= maxPos ) {
+				var kopian = $('#baris').clone();
+				kopian.removeAttr('id');
+				kopian.find(':input').each(function() {
+				var jml = $('[id^="'+$(this).attr('id')+'"]').length;
+				if(jml>0) { 
+					var myId = $(this).attr('id');
+					$(this).attr('id',myId+jml);
+					$(this).attr('name',myId+'['+jml+']');
+				} else {
+					var myId = $(this).attr('name').replace('[0]','');
+					jml = $('[name^="'+myId+'"]').length;
+					$(this).attr('name',myId+'['+jml+']');
+				}
+				});
+				$('#detilPembelian').append(kopian);
+				var tabindex = 1;
+				$(':input').each(function() {
+					if (this.type != "hidden") {
+				    	var $input = $(this);
+				        $input.attr("tabIndex", tabindex);
+				        tabindex++;
+					}
+				});
+				$('input.datetime').each(function() {
+					$(this).removeClass('hasDatepicker');
+					$(this).datepicker({dateFormat:'dd-mm-yy'});
+					$(this).mask("99-99-9999");
+				});
+				$('input.autocomplete-relation').each(function() {
+			   var $input = $(this);
+			 
+			   // Create a hidden input with the same form control name to submit the value.
+			   var controlId = $input.attr('id');
+			   var controlName = $input.attr('name');
+			   var controlValue = $(':input[name="key_'+controlName+'"]').val();
+			   $(':input[name="key_'+controlName+'"]').remove();
+			   var $hidden = $('<input type="hidden"/>').attr('name', "key_"+controlName).attr('id', "key_"+controlId).attr('value', controlValue);
+			   $input.after($hidden);//.attr('name', controlName + '_label');
+			   // Set-up the autocomplete widget.
+			   var serverUrl = $input.data('url');
+			   $(this).autocomplete({
+			      source: serverUrl,
+			      focus: function(event, ui) {
+			         // Set the text input value to the focused item's label, instead of the value.
+			         $input.val(ui.item.label);
+			         return false;
+			      },
+			      select: function(event, ui) {
+			         // Save the selection item and value in the two inputs.
+			         $input.val(ui.item.label);
+			         $hidden.val(ui.item.value);
+			         return false;
+			      }
+			   });
+			});
+				pos = $(this).getTabIndex();
+				i = pos + 1; // get the next item				
+			} 
+			return $(pos[1][i]).trigger("focus");
+		}
+		});
+	});
+</script>

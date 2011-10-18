@@ -1,5 +1,6 @@
-<input id="${_name}" name="${_name}" size="8" value="#{doBody /}"/>
+<input id="${_id}" name="${_name}" size="8" value="${_value}" class="datetime"/>
 <script>$(function() {
-	$( "#${_name}" ).datepicker({dateFormat:'dd-mm-yy'});
+	$('#${_id}').datepicker({dateFormat:'dd-mm-yy'});
+	$('#${_id}').mask("99-99-9999");
 });
 </script>

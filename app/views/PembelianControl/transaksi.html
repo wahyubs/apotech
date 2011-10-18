@@ -7,11 +7,16 @@
 <div class="yui3-g" id="entri">
 <fieldset><legend>Entri Pembelian</legend>
 <div class="yui3-u-1-6"><div class="entriClass">Tanggal Pembelian</div></div>
-<div class="yui3-u-5-6"><div class="entriClass">#{dateTime name:'tglPembelian'}${tglPembelian.format('dd-MM-yyyy')}#{/dateTime}<span class="error">#{error 'tglPembelian' /}</span></div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{dateTime id:'tglPembelian', name:'tglPembelian', value:pembelian.tglPembelian.format('dd-MM-yyyy')/}<span class="error">#{error 'tglPembelian' /}</span></div></div>
 <div class="yui3-u-1-6"><div class="entriClass">Supplier</div></div>
-<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete name:'idSupplier',url:@PembelianControl.autocompleteSupplier(),size:'50' /}<span class="error">#{error 'idSupplier' /}</span></div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idSupplier',name:'idSupplier',url:@PembelianControl.autocompleteSupplier(),size:'50',value:'',label:'' /}<span class="error">#{error 'idSupplier' /}</span></div></div>
 <div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/></div></div>
 </fieldset>
 </div>
+#{customgrid class:'yui3-g',id:'detilPembelian'}
+<div class="yui3-u-1-2"><div class="isi">Obat</div></div><div class="yui3-u-1-4"><div class="isi">Qty</div></div><div class="yui3-u-1-4"><div class="isi">Harga</div></div>
+<div class="yui3-u-1-3"><div class="isi">Kode-Nama</div></div><div class="yui3-u-1-12"><div class="isi">Volume</div></div><div class="yui3-u-1-12"><div class="isi">Kadaluarsa</div></div><div class="yui3-u-1-12"><div class="isi">Apotek</div></div><div class="yui3-u-1-12"><div class="isi">Gudang</div></div><div class="yui3-u-1-12"><div class="isi">Total</div></div><div class="yui3-u-1-12"><div class="isi">Harga</div></div><div class="yui3-u-1-12"><div class="isi">PPN</div></div><div class="yui3-u-1-12"><div class="isi">Diskon</div></div>
+<div id="baris"><div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="volume[0]" id="volume" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi">#{dateTime id:'tglKadaluarsa',name:'tglKadaluarsa[0]'/}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="stokApotek[0]" id="stokApotek" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input  name="stokGudang[0]" id="stokGudang" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="totalStok[0]" id="totalStok" size="6" disabled="disabled"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="harga[0]" id="harga" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="ppn[0]" id="ppn" size="3"/> %</div></div><div class="yui3-u-1-12"><div class="isi"><input name="diskon[0]" id="diskon" size="3"/> %</div></div></div>
+#{/customgrid}
 #{/form}
 #{if hasil!=null}<script>alert("${hasil}");</script>#{/if}

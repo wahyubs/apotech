@@ -60,6 +60,13 @@ public class Resep extends GenericModel {
     @Column(name="tgl_penjualan",    nullable=true,  unique=false)
     private Date tglPenjualan; 
     
+    @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
+    
+    @ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
+    private User_pegawai userId; 
+    
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_tagihan",  nullable=true,  unique=false  )
     private Tagihan idTagihan; 
@@ -160,6 +167,22 @@ public class Resep extends GenericModel {
 	
     public void setTglPenjualan (Date tglPenjualan) {
         this.tglPenjualan =  tglPenjualan;
+    }
+    
+    public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
+    
+    public User_pegawai getUserId () {
+    	return userId;
+    }
+	
+    public void setUserId (User_pegawai userId) {
+    	this.userId = userId;
     }
     
     public Tagihan getIdTagihan () {

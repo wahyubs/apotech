@@ -1,0 +1,189 @@
+package models;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import play.db.jpa.GenericModel;
+
+/**
+ *
+ * <p>Title: User_pegawai</p>
+ *
+ * <p>Description: Play Domain Object describing a User_pegawai entity</p>
+ *
+ */
+@Entity (name="User_pegawai")
+@Table (name="USER_PEGAWAI")
+public class User_pegawai extends GenericModel {
+
+    @Id @Column(name="user_id" ,length=32)
+    private String userId;
+
+    @Column(name="password",  length=32,  nullable=true,  unique=false)
+    private String password; 
+    
+    @Column(name="nama_user",  length=100,  nullable=true,  unique=false)
+    private String namaUser; 
+    
+    @Column(name="no_peg",  length=50,  nullable=true,  unique=false)
+    private String noPeg; 
+    
+    @OneToMany (targetEntity=HargaObat.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <HargaObat> hargaObatUserId = new HashSet<HargaObat>(); 
+   
+    @OneToMany (targetEntity=ObatAlat.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <ObatAlat> obatAlatUserId = new HashSet<ObatAlat>(); 
+   
+    @OneToMany (targetEntity=Resep.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Resep> resepUserId = new HashSet<Resep>(); 
+   
+    @OneToMany (targetEntity=StokOpname.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <StokOpname> stokOpnameUserId = new HashSet<StokOpname>(); 
+   
+    @OneToMany (targetEntity=Supplier.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Supplier> supplierUserId = new HashSet<Supplier>(); 
+   
+    @OneToMany (targetEntity=Tagihan.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Tagihan> tagihanUserId = new HashSet<Tagihan>(); 
+   
+    /**
+    * Default constructor
+    */
+    public User_pegawai() {
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+	
+    public void setUserId (String userId) {
+        this.userId =  userId;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+	
+    public void setPassword (String password) {
+        this.password =  password;
+    }
+    
+    public String getNamaUser() {
+        return namaUser;
+    }
+	
+    public void setNamaUser (String namaUser) {
+        this.namaUser =  namaUser;
+    }
+    
+    public String getNoPeg() {
+        return noPeg;
+    }
+	
+    public void setNoPeg (String noPeg) {
+        this.noPeg =  noPeg;
+    }
+    
+    public Set<HargaObat> getHargaObatUserId() {
+        if (hargaObatUserId == null){
+            hargaObatUserId = new HashSet<HargaObat>();
+        }
+        return hargaObatUserId;
+    }
+
+    public void setHargaObatUserId (Set<HargaObat> hargaObatUserId) {
+        this.hargaObatUserId = hargaObatUserId;
+    }	
+    
+    public void addHargaObatUserId (HargaObat hargaObat) {
+    	    getHargaObatUserId().add(hargaObat);
+    }
+    
+    public Set<ObatAlat> getObatAlatUserId() {
+        if (obatAlatUserId == null){
+            obatAlatUserId = new HashSet<ObatAlat>();
+        }
+        return obatAlatUserId;
+    }
+
+    public void setObatAlatUserId (Set<ObatAlat> obatAlatUserId) {
+        this.obatAlatUserId = obatAlatUserId;
+    }	
+    
+    public void addObatAlatUserId (ObatAlat obatAlat) {
+    	    getObatAlatUserId().add(obatAlat);
+    }
+    
+    public Set<Resep> getResepUserId() {
+        if (resepUserId == null){
+            resepUserId = new HashSet<Resep>();
+        }
+        return resepUserId;
+    }
+
+    public void setResepUserId (Set<Resep> resepUserId) {
+        this.resepUserId = resepUserId;
+    }	
+    
+    public void addResepUserId (Resep resep) {
+    	    getResepUserId().add(resep);
+    }
+    
+    public Set<StokOpname> getStokOpnameUserId() {
+        if (stokOpnameUserId == null){
+            stokOpnameUserId = new HashSet<StokOpname>();
+        }
+        return stokOpnameUserId;
+    }
+
+    public void setStokOpnameUserId (Set<StokOpname> stokOpnameUserId) {
+        this.stokOpnameUserId = stokOpnameUserId;
+    }	
+    
+    public void addStokOpnameUserId (StokOpname stokOpname) {
+    	    getStokOpnameUserId().add(stokOpname);
+    }
+    
+    public Set<Supplier> getSupplierUserId() {
+        if (supplierUserId == null){
+            supplierUserId = new HashSet<Supplier>();
+        }
+        return supplierUserId;
+    }
+
+    public void setSupplierUserId (Set<Supplier> supplierUserId) {
+        this.supplierUserId = supplierUserId;
+    }	
+    
+    public void addSupplierUserId (Supplier supplier) {
+    	    getSupplierUserId().add(supplier);
+    }
+    
+    public Set<Tagihan> getTagihanUserId() {
+        if (tagihanUserId == null){
+            tagihanUserId = new HashSet<Tagihan>();
+        }
+        return tagihanUserId;
+    }
+
+    public void setTagihanUserId (Set<Tagihan> tagihanUserId) {
+        this.tagihanUserId = tagihanUserId;
+    }	
+    
+    public void addTagihanUserId (Tagihan tagihan) {
+    	    getTagihanUserId().add(tagihan);
+    }
+    
+    public String toString(){
+       return password+"";
+    }
+}

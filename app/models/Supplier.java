@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,7 +32,7 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "Supplier")
 @Table(name = "supplier")
-public class Supplier extends GenericModel {
+public class Supplier extends GenericModel implements IGeneratedModel{
 
 	@Id
 	@Column(name = "id_supplier", length = 32)
@@ -45,9 +48,15 @@ public class Supplier extends GenericModel {
 
 	@Column(name = "kota_supplier", length = 50, nullable = true, unique = false)
 	private String kotaSupplier;
+	
+	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
+	
+	@ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
+    private User_pegawai userId; 
 
 	@OneToMany(targetEntity = Pembelian.class, fetch = FetchType.LAZY, mappedBy = "idSupplier", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
 	private Set<Pembelian> pembelianIdSupplier = new HashSet<Pembelian>();
 
 	/**
@@ -87,6 +96,22 @@ public class Supplier extends GenericModel {
 	public void setKotaSupplier(String kotaSupplier) {
 		this.kotaSupplier = kotaSupplier;
 	}
+	
+	public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
+	
+	public User_pegawai getUserId () {
+    	return userId;
+    }
+	
+    public void setUserId (User_pegawai userId) {
+    	this.userId = userId;
+    }
 
 	public Set<Pembelian> getPembelianIdSupplier() {
 		if (pembelianIdSupplier == null) {
@@ -105,5 +130,10 @@ public class Supplier extends GenericModel {
 
 	public String toString() {
 		return namaSupplier + "";
+	}
+
+	@Override
+	public String getGeneratedValue() {
+		return idSupplier;
 	}
 }

@@ -8,11 +8,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import play.db.jpa.GenericModel;
 
@@ -25,19 +28,21 @@ import play.db.jpa.GenericModel;
  */
 @Entity (name="StokObatAlat")
 @Table (name="stok_obat_alat")
-public class StokObatAlat extends GenericModel {
+public class StokObatAlat extends GenericModel implements IGeneratedModel{
 
     @Id @Column(name="id_stok" ,length=32)
+    @GeneratedValue(generator = "MyIdGenerator")
+	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")
     private String idStok;
 
     @Column(name="tgl_kadaluarsa",    nullable=true,  unique=false)
     private Date tglKadaluarsa; 
     
-    @Column(name="jml_stok",    nullable=true,  unique=false)
-    private java.lang.Integer jmlStok; 
+    @Column(name="jml_stok_apotek",    nullable=true,  unique=false)
+    private java.lang.Integer jmlStokApotek; 
     
-    @Column(name="stok_gudang",  length=1,  nullable=true,  unique=false)
-    private String stokGudang; 
+    @Column(name="jml_stok_gudang",    nullable=true,  unique=false)
+    private java.lang.Integer jmlStokGudang; 
     
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_obat_alat",  nullable=true,  unique=false  )
@@ -75,20 +80,20 @@ public class StokObatAlat extends GenericModel {
         this.tglKadaluarsa =  tglKadaluarsa;
     }
     
-    public java.lang.Integer getJmlStok() {
-        return jmlStok;
+    public java.lang.Integer getJmlStokApotek() {
+        return jmlStokApotek;
     }
 	
-    public void setJmlStok (java.lang.Integer jmlStok) {
-        this.jmlStok =  jmlStok;
+    public void setJmlStokApotek (java.lang.Integer jmlStokApotek) {
+        this.jmlStokApotek =  jmlStokApotek;
     }
     
-    public String getStokGudang() {
-        return stokGudang;
+    public java.lang.Integer getJmlStokGudang() {
+        return jmlStokGudang;
     }
 	
-    public void setStokGudang (String stokGudang) {
-        this.stokGudang =  stokGudang;
+    public void setJmlStokGudang (java.lang.Integer jmlStokGudang) {
+        this.jmlStokGudang =  jmlStokGudang;
     }
     
     public ObatAlat getIdObatAlat () {
@@ -147,4 +152,10 @@ public class StokObatAlat extends GenericModel {
     public String toString(){
        return tglKadaluarsa+"";
     }
+
+
+	@Override
+	public String getGeneratedValue() {
+		return idStok;
+	}
 }

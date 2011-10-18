@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +28,7 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "HargaObat")
 @Table(name = "harga_obat")
-public class HargaObat extends GenericModel {
+public class HargaObat extends GenericModel implements IGeneratedModel{
 
 	@Id
 	@Column(name = "id_harga", length = 32)
@@ -39,10 +41,17 @@ public class HargaObat extends GenericModel {
 
 	@Column(name = "harga_obat", nullable = true, unique = false)
 	private java.lang.Integer hargaObat;
+	
+	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_obat_alat", nullable = true, unique = false)
 	private ObatAlat idObatAlat;
+	
+	@ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
+    private User_pegawai userId; 
 
 	/**
 	 * Default constructor
@@ -73,6 +82,14 @@ public class HargaObat extends GenericModel {
 	public void setHargaObat(java.lang.Integer hargaObat) {
 		this.hargaObat = hargaObat;
 	}
+	
+	public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
 
 	public ObatAlat getIdObatAlat() {
 		return idObatAlat;
@@ -81,8 +98,21 @@ public class HargaObat extends GenericModel {
 	public void setIdObatAlat(ObatAlat idObatAlat) {
 		this.idObatAlat = idObatAlat;
 	}
+	
+	public User_pegawai getUserId () {
+    	return userId;
+    }
+	
+    public void setUserId (User_pegawai userId) {
+    	this.userId = userId;
+    }
 
 	public String toString() {
 		return thnBlnHarga + "";
+	}
+
+	@Override
+	public String getGeneratedValue() {
+		return idHarga;
 	}
 }

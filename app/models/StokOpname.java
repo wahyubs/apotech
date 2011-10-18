@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -33,6 +35,13 @@ public class StokOpname extends GenericModel {
     
     @Column(name="desc_stok_opname",  length=500,  nullable=true,  unique=false)
     private String descStokOpname; 
+    
+    @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
+    
+    @ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
+    private User_pegawai userId; 
     
     @OneToMany (targetEntity=DetilOpname.class, fetch=FetchType.LAZY, mappedBy="idStokOpname", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
     private Set <DetilOpname> detilOpnameIdStokOpname = new HashSet<DetilOpname>(); 
@@ -66,6 +75,22 @@ public class StokOpname extends GenericModel {
 	
     public void setDescStokOpname (String descStokOpname) {
         this.descStokOpname =  descStokOpname;
+    }
+    
+    public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
+    
+    public User_pegawai getUserId () {
+    	return userId;
+    }
+	
+    public void setUserId (User_pegawai userId) {
+    	this.userId = userId;
     }
     
     public Set<DetilOpname> getDetilOpnameIdStokOpname() {

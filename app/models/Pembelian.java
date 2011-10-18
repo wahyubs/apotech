@@ -32,7 +32,7 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "Pembelian")
 @Table(name = "pembelian")
-public class Pembelian extends GenericModel {
+public class Pembelian extends GenericModel implements IGeneratedModel{
 
 	@Id
 	@Column(name = "id_pembelian", length = 32)
@@ -48,6 +48,13 @@ public class Pembelian extends GenericModel {
 
 	@Column(name = "no_faktur", length = 30, nullable = true, unique = false)
 	private String noFaktur;
+	
+	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
+	
+	@ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
+    private User_pegawai userId; 
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_supplier", nullable = true, unique = false)
@@ -94,6 +101,22 @@ public class Pembelian extends GenericModel {
 	public void setNoFaktur(String noFaktur) {
 		this.noFaktur = noFaktur;
 	}
+	
+	public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
+	
+	public User_pegawai getUserId () {
+    	return userId;
+    }
+	
+    public void setUserId (User_pegawai userId) {
+    	this.userId = userId;
+    }
 
 	public Supplier getIdSupplier() {
 		return idSupplier;
@@ -121,5 +144,10 @@ public class Pembelian extends GenericModel {
 
 	public String toString() {
 		return tglPembelian + "";
+	}
+
+	@Override
+	public String getGeneratedValue() {
+		return idPembelian;
 	}
 }

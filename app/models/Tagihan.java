@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -60,6 +62,13 @@ public class Tagihan extends GenericModel {
     
     @Column(name="deskripsi",  length=500,  nullable=true,  unique=false)
     private String deskripsi; 
+    
+    @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
+    
+    @ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
+    private User_pegawai userId; 
     
     @OneToMany (targetEntity=Resep.class, fetch=FetchType.LAZY, mappedBy="idTagihan", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
     private Set <Resep> resepIdTagihan = new HashSet<Resep>(); 
@@ -165,6 +174,22 @@ public class Tagihan extends GenericModel {
 	
     public void setDeskripsi (String deskripsi) {
         this.deskripsi =  deskripsi;
+    }
+    
+    public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
+    
+    public User_pegawai getUserId () {
+    	return userId;
+    }
+	
+    public void setUserId (User_pegawai userId) {
+    	this.userId = userId;
     }
     
     public Set<Resep> getResepIdTagihan() {
