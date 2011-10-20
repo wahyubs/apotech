@@ -71,7 +71,7 @@
                         <div id="stok" class="yui3-menu">
                             <div class="yui3-menu-content">
                                 <ul>
-                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+o">Stok Opname</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{StokControl.transaksi()}" key="Ctrl+o">Stok Opname</a></li>
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+m">Monitoring Stok</a></li>
                                 </ul>
                             </div>
@@ -85,7 +85,7 @@
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{PembelianControl.transaksi()}" key="Ctrl+b">Pembelian</a></li>
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{PembelianControl.monitoring()}" key="Ctrl+n">Mon. Pembelian</a></li>
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+r">Retur Pembelian</a></li>
-                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+t">Transfer Stok</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{PembelianControl.transfer()}" key="Ctrl+t">Transfer Stok</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                         <div id="penjualan" class="yui3-menu">
                             <div class="yui3-menu-content">
                                 <ul>
-                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+j">Penjualan</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{PenjualanControl.transaksi()}"" key="Ctrl+j">Penjualan</a></li>
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+u">Retur Penjualan</a></li>
                                 </ul>
                             </div>
@@ -170,8 +170,12 @@ $('input.autocomplete-relation').each(function() {
 	   // Create a hidden input with the same form control name to submit the value.
 	   var controlId = $input.attr('id');
 	   var controlName = $input.attr('name');
+	   var real_value = $input.attr('real_value');
 	   $(':input[name="key_'+controlName+'"]').remove();
 	   var $hidden = $('<input type="hidden"/>').attr('name', "key_"+controlName).attr('id', "key_"+controlId);
+	   if(real_value.length>0) {
+		   $hidden.attr('value', real_value);
+	   }
 	   $input.after($hidden);//.attr('name', controlName + '_label');
 	   // Set-up the autocomplete widget.
 	   var serverUrl = $input.data('url');

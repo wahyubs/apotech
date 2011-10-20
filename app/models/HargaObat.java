@@ -51,7 +51,7 @@ public class HargaObat extends GenericModel implements IGeneratedModel{
 	
 	@ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private User_pegawai userId; 
+    private UserPegawai userId; 
 
 	/**
 	 * Default constructor
@@ -99,11 +99,11 @@ public class HargaObat extends GenericModel implements IGeneratedModel{
 		this.idObatAlat = idObatAlat;
 	}
 	
-	public User_pegawai getUserId () {
+	public UserPegawai getUserId () {
     	return userId;
     }
 	
-    public void setUserId (User_pegawai userId) {
+    public void setUserId (UserPegawai userId) {
     	this.userId = userId;
     }
 

@@ -68,7 +68,7 @@ public class Tagihan extends GenericModel {
     
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private User_pegawai userId; 
+    private UserPegawai userId; 
     
     @OneToMany (targetEntity=Resep.class, fetch=FetchType.LAZY, mappedBy="idTagihan", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
     private Set <Resep> resepIdTagihan = new HashSet<Resep>(); 
@@ -184,11 +184,11 @@ public class Tagihan extends GenericModel {
         this.tglAktivitas =  tglAktivitas;
     }
     
-    public User_pegawai getUserId () {
+    public UserPegawai getUserId () {
     	return userId;
     }
 	
-    public void setUserId (User_pegawai userId) {
+    public void setUserId (UserPegawai userId) {
     	this.userId = userId;
     }
     

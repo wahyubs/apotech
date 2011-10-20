@@ -28,14 +28,26 @@ public class DetilOpname extends GenericModel {
     @EmbeddedId
     private DetilOpnameId detilOpnameId;
     
-    @Column(name="jml_sebelumnya",    nullable=true,  unique=false)
-    private java.lang.Integer jmlSebelumnya; 
+    @Column(name="jml_apotek_sebelumnya",    nullable=true,  unique=false)
+    private java.lang.Integer jmlApotekSebelumnya; 
     
-    @Column(name="jml_sekarang",    nullable=true,  unique=false)
-    private java.lang.Integer jmlSekarang; 
+    @Column(name="jml_apotek_sekarang",    nullable=true,  unique=false)
+    private java.lang.Integer jmlApotekSekarang; 
     
     @Column(name="tgl_kadaluarsa",    nullable=true,  unique=false)
     private Date tglKadaluarsa; 
+    
+    @Column(name="jml_gudang_sebelumnya",    nullable=true,  unique=false)
+    private java.lang.Integer jmlGudangSebelumnya; 
+    
+    @Column(name="jml_gudang_sekarang",    nullable=true,  unique=false)
+    private java.lang.Integer jmlGudangSekarang; 
+    
+    @Column(name="jml_sebelumnya",    nullable=true,  unique=false)
+    private Integer jmlSebelumnya; 
+    
+    @Column(name="jml_sekarang",    nullable=true,  unique=false)
+    private Integer jmlSekarang; 
     
     @MapsId ("$localColumnName")
     @ManyToOne (fetch=FetchType.LAZY)
@@ -64,20 +76,20 @@ public class DetilOpname extends GenericModel {
         this.detilOpnameId =  detilOpnameId;
     }
     
-    public java.lang.Integer getJmlSebelumnya() {
-        return jmlSebelumnya;
+    public java.lang.Integer getJmlApotekSebelumnya() {
+        return jmlApotekSebelumnya;
     }
 	
-    public void setJmlSebelumnya (java.lang.Integer jmlSebelumnya) {
-        this.jmlSebelumnya =  jmlSebelumnya;
+    public void setJmlApotekSebelumnya (java.lang.Integer jmlApotekSebelumnya) {
+        this.jmlApotekSebelumnya =  jmlApotekSebelumnya;
     }
     
-    public java.lang.Integer getJmlSekarang() {
-        return jmlSekarang;
+    public java.lang.Integer getJmlApotekSekarang() {
+        return jmlApotekSekarang;
     }
 	
-    public void setJmlSekarang (java.lang.Integer jmlSekarang) {
-        this.jmlSekarang =  jmlSekarang;
+    public void setJmlApotekSekarang (java.lang.Integer jmlApotekSekarang) {
+        this.jmlApotekSekarang =  jmlApotekSekarang;
     }
     
     public Date getTglKadaluarsa() {
@@ -86,6 +98,38 @@ public class DetilOpname extends GenericModel {
 	
     public void setTglKadaluarsa (Date tglKadaluarsa) {
         this.tglKadaluarsa =  tglKadaluarsa;
+    }
+    
+    public java.lang.Integer getJmlGudangSebelumnya() {
+        return jmlGudangSebelumnya;
+    }
+	
+    public void setJmlGudangSebelumnya (java.lang.Integer jmlGudangSebelumnya) {
+        this.jmlGudangSebelumnya =  jmlGudangSebelumnya;
+    }
+    
+    public java.lang.Integer getJmlGudangSekarang() {
+        return jmlGudangSekarang;
+    }
+	
+    public void setJmlGudangSekarang (java.lang.Integer jmlGudangSekarang) {
+        this.jmlGudangSekarang =  jmlGudangSekarang;
+    }
+    
+    public Integer getJmlSebelumnya() {
+        return jmlSebelumnya;
+    }
+	
+    public void setJmlSebelumnya (Integer jmlSebelumnya) {
+        this.jmlSebelumnya =  jmlSebelumnya;
+    }
+    
+    public Integer getJmlSekarang() {
+        return jmlSekarang;
+    }
+	
+    public void setJmlSekarang (Integer jmlSekarang) {
+        this.jmlSekarang =  jmlSekarang;
     }
     
     public StokObatAlat getIdStok () {

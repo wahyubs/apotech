@@ -3,7 +3,7 @@
 </div>
 <script>
 $(function() {
-	$('#detilPembelian :input').live('keypress', function(event) {
+	$('#${_id} :input').live('keypress', function(event) {
 		if(event.which=9) {
 			var pos = $(this).getTabIndex();
 			var maxPos = $(this).getMaxTabIndex();
@@ -12,10 +12,10 @@ $(function() {
 				var kopian = $('#baris').clone();
 				kopian.removeAttr('id');
 				kopian.find(':input').each(function() {
-				var jml = $('[id^="'+$(this).attr('id')+'"]').length;
+				var strip_id=$(this).attr('id').substring(0, $(this).attr('id').lastIndexOf("_"));
+				var jml = $('[id^="'+strip_id+'"]').length;
 				if(jml>0) { 
-					var myId = $(this).attr('id');
-					$(this).attr('id',myId+jml);
+					$(this).attr('id',strip_id+'_'+jml);
 					$(this).attr('name',myId+'['+jml+']');
 				} else {
 					var myId = $(this).attr('name').replace('[0]','');

@@ -65,7 +65,7 @@ public class Resep extends GenericModel {
     
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private User_pegawai userId; 
+    private UserPegawai userId; 
     
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_tagihan",  nullable=true,  unique=false  )
@@ -177,11 +177,11 @@ public class Resep extends GenericModel {
         this.tglAktivitas =  tglAktivitas;
     }
     
-    public User_pegawai getUserId () {
+    public UserPegawai getUserId () {
     	return userId;
     }
 	
-    public void setUserId (User_pegawai userId) {
+    public void setUserId (UserPegawai userId) {
     	this.userId = userId;
     }
     

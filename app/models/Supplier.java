@@ -54,7 +54,7 @@ public class Supplier extends GenericModel implements IGeneratedModel{
 	
 	@ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private User_pegawai userId; 
+    private UserPegawai userId; 
 
 	@OneToMany(targetEntity = Pembelian.class, fetch = FetchType.LAZY, mappedBy = "idSupplier", cascade = CascadeType.REMOVE)
 	private Set<Pembelian> pembelianIdSupplier = new HashSet<Pembelian>();
@@ -105,11 +105,11 @@ public class Supplier extends GenericModel implements IGeneratedModel{
         this.tglAktivitas =  tglAktivitas;
     }
 	
-	public User_pegawai getUserId () {
+	public UserPegawai getUserId () {
     	return userId;
     }
 	
-    public void setUserId (User_pegawai userId) {
+    public void setUserId (UserPegawai userId) {
     	this.userId = userId;
     }
 

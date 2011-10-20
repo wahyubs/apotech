@@ -30,18 +30,21 @@ public class StokOpname extends GenericModel {
     @Id @Column(name="id_stok_opname" ,length=32)
     private String idStokOpname;
 
+    @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
+    private Date tglAktivitas; 
+    
     @Column(name="tgl_stok_opname",    nullable=true,  unique=false)
     private Date tglStokOpname; 
     
     @Column(name="desc_stok_opname",  length=500,  nullable=true,  unique=false)
     private String descStokOpname; 
     
-    @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
-    private Date tglAktivitas; 
+    @Column(name="sts_transaksi",  length=1,  nullable=true,  unique=false)
+    private String stsTransaksi; 
     
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private User_pegawai userId; 
+    private UserPegawai userId; 
     
     @OneToMany (targetEntity=DetilOpname.class, fetch=FetchType.LAZY, mappedBy="idStokOpname", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
     private Set <DetilOpname> detilOpnameIdStokOpname = new HashSet<DetilOpname>(); 
@@ -61,6 +64,14 @@ public class StokOpname extends GenericModel {
         this.idStokOpname =  idStokOpname;
     }
     
+    public Date getTglAktivitas() {
+        return tglAktivitas;
+    }
+	
+    public void setTglAktivitas (Date tglAktivitas) {
+        this.tglAktivitas =  tglAktivitas;
+    }
+    
     public Date getTglStokOpname() {
         return tglStokOpname;
     }
@@ -77,19 +88,19 @@ public class StokOpname extends GenericModel {
         this.descStokOpname =  descStokOpname;
     }
     
-    public Date getTglAktivitas() {
-        return tglAktivitas;
+    public String getStsTransaksi() {
+        return stsTransaksi;
     }
 	
-    public void setTglAktivitas (Date tglAktivitas) {
-        this.tglAktivitas =  tglAktivitas;
+    public void setStsTransaksi (String stsTransaksi) {
+        this.stsTransaksi =  stsTransaksi;
     }
     
-    public User_pegawai getUserId () {
+    public UserPegawai getUserId () {
     	return userId;
     }
 	
-    public void setUserId (User_pegawai userId) {
+    public void setUserId (UserPegawai userId) {
     	this.userId = userId;
     }
     
@@ -109,6 +120,6 @@ public class StokOpname extends GenericModel {
     }
     
     public String toString(){
-       return tglStokOpname+"";
+       return tglAktivitas+"";
     }
 }

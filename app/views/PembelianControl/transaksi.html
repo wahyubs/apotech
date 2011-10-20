@@ -3,20 +3,40 @@
 #{ifErrors}
    <span class="error">Oops…</span>
 #{/ifErrors}
+<script>
+function hitung(val1,val2,totalSelector) {
+	totalSelector.val(parseInt(val1)+parseInt(val2));
+}
+function hitungGen(indeks) {
+	hitung($('#stokApotek'+indeks).val(),$('#stokGudang'+indeks).val(),$('#totalStok'+indeks));
+}
+</script>
 #{form @PembelianControl.savePembelian(), method:'POST', id:'pembelianForm'}
 <div class="yui3-g" id="entri">
-<fieldset><legend>Entri Pembelian</legend>
-<div class="yui3-u-1-6"><div class="entriClass">Tanggal Pembelian</div></div>
-<div class="yui3-u-5-6"><div class="entriClass">#{dateTime id:'tglPembelian', name:'tglPembelian', value:pembelian.tglPembelian.format('dd-MM-yyyy')/}<span class="error">#{error 'tglPembelian' /}</span></div></div>
-<div class="yui3-u-1-6"><div class="entriClass">Supplier</div></div>
-<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idSupplier',name:'idSupplier',url:@PembelianControl.autocompleteSupplier(),size:'50',value:'',label:'' /}<span class="error">#{error 'idSupplier' /}</span></div></div>
-<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/></div></div>
+<fieldset><legend>Entri Pembelian #{if pembelian.idPembelian!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idPembelian" type="hidden" value="${pembelian.idPembelian}"/>
+<div class="yui3-u-1-6"><div class="entriClass label">Tanggal Pembelian</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglPembelian', name:'tglPembelian', value:pembelian.tglPembelian.format('dd-MM-yyyy')/}<span class="error">#{error 'tglPembelian' /}</span></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Supplier</div></div>
+<div class="yui3-u-1-2"><div class="entriClass">#{autocomplete id:'idSupplier',name:'idSupplier',url:@PembelianControl.autocompleteSupplier(),size:'50',value:pembelian.idSupplier?.idSupplier,label:pembelian.idSupplier?.namaSupplier /}<span class="error">#{error 'idSupplier' /}</span></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Tgl Faktur</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglFaktur', name:'tglFaktur', value:pembelian.tglFaktur?.format('dd-MM-yyyy')/}<span class="error">#{error 'tglFaktur' /}</span></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">No Faktur</div></div>
+<div class="yui3-u-1-2"><div class="entriClass"><input id="idFaktur" name="idFaktur" value="${idFaktur}"/></span></div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.transaksi()}'"/>&nbsp;#{if !pembelian.detilPembelianIdPembelian.isEmpty()}<input value="Tutup" id="tutup" type="submit" />#{/if}</div></div>
 </fieldset>
 </div>
 #{customgrid class:'yui3-g',id:'detilPembelian'}
-<div class="yui3-u-1-2"><div class="isi">Obat</div></div><div class="yui3-u-1-4"><div class="isi">Qty</div></div><div class="yui3-u-1-4"><div class="isi">Harga</div></div>
-<div class="yui3-u-1-3"><div class="isi">Kode-Nama</div></div><div class="yui3-u-1-12"><div class="isi">Volume</div></div><div class="yui3-u-1-12"><div class="isi">Kadaluarsa</div></div><div class="yui3-u-1-12"><div class="isi">Apotek</div></div><div class="yui3-u-1-12"><div class="isi">Gudang</div></div><div class="yui3-u-1-12"><div class="isi">Total</div></div><div class="yui3-u-1-12"><div class="isi">Harga</div></div><div class="yui3-u-1-12"><div class="isi">PPN</div></div><div class="yui3-u-1-12"><div class="isi">Diskon</div></div>
-<div id="baris"><div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="volume[0]" id="volume" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi">#{dateTime id:'tglKadaluarsa',name:'tglKadaluarsa[0]'/}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="stokApotek[0]" id="stokApotek" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input  name="stokGudang[0]" id="stokGudang" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="totalStok[0]" id="totalStok" size="6" disabled="disabled"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="harga[0]" id="harga" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="ppn[0]" id="ppn" size="3"/> %</div></div><div class="yui3-u-1-12"><div class="isi"><input name="diskon[0]" id="diskon" size="3"/> %</div></div></div>
+<div class="yui3-u-1-2"><div class="isi header">Obat</div></div><div class="yui3-u-1-4"><div class="isi header">Qty</div></div><div class="yui3-u-1-4"><div class="isi header">Harga</div></div>
+<div class="yui3-u-1-3"><div class="isi header">Kode-Nama</div></div><div class="yui3-u-1-12"><div class="isi header">Volume</div></div><div class="yui3-u-1-12"><div class="isi header">Kadaluarsa</div></div><div class="yui3-u-1-12"><div class="isi header">Apotek</div></div><div class="yui3-u-1-12"><div class="isi header">Gudang</div></div><div class="yui3-u-1-12"><div class="isi header">Total</div></div><div class="yui3-u-1-12"><div class="isi header">Harga</div></div><div class="yui3-u-1-12"><div class="isi header">PPN</div></div><div class="yui3-u-1-12"><div class="isi header">Diskon</div></div>
+<div id="baris">
+#{list items:pembelian.detilPembelianIdPembelian, as:'detilPembelian'}
+%{ x=detilPembelian_index-1 }%
+<div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat_'+x+'',name:'kode_obat['+x+']',url:@PembelianControl.autocompleteKodeObat(),size:'50',value:detilPembelian.idStok.idObatAlat.idObatAlat,label:detilPembelian.idStok.idObatAlat.kodeObatAlat+" - "+detilPembelian.idStok.idObatAlat.namaObatAlat /}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="volume[${x}]" id="volume_${x}" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi">#{dateTime id:'tglKadaluarsa_'+x+'',name:'tglKadaluarsa['+x+']',value:detilPembelian.tglKadaluarsa.format('dd-MM-yyyy')/}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="stokApotek[${x}]" id="stokApotek_${x}" size="6" value="${detilPembelian.jmlPenerimaanApotek}" onchange="hitung($('#stokApotek_${x}').val(),$('#stokGudang_${x}').val(),$('#totalStok_${x}'));"/></div></div><div class="yui3-u-1-12"><div class="isi"><input  name="stokGudang[${x}]" id="stokGudang_${x}" size="6" value="${detilPembelian.jmlPenerimaanGudang}" onchange="hitung($('#stokApotek_${x}').val(),$('#stokGudang_${x}').val(),$('#totalStok_${x}')/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="totalStok[${x}]" id="totalStok_${x}" size="6" disabled="disabled" value="${detilPembelian.jmlPenerimaanApotek+detilPembelian.jmlPenerimaanGudang}"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="harga[${x}]" id="harga_${x}" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="ppn[${x}]" id="ppn_${x}" size="3"/> %</div></div><div class="yui3-u-1-12"><div class="isi"><input name="diskon[${x}]" id="diskon_${x}" size="3"/> %</div></div>
+#{/list}
+#{else}
+<div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="volume[0]" id="volume_0" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi">#{dateTime id:'tglKadaluarsa_0',name:'tglKadaluarsa[0]'/}</div></div><div class="yui3-u-1-12"><div class="isi"><input name="stokApotek[0]" id="stokApotek_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-12"><div class="isi"><input  name="stokGudang[0]" id="stokGudang_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="totalStok[0]" id="totalStok_0" size="6" value="0" disabled="disabled"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="harga[0]" id="harga_0" size="6"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="ppn[0]" id="ppn_0" size="3"/> %</div></div><div class="yui3-u-1-12"><div class="isi"><input name="diskon[0]" id="diskon_0" size="3"/> %</div></div>
+#{/else}
+</div>
 #{/customgrid}
 #{/form}
 #{if hasil!=null}<script>alert("${hasil}");</script>#{/if}

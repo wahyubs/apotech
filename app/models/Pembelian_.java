@@ -16,7 +16,7 @@ public class Pembelian_ {
 	public static volatile SingularAttribute<Pembelian, String> noFaktur;
 	public static volatile SingularAttribute<ObatAlat, Date> tglAktivitas;
 
-	public static volatile SingularAttribute<ObatAlat, User_pegawai> userId;
+	public static volatile SingularAttribute<ObatAlat, UserPegawai> userId;
 	public static volatile SingularAttribute<Pembelian, Supplier> idSupplier;
 
 	public static volatile SetAttribute<Pembelian, DetilPembelian> detilPembelianIdPembelian;

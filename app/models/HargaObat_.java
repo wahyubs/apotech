@@ -14,7 +14,7 @@ public class HargaObat_ {
 	public static volatile SingularAttribute<HargaObat, java.lang.Integer> hargaObat;
 	public static volatile SingularAttribute<ObatAlat, Date> tglAktivitas;
 
-	public static volatile SingularAttribute<ObatAlat, User_pegawai> userId;
+	public static volatile SingularAttribute<ObatAlat, UserPegawai> userId;
 	public static volatile SingularAttribute<HargaObat, ObatAlat> idObatAlat;
 
 }

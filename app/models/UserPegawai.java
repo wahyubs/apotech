@@ -15,14 +15,14 @@ import play.db.jpa.GenericModel;
 
 /**
  *
- * <p>Title: User_pegawai</p>
+ * <p>Title: UserPegawai</p>
  *
- * <p>Description: Play Domain Object describing a User_pegawai entity</p>
+ * <p>Description: Play Domain Object describing a UserPegawai entity</p>
  *
  */
-@Entity (name="User_pegawai")
+@Entity (name="UserPegawai")
 @Table (name="USER_PEGAWAI")
-public class User_pegawai extends GenericModel {
+public class UserPegawai extends GenericModel {
 
     @Id @Column(name="user_id" ,length=32)
     private String userId;
@@ -57,7 +57,7 @@ public class User_pegawai extends GenericModel {
     /**
     * Default constructor
     */
-    public User_pegawai() {
+    public UserPegawai() {
     }
 
 

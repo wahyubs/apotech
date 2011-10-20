@@ -12,9 +12,9 @@ import models.StokObatAlat;
 import models.Supplier;
 import play.data.binding.As;
 import play.data.validation.Required;
-import play.db.jpa.JPABase;
 import play.mvc.Controller;
 import tool.AutocompleteValue;
+import tool.CommonUtil;
 
 public class PembelianControl extends Controller {
 	public static int AUTOCOMPLETE_MAX = 20;
@@ -27,8 +27,15 @@ public class PembelianControl extends Controller {
 		render(pembelian, hasil);
 	}
 
-	public static void monitoring() {
+	public static void transfer() {
+		render();
+	}
 
+	public static void monitoring(Date tglPembelianAwal,
+			Date tglPembelianAkhir, String idSupplier, String idObatAlat) {
+		tglPembelianAwal = new Date();
+		tglPembelianAkhir = new Date();
+		render(tglPembelianAwal, tglPembelianAkhir, idSupplier, idObatAlat);
 	}
 
 	public static void autocompleteSupplier(final String term) {
@@ -58,7 +65,7 @@ public class PembelianControl extends Controller {
 		renderJSON(response);
 	}
 
-	public static void savePembelian(
+	public static void savePembelian(String idPembelian,
 			@Required @As("dd-MM-yyyy") Date tglPembelian,
 			@Required String key_idSupplier, List<String> key_kode_obat,
 			@As("dd-MM-yyyy") List<Date> tglKadaluarsa,
@@ -66,8 +73,17 @@ public class PembelianControl extends Controller {
 			List<String> harga) {
 		Pembelian pembelian = new Pembelian();
 		pembelian.setTglPembelian(tglPembelian);
+		if (pembelian.getTglPembelian() == null)
+			pembelian.setTglPembelian(new Date());
 		pembelian.setIdSupplier((Supplier) Supplier.findById(key_idSupplier));
-		pembelian.validateAndSave();
+		if (CommonUtil.isEmpty(idPembelian)) {
+			pembelian.validateAndSave();
+		} else {
+			pembelian.setIdPembelian(idPembelian);
+			pembelian = pembelian.merge();
+			pembelian.validateAndSave();
+			DetilPembelian.delete("id_pembelian=?", idPembelian);
+		}
 		if (validation.hasErrors()) {
 			params.flash(); // add http parameters to the flash scope
 			validation.keep(); // keep the errors for the next request
@@ -75,33 +91,73 @@ public class PembelianControl extends Controller {
 			return;
 		}
 		for (int i = 0; i < key_kode_obat.size(); i++) {
-			DetilPembelian detilPembelian = new DetilPembelian();
-			StokObatAlat stokObatAlat = new StokObatAlat();
-			stokObatAlat.setIdObatAlat((ObatAlat) ObatAlat
-					.findById(key_kode_obat.get(i)));
-			stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
-			List<StokObatAlat> fetch = StokObatAlat.find(
-					"id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
-					stokObatAlat.getIdObatAlat().getIdObatAlat(),
-					stokObatAlat.getTglKadaluarsa()).fetch();
-			stokObatAlat.setJmlStokApotek(stokApotek.get(i));
-			stokObatAlat.setJmlStokGudang(stokGudang.get(i));
-			if (fetch.isEmpty()) {
-				stokObatAlat.validateAndSave();
-				if (validation.hasErrors()) {
-					params.flash(); // add http parameters to the flash scope
-					validation.keep(); // keep the errors for the next request
-					transaksi(pembelian, null);
-					return;
+			if (key_kode_obat.get(i) != null
+					&& !"".equals(key_kode_obat.get(i))) {
+				Integer jmlTerimaApotek = stokApotek.get(i) == null ? 0
+						: stokApotek.get(i);
+				Integer jmlTerimaGudang = stokGudang.get(i) == null ? 0
+						: stokGudang.get(i);
+				DetilPembelian detilPembelian = new DetilPembelian();
+				StokObatAlat stokObatAlat = new StokObatAlat();
+				stokObatAlat.setIdObatAlat((ObatAlat) ObatAlat
+						.findById(key_kode_obat.get(i)));
+				stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
+				List<StokObatAlat> fetch = StokObatAlat
+						.find("id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
+								stokObatAlat.getIdObatAlat().getIdObatAlat(),
+								stokObatAlat.getTglKadaluarsa()).fetch();
+				if (fetch.isEmpty()) {
+					stokObatAlat.setJmlStokApotek(0);
+					stokObatAlat.setJmlStokGudang(0);
+					stokObatAlat.validateAndSave();
+					if (validation.hasErrors()) {
+						params.flash(); // add http parameters to the flash
+										// scope
+						validation.keep(); // keep the errors for the next
+											// request
+						transaksi(pembelian, null);
+						return;
+					}
+				} else {
+					StokObatAlat tmp = fetch.get(0);
+					stokObatAlat.setIdStok(tmp.getIdStok());
+					Integer jmlStokApotek = tmp.getJmlStokApotek() == null ? 0
+							: tmp.getJmlStokApotek();
+					Integer jmlStokGudang = tmp.getJmlStokGudang() == null ? 0
+							: tmp.getJmlStokGudang();
+					stokObatAlat.setJmlStokApotek(jmlStokApotek);
+					stokObatAlat.setJmlStokGudang(jmlStokGudang);
+					stokObatAlat = stokObatAlat.merge();
+					stokObatAlat.validateAndSave();
 				}
-			} else {
-				StokObatAlat tmp = fetch.get(0);
-				stokObatAlat.setIdStok(tmp.getIdStok());
-				stokObatAlat=stokObatAlat.merge();
-				stokObatAlat.save();
+				detilPembelian.setIdPembelian(pembelian);
+				detilPembelian.setIdStok(stokObatAlat);
+				detilPembelian.setTglKadaluarsa(tglKadaluarsa.get(i));
+				detilPembelian.setJmlPenerimaanApotek(jmlTerimaApotek);
+				detilPembelian.setJmlPenerimaanGudang(jmlTerimaGudang);
+				detilPembelian.validateAndSave();
+
 			}
 		}
+		pembelian = Pembelian.findById(pembelian.getIdPembelian());
 		String hasil = "Pembelian Berhasil Disimpan!";
-		transaksi(null, hasil);
+		pembelian
+				.getIdSupplier()
+				.setNamaSupplier(
+						(pembelian.getIdSupplier().getNamaSupplier() != null ? pembelian
+								.getIdSupplier().getNamaSupplier() : "")
+								+ " ("
+								+ (pembelian.getIdSupplier().getKotaSupplier() != null ? pembelian
+										.getIdSupplier().getKotaSupplier()
+										: "-") + ")");
+		renderTemplate("PembelianControl/transaksi.html", pembelian, hasil);
+	}
+
+	public static void cariPembelian() {
+		render();
+	}
+	
+	public static void showVolume(String idObatAlat) {
+		renderText("");
 	}
 }

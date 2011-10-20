@@ -24,7 +24,7 @@ public class Tagihan_ {
 	public static volatile SingularAttribute<Tagihan, String> deskripsi;
 	public static volatile SingularAttribute<ObatAlat, Date> tglAktivitas;
 
-	public static volatile SingularAttribute<ObatAlat, User_pegawai> userId;
+	public static volatile SingularAttribute<ObatAlat, UserPegawai> userId;
 
 	public static volatile SetAttribute<Tagihan, Resep> resepIdTagihan;
 

@@ -52,12 +52,15 @@ public class ObatAlat extends GenericModel implements IGeneratedModel{
 	@Column(name = "harga_terakhir", nullable = true, unique = false)
 	private java.lang.Integer hargaTerakhir;
 	
+	@Column(name="volume_obat_alat",  length=30,  nullable=true,  unique=false)
+    private String volumeObatAlat; 
+	
 	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
     private Date tglAktivitas; 
 	
 	@ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private User_pegawai userId; 
+    private UserPegawai userId; 
 
 	@OneToMany(targetEntity = HargaObat.class, fetch = FetchType.LAZY, mappedBy = "idObatAlat", cascade = CascadeType.REMOVE)
 	private Set<HargaObat> hargaObatIdObatAlat = new HashSet<HargaObat>();
@@ -111,6 +114,14 @@ public class ObatAlat extends GenericModel implements IGeneratedModel{
 		this.hargaTerakhir = hargaTerakhir;
 	}
 	
+	public String getVolumeObatAlat() {
+        return volumeObatAlat;
+    }
+	
+    public void setVolumeObatAlat (String volumeObatAlat) {
+        this.volumeObatAlat =  volumeObatAlat;
+    }
+	
 	public Date getTglAktivitas() {
         return tglAktivitas;
     }
@@ -119,11 +130,11 @@ public class ObatAlat extends GenericModel implements IGeneratedModel{
         this.tglAktivitas =  tglAktivitas;
     }
 	
-	public User_pegawai getUserId () {
+	public UserPegawai getUserId () {
     	return userId;
     }
 	
-    public void setUserId (User_pegawai userId) {
+    public void setUserId (UserPegawai userId) {
     	this.userId = userId;
     }
 

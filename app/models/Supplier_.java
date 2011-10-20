@@ -16,7 +16,7 @@ public class Supplier_ {
 	public static volatile SingularAttribute<Supplier, String> kotaSupplier;
 	public static volatile SingularAttribute<ObatAlat, Date> tglAktivitas;
 
-	public static volatile SingularAttribute<ObatAlat, User_pegawai> userId;
+	public static volatile SingularAttribute<ObatAlat, UserPegawai> userId;
 
 	public static volatile SetAttribute<Supplier, Pembelian> pembelianIdSupplier;
 
