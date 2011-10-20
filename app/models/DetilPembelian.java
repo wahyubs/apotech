@@ -44,12 +44,12 @@ public class DetilPembelian extends GenericModel {
 	private java.lang.Integer jmlPenerimaanGudang;
 
 	@MapsId ("id_pembelian")
-	@ManyToOne
+	@ManyToOne (fetch=FetchType.LAZY)
 	@JoinColumn(name = "id_pembelian", nullable = false, unique = false, insertable = false, updatable = false)
 	private Pembelian idPembelian;
 
 	@MapsId ("id_stok")
-	@ManyToOne
+	@ManyToOne (fetch=FetchType.LAZY)
 	@JoinColumn(name = "id_stok", nullable = false, unique = false, insertable = false, updatable = false)
 	private StokObatAlat idStok;
 

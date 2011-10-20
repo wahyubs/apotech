@@ -49,13 +49,13 @@ public class DetilOpname extends GenericModel {
     @Column(name="jml_sekarang",    nullable=true,  unique=false)
     private Integer jmlSekarang; 
     
-    @MapsId ("$localColumnName")
+    @MapsId ("id_stok")
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_stok", nullable=false,  unique=false , insertable=false, updatable=false )
     @Required
     private StokObatAlat idStok; 
     
-    @MapsId ("id_stok")
+    @MapsId ("id_stok_opname")
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_stok_opname", nullable=false,  unique=false , insertable=false, updatable=false )
     @Required

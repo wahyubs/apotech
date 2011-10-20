@@ -1,2 +1,25 @@
 #{extends 'menu.html' /}
 #{set title:'Transfer' /}
+#{form @PembelianControl.saveTransfer(), method:'POST', id:'transferForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Entri Transfer #{if transfer.idTransfer!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idTransfer" type="hidden" value="${transfer.idTransfer}"/>
+<div class="yui3-u-1-6"><div class="entriClass label">Tanggal Transfer</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglTransfer', name:'tglTransfer', value:transfer.tglTransfer.format('dd-MM-yyyy')/}<span class="error">#{error 'tglTransfer' /}</span></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Keterangan</div></div>
+<div class="yui3-u-1-2"><div class="entriClass"><input id="descTransfer" name="descTransfer" value="${descTransfer}"/></span></div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.transfer()}'"/>&nbsp;#{if !transfer.detilTransferStokIdTransfer.isEmpty()}<input value="Tutup" id="tutup" type="submit" />#{/if}</div></div>
+</fieldset>
+</div>
+#{customgrid class:'yui3-g',id:'detilTransfer'}
+<div class="yui3-u-1-2"><div class="isi header">Obat</div></div><div class="yui3-u-1-4"><div class="isi header">Tujuan</div></div><div class="yui3-u-1-4"><div class="isi header">Kirim</div></div>
+<div id="baris">
+#{list items:transfer.detilTransferStokIdTransfer, as:'detikOpname'}
+%{ x=detilPembelian_index-1 }%
+
+#{/list}
+#{else}
+<div class="yui3-u-1-2"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-4"><div class="isi">Tujuan</div></div><div class="yui3-u-1-4"><div class="isi">Kirim</div></div>
+#{/else}
+</div>
+#{/customgrid}
+#{/form}

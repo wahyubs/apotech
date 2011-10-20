@@ -10,6 +10,7 @@ import models.ObatAlat;
 import models.Pembelian;
 import models.StokObatAlat;
 import models.Supplier;
+import models.TransferStok;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.mvc.Controller;
@@ -27,8 +28,12 @@ public class PembelianControl extends Controller {
 		render(pembelian, hasil);
 	}
 
-	public static void transfer() {
-		render();
+	public static void transfer(TransferStok transfer) {
+		if (transfer == null)
+			transfer = new TransferStok();
+		if (transfer.getTglTransfer() == null)
+			transfer.setTglTransfer(new Date());
+		render(transfer);
 	}
 
 	public static void monitoring(Date tglPembelianAwal,
@@ -159,5 +164,9 @@ public class PembelianControl extends Controller {
 	
 	public static void showVolume(String idObatAlat) {
 		renderText("");
+	}
+	
+	public static void saveTransfer() {
+		System.out.println("tesz");
 	}
 }
