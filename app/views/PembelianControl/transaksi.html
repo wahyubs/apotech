@@ -3,24 +3,6 @@
 #{ifErrors}
    <span class="error">Oops…</span>
 #{/ifErrors}
-<script>
-function hitung(val1,val2,totalSelector) {
-	totalSelector.val(parseInt(val1)+parseInt(val2));
-}
-function hitungGen(indeks) {
-	hitung($('#stokApotek'+indeks).val(),$('#stokGudang'+indeks).val(),$('#totalStok'+indeks));
-}
-$(function() {
-var listAction = #{jsAction @showVolume(':idObatAlat') /}
-$('[id^="kode_obat"]').live('ubah',function() {
-	var indeks=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_"));
-	var key_obat=$('#key_kode_obat'+indeks).val();
-	$.getJSON(listAction({idObatAlat:key_obat}),function(data) {
-		$('#volume'+indeks).val(data);
-	});
-});
-});
-</script>
 #{form @PembelianControl.savePembelian(), method:'POST', id:'pembelianForm'}
 <div class="yui3-g" id="entri">
 <fieldset><legend>Entri Pembelian #{if pembelian.idPembelian!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idPembelian" type="hidden" value="${pembelian.idPembelian}"/>
@@ -48,5 +30,23 @@ $('[id^="kode_obat"]').live('ubah',function() {
 #{/else}
 </div>
 #{/customgrid}
+<script>
+function hitung(val1,val2,totalSelector) {
+	totalSelector.val(parseInt(val1)+parseInt(val2));
+}
+function hitungGen(indeks) {
+	hitung($('#stokApotek'+indeks).val(),$('#stokGudang'+indeks).val(),$('#totalStok'+indeks));
+}
+$(function() {
+var listAction = #{jsAction @showVolume(':idObatAlat') /}
+$('[id^="kode_obat"]').live('ubah',function() {
+	var indeks=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_"));
+	var key_obat=$('#key_kode_obat'+indeks).val();
+	$.getJSON(listAction({idObatAlat:key_obat}),function(data) {
+		$('#volume'+indeks).val(data);
+	});
+});
+});
+</script>
 #{/form}
 #{if hasil!=null}<script>alert("${hasil}");</script>#{/if}
