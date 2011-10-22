@@ -3,7 +3,14 @@
 #{ifErrors}
    <span class="error">Oops…</span>
 #{/ifErrors}
-
+<script>
+function hitung(val1,val2,totalSelector) {
+	totalSelector.val(parseInt(val1)+parseInt(val2));
+}
+function hitungGen(indeks) {
+	hitung($('#returApotek'+indeks).val(),$('#returGudang'+indeks).val(),$('#totalRetur'+indeks));
+}
+</script>
 #{form @PembelianControl.saveReturBeli(), method:'POST', id:'returBeliForm'}
 <div class="yui3-g" id="entri">
 <fieldset><legend>Entri Retur Pembelian #{if returPembelian.idReturBeli!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idReturBeli" type="hidden" value="${returPembelian.idReturBeli}"/>
@@ -24,21 +31,44 @@
 <div id="baris">
 #{list items:returPembelian.detilReturPembelianIdReturBeli, as:'detilReturPembelian'}
 %{ x=detilReturPembelian_index-1 }%
-<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_'+x+'',name:'kode_obat['+x+']',url:@PembelianControl.autocompleteKodeObat(),size:'50',value:detilReturPembelian.idStok.idObatAlat.idObatAlat,label:detilReturPembelian.idStok.idObatAlat.kodeObatAlat+" - "+detilReturPembelian.idStok.idObatAlat.namaObatAlat /}</div></div><div class="yui3-u-1-4"><div class="isi">#{dateTime id:'tglKadaluarsa_'+x+'',name:'tglKadaluarsa['+x+']',value:detilReturPembelian.tglKadaluarsa.format('dd-MM-yyyy')/}</div></div><div class="yui3-u-1-6"><div class="isi"><input name="returApotek[${x}]" id="returApotek_${x}" size="6" value="${detilReturPembelian.jmlReturBeliApotek}" onchange="hitung($('#returApotek_${x}').val(),$('#returGudang_${x}').val(),$('#totalRetur_${x}'));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input  name="returGudang[${x}]" id="returGudang_${x}" size="6" value="${detilReturPembelian.jmlReturBeliGudang}" onchange="hitung($('#returApotek_${x}').val(),$('#returGudang_${x}').val(),$('#totalRetur_${x}'));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input name="totalRetur[${x}]" id="totalRetur_${x}" size="6" disabled="disabled" value="${detilReturPembelian.jmlReturBeliApotek+detilReturPembelian.jmlReturBeliGudang}"/></div></div>
+<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_'+x+'',name:'kode_obat['+x+']',url:@PembelianControl.autocompleteKodeObat(),size:'50',value:detilReturPembelian.idStok.idObatAlat.idObatAlat,label:detilReturPembelian.idStok.idObatAlat.kodeObatAlat+" - "+detilReturPembelian.idStok.idObatAlat.namaObatAlat /}</div></div><div class="yui3-u-1-4"><div class="isi"><input size="40" name="pilihStok[${x}]" id="pilihStok_${x}" /></div></div><div class="yui3-u-1-6"><div class="isi"><input name="returApotek[${x}]" id="returApotek_${x}" size="6" value="${detilReturPembelian.jmlReturBeliApotek}" onchange="hitung($('#returApotek_${x}').val(),$('#returGudang_${x}').val(),$('#totalRetur_${x}'));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input  name="returGudang[${x}]" id="returGudang_${x}" size="6" value="${detilReturPembelian.jmlReturBeliGudang}" onchange="hitung($('#returApotek_${x}').val(),$('#returGudang_${x}').val(),$('#totalRetur_${x}'));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input name="totalRetur[${x}]" id="totalRetur_${x}" size="6" disabled="disabled" value="${detilReturPembelian.jmlReturBeliApotek+detilReturPembelian.jmlReturBeliGudang}"/></div></div>
 #{/list}
 #{else}
-<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-4"><div class="isi">#{dateTime id:'tglKadaluarsa_0',name:'tglKadaluarsa[0]'/}</div></div><div class="yui3-u-1-6"><div class="isi"><input name="returApotek[0]" id="returApotek_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input name="returGudang[0]" id="returGudang_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input name="totalRetur[0]" id="totalRetur_0" size="6" value="0" disabled="disabled"/></div></div>
+<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-4"><div class="isi"><input size="40" name="pilihStok[0]" id="pilihStok_0" /></div></div><div class="yui3-u-1-6"><div class="isi"><input name="returApotek[0]" id="returApotek_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input name="returGudang[0]" id="returGudang_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-6"><div class="isi"><input name="totalRetur[0]" id="totalRetur_0" size="6" value="0" disabled="disabled"/></div></div>
 #{/else}
 </div>
 #{/customgrid}
+<script type="text/javascript">
+$(function() {
+	var listAction = #{jsAction @showStok(':idObatAlat') /}
+	$('[id^="pilihStok"]').live('focus',function() {
+		var indeks=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_"));
+		var key_obat=$('#key_kode_obat'+indeks).val();
+		$.getJSON(listAction({idObatAlat:key_obat}),function(data) {
+			var $hidden = $("#key_pilihStok"+indeks);
+			if($hidden.length==0) {
+				$hidden = $('<input type="hidden"/>').attr('name', "key_pilihStok["+indeks+"]").attr('id', "key_pilihStok"+indeks);
+			}
+			var $input = $("#pilihStok"+indeks);
+			$input.after($hidden);
+			$input.autocomplete({
+			    source: data,
+			    focus: function(event, ui) {
+			       // Set the text input value to the focused item's label, instead of the value.
+			       $input.val(ui.item.label);
+			       return false;
+			    },
+			    select: function(event, ui) {
+			       // Save the selection item and value in the two inputs.
+			       $input.val(ui.item.label);
+			       $hidden.val(ui.item.value);
+			       return false;
+			    }
+			});
+			$input.autocomplete("search", " ");
+		});		
+	});
+	});
+</script>
 #{/form}
 #{if hasil!=null}<script>alert("${hasil}");</script>#{/if}
-
-<script>
-function hitung(val1,val2,totalSelector) {
-	totalSelector.val(parseInt(val1)+parseInt(val2));
-}
-function hitungGen(indeks) {
-	hitung($('#returApotek'+indeks).val(),$('#returGudang'+indeks).val(),$('#totalRetur'+indeks));
-}
-</script>
