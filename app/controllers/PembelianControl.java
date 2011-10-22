@@ -183,10 +183,10 @@ public class PembelianControl extends Controller {
 		renderTemplate("PembelianControl/transaksi.html", pembelian, hasil);
 	}
 
-	public static void saveReturBeli(String idReturBeli,
+	public static void saveReturBeli(String simpan,String idReturBeli,
 			@Required @As("dd-MM-yyyy") Date tglReturBeli,
 			@Required String key_idSupplier, @Required String key_noFakturBeli,
-			@Required String descReturBeli, List<String> key_pilihStok,
+			String descReturBeli, List<String> key_pilihStok,
 			List<Integer> returApotek, List<Integer> returGudang) {
 		ReturPembelian returPembelian = new ReturPembelian();
 		returPembelian.setTglReturBeli(tglReturBeli);
@@ -217,11 +217,8 @@ public class PembelianControl extends Controller {
 				Integer jmlReturBeliGudang = returGudang.get(i) == null ? 0
 						: returGudang.get(i);
 				DetilReturPembelian detilReturPembelian = new DetilReturPembelian();
-				StokObatAlat stokObatAlat = new StokObatAlat();
-				stokObatAlat.setIdObatAlat((ObatAlat) ObatAlat
-						.findById(key_pilihStok.get(i)));
 				detilReturPembelian.setIdReturBeli(returPembelian);
-				detilReturPembelian.setIdStok(stokObatAlat);
+				detilReturPembelian.setIdStok((StokObatAlat) StokObatAlat.findById(key_pilihStok.get(i)));
 				detilReturPembelian.setJmlReturBeliApotek(jmlReturBeliApotek);
 				detilReturPembelian.setJmlReturBeliGudang(jmlReturBeliGudang);
 				detilReturPembelian.validateAndSave();
@@ -330,10 +327,7 @@ public class PembelianControl extends Controller {
 		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
 		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
 			StokObatAlat stokObatAlat = (StokObatAlat) iterator.next();
-			response.add(new AutocompleteValue(stokObatAlat.getIdStok(), "exp:"
-					+ stokObatAlat.getTglKadaluarsa() + ",jmlA:"
-					+ stokObatAlat.getJmlStokApotek() + ",jmlG:"
-					+ stokObatAlat.getJmlStokGudang()));
+			response.add(new AutocompleteValue(stokObatAlat.getIdStok(), stokObatAlat.getLabelStok()));
 		}
 		renderJSON(response);
 	}

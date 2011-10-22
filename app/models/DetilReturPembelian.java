@@ -32,7 +32,7 @@ public class DetilReturPembelian extends GenericModel {
     @Column(name="jml_retur_beli_gudang",    nullable=true,  unique=false)
     private java.lang.Integer jmlReturBeliGudang; 
     
-    @MapsId ("$id_retur_beli")
+    @MapsId ("id_retur_beli")
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_retur_beli", nullable=false,  unique=false , insertable=false, updatable=false )
     @Required
@@ -48,6 +48,7 @@ public class DetilReturPembelian extends GenericModel {
     * Default constructor
     */
     public DetilReturPembelian() {
+    	this.detilReturPembelianId =  new DetilReturPembelianId();
     }
 
 

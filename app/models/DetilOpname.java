@@ -65,6 +65,7 @@ public class DetilOpname extends GenericModel {
     * Default constructor
     */
     public DetilOpname() {
+    	this.detilOpnameId = new DetilOpnameId();
     }
 
 

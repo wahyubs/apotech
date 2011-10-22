@@ -8,11 +8,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import play.db.jpa.GenericModel;
 
@@ -25,9 +28,11 @@ import play.db.jpa.GenericModel;
  */
 @Entity (name="ReturPembelian")
 @Table (name="retur_pembelian")
-public class ReturPembelian extends GenericModel {
+public class ReturPembelian extends GenericModel implements IGeneratedModel{
 
     @Id @Column(name="id_retur_beli" ,length=32)
+    @GeneratedValue(generator = "MyIdGenerator")
+	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")   
     private String idReturBeli;
 
     @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
@@ -145,4 +150,9 @@ public class ReturPembelian extends GenericModel {
     public String toString(){
        return tglAktivitas+"";
     }
+    
+    @Override
+	public String getGeneratedValue() {
+		return idReturBeli;
+	}
 }
