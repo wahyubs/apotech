@@ -14,7 +14,7 @@
 <div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglFaktur', name:'tglFaktur', value:pembelian.tglFaktur?.format('dd-MM-yyyy')/}<span class="error">#{error 'tglFaktur' /}</span></div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">No Faktur</div></div>
 <div class="yui3-u-1-2"><div class="entriClass"><input id="idFaktur" name="idFaktur" value="${idFaktur}"/></span></div></div>
-<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.transaksi()}'"/>&nbsp;#{if !pembelian.detilPembelianIdPembelian.isEmpty()}<input value="Tutup" id="tutup" type="submit" />#{/if}</div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.transaksi()}'"/>&nbsp;#{if !pembelian.detilPembelianIdPembelian.isEmpty()}<input value="Tutup" id="tutup" name="simpan" type="submit" />#{/if}</div></div>
 </fieldset>
 </div>
 #{customgrid class:'yui3-g',id:'detilPembelian'}
@@ -46,6 +46,9 @@ $('[id^="kode_obat"]').live('ubah',function() {
 		$('#volume'+indeks).val(data);
 	});
 });
+#{if pembelian.stsTransaksi!=null}
+$(':input').attr('disabled', 'disabled');
+#{/if}
 });
 </script>
 #{/form}

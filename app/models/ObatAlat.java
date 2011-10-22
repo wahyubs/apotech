@@ -32,7 +32,7 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "ObatAlat")
 @Table(name = "obat_alat")
-public class ObatAlat extends GenericModel implements IGeneratedModel{
+public class ObatAlat extends GenericModel implements IGeneratedModel {
 
 	@Id
 	@Column(name = "id_obat_alat", length = 32)
@@ -42,25 +42,25 @@ public class ObatAlat extends GenericModel implements IGeneratedModel{
 
 	@Column(name = "nama_obat_alat", length = 100, nullable = true, unique = false)
 	private String namaObatAlat;
-	
-	@Column(name="kode_obat_alat",  length=20,  nullable=true,  unique=false)
-    private String kodeObatAlat; 
+
+	@Column(name = "kode_obat_alat", length = 20, nullable = true, unique = false)
+	private String kodeObatAlat;
 
 	@Column(name = "jenis_obat_alat", length = 1, nullable = true, unique = false)
 	private String jenisObatAlat;
 
 	@Column(name = "harga_terakhir", nullable = true, unique = false)
 	private java.lang.Integer hargaTerakhir;
-	
-	@Column(name="volume_obat_alat",  length=30,  nullable=true,  unique=false)
-    private String volumeObatAlat; 
-	
-	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
-    private Date tglAktivitas; 
-	
-	@ManyToOne (fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private UserPegawai userId; 
+
+	@Column(name = "volume_obat_alat", length = 30, nullable = true, unique = false)
+	private String volumeObatAlat;
+
+	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
+	private Date tglAktivitas;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = true, unique = false)
+	private UserPegawai userId;
 
 	@OneToMany(targetEntity = HargaObat.class, fetch = FetchType.LAZY, mappedBy = "idObatAlat", cascade = CascadeType.REMOVE)
 	private Set<HargaObat> hargaObatIdObatAlat = new HashSet<HargaObat>();
@@ -89,14 +89,14 @@ public class ObatAlat extends GenericModel implements IGeneratedModel{
 	public void setNamaObatAlat(String namaObatAlat) {
 		this.namaObatAlat = namaObatAlat;
 	}
-	
+
 	public String getKodeObatAlat() {
-        return kodeObatAlat;
-    }
-	
-    public void setKodeObatAlat (String kodeObatAlat) {
-        this.kodeObatAlat =  kodeObatAlat;
-    }
+		return kodeObatAlat;
+	}
+
+	public void setKodeObatAlat(String kodeObatAlat) {
+		this.kodeObatAlat = kodeObatAlat;
+	}
 
 	public String getJenisObatAlat() {
 		return jenisObatAlat;
@@ -113,30 +113,30 @@ public class ObatAlat extends GenericModel implements IGeneratedModel{
 	public void setHargaTerakhir(java.lang.Integer hargaTerakhir) {
 		this.hargaTerakhir = hargaTerakhir;
 	}
-	
+
 	public String getVolumeObatAlat() {
-        return volumeObatAlat;
-    }
-	
-    public void setVolumeObatAlat (String volumeObatAlat) {
-        this.volumeObatAlat =  volumeObatAlat;
-    }
-	
+		return volumeObatAlat;
+	}
+
+	public void setVolumeObatAlat(String volumeObatAlat) {
+		this.volumeObatAlat = volumeObatAlat;
+	}
+
 	public Date getTglAktivitas() {
-        return tglAktivitas;
-    }
-	
-    public void setTglAktivitas (Date tglAktivitas) {
-        this.tglAktivitas =  tglAktivitas;
-    }
-	
-	public UserPegawai getUserId () {
-    	return userId;
-    }
-	
-    public void setUserId (UserPegawai userId) {
-    	this.userId = userId;
-    }
+		return tglAktivitas;
+	}
+
+	public void setTglAktivitas(Date tglAktivitas) {
+		this.tglAktivitas = tglAktivitas;
+	}
+
+	public UserPegawai getUserId() {
+		return userId;
+	}
+
+	public void setUserId(UserPegawai userId) {
+		this.userId = userId;
+	}
 
 	public Set<HargaObat> getHargaObatIdObatAlat() {
 		if (hargaObatIdObatAlat == null) {
@@ -171,6 +171,10 @@ public class ObatAlat extends GenericModel implements IGeneratedModel{
 
 	public String toString() {
 		return namaObatAlat + "";
+	}
+
+	public String getLabelObat() {
+		return getKodeObatAlat() + " - " + getNamaObatAlat();
 	}
 
 	@Override

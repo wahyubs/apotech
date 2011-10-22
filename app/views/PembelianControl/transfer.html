@@ -2,24 +2,25 @@
 #{set title:'Transfer' /}
 #{form @PembelianControl.saveTransfer(), method:'POST', id:'transferForm'}
 <div class="yui3-g" id="entri">
-<fieldset><legend>Entri Transfer #{if transfer.idTransfer!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idTransfer" type="hidden" value="${transfer.idTransfer}"/>
+<fieldset><legend>Entri Transfer #{if transferStok.idTransfer!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idTransfer" type="hidden" value="${transferStok.idTransfer}"/>
 <div class="yui3-u-1-6"><div class="entriClass label">Tanggal Transfer</div></div>
-<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglTransfer', name:'tglTransfer', value:transfer.tglTransfer.format('dd-MM-yyyy')/}<span class="error">#{error 'tglTransfer' /}</span></div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglTransfer', name:'tglTransfer', value:transferStok.tglTransfer.format('dd-MM-yyyy')/}<span class="error">#{error 'tglTransfer' /}</span></div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Keterangan</div></div>
-<div class="yui3-u-1-2"><div class="entriClass"><input id="descTransfer" name="descTransfer" value="${descTransfer}"/></span></div></div>
-<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.transfer()}'"/>&nbsp;#{if !transfer.detilTransferStokIdTransfer.isEmpty()}<input value="Tutup" id="tutup" type="submit" />#{/if}</div></div>
+<div class="yui3-u-1-2"><div class="entriClass"><input id="descTransfer" name="descTransfer" value="${transferStok.descTransfer}"/></span></div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.transfer()}'"/>&nbsp;#{if !transferStok.detilTransferStokIdTransfer.isEmpty()}<input value="Tutup" id="tutup" name="simpan" type="submit" />#{/if}</div></div>
 </fieldset>
 </div>
 #{customgrid class:'yui3-g',id:'detilTransfer'}
 <div class="yui3-u-1-3"><div class="isi header">Obat</div></div><div class="yui3-u-1-3"><div class="isi header">Pilih Stok</div></div><div class="yui3-u-1-6"><div class="isi header">Tujuan</div></div><div class="yui3-u-1-6"><div class="isi header">Kirim</div></div>
 <div id="baris">
-#{list items:transfer.detilTransferStokIdTransfer, as:'detilTransfer'}
-%{ x=detilPembelian_index-1 }%
-<div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat_'+x,name:'kode_obat['+x+']',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-3"><div class="isi"><input size="40" name="pilihStok[${x}]" id="pilihStok_${x}" /></div></div><div class="yui3-u-1-6"><div class="isi">
-#{select 'tujuan['+x+']', value:1, id:'tujuan_'+x+''}
+#{list items:transferStok.detilTransferStokIdTransfer, as:'detilTransferStok'}
+%{ x=detilTransferStok_index-1 }%
+<div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat_'+x,name:'kode_obat['+x+']',url:@PembelianControl.autocompleteKodeObat(),size:'50',value:detilTransferStok.idStok.idObatAlat.idObatAlat,label:detilTransferStok.idStok.idObatAlat.labelObat /}</div>
+</div><div class="yui3-u-1-3"><div class="isi"><input size="40" name="pilihStok[${x}]" id="pilihStok_${x}" value="${detilTransferStok.idStok.labelStok}"/><input type="hidden" size="40" name="key_pilihStok[${x}]" id="key_pilihStok_${x}" value="${detilTransferStok.idStok.idStok}"/></div></div><div class="yui3-u-1-6"><div class="isi">
+#{select 'tujuan['+x+']', value:detilTransferStok.tujuan, id:'tujuan_'+x+''}
 	#{option 1}Apotek#{/option}
 	#{option 2}Gudang#{/option}
-#{/select}</div></div><div class="yui3-u-1-6"><div class="isi"><input name="kirim[${x}]" id="kirim_${x}" type="text"/></div></div>
+#{/select}</div></div><div class="yui3-u-1-6"><div class="isi"><input name="kirim[${x}]" id="kirim_${x}" type="text" value="${detilTransferStok.jmlKirim}"/></div></div>
 #{/list}
 #{else}
 <div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-3"><div class="isi"><input size="40" name="pilihStok[0]" id="pilihStok_0" /></div></div><div class="yui3-u-1-6"><div class="isi">
@@ -35,11 +36,12 @@ $(function() {
 	var listAction = #{jsAction @showStok(':idObatAlat') /}
 	$('[id^="pilihStok"]').live('focus',function() {
 		var indeks=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_"));
+		var indek=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_")+1);
 		var key_obat=$('#key_kode_obat'+indeks).val();
 		$.getJSON(listAction({idObatAlat:key_obat}),function(data) {
 			var $hidden = $("#key_pilihStok"+indeks);
 			if($hidden.length==0) {
-				$hidden = $('<input type="hidden"/>').attr('name', "key_pilihStok["+indeks+"]").attr('id', "key_pilihStok"+indeks);
+				$hidden = $('<input type="hidden"/>').attr('name', "key_pilihStok["+indek+"]").attr('id', "key_pilihStok"+indeks);
 			}
 			var $input = $("#pilihStok"+indeks);
 			$input.after($hidden);
@@ -60,6 +62,9 @@ $(function() {
 			$input.autocomplete("search", " ");
 		});		
 	});
+	#{if transferStok.stsTransaksi!=null}
+		$(':input').attr('disabled', 'disabled');
+	#{/if}
 	});
 </script>
 #{/form}
