@@ -8,11 +8,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import play.db.jpa.GenericModel;
 
@@ -25,9 +28,11 @@ import play.db.jpa.GenericModel;
  */
 @Entity (name="StokOpname")
 @Table (name="stok_opname")
-public class StokOpname extends GenericModel {
+public class StokOpname extends GenericModel implements IGeneratedModel {
 
     @Id @Column(name="id_stok_opname" ,length=32)
+    @GeneratedValue(generator = "MyIdGenerator")
+	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")
     private String idStokOpname;
 
     @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
@@ -122,4 +127,9 @@ public class StokOpname extends GenericModel {
     public String toString(){
        return tglAktivitas+"";
     }
+    
+    @Override
+	public String getGeneratedValue() {
+		return idStokOpname;
+	}
 }

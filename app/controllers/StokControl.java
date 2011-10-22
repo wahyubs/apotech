@@ -44,8 +44,8 @@ public class StokControl extends Controller {
 	
 	public static void saveOpname(String idStokOpname,
 			@Required @As("dd-MM-yyyy") Date tglStokOpname,
-			@Required String descStokOpname, List<String> key_kode_obat,
-			@As("dd-MM-yyyy") List<Date> tglKadaluarsa,
+			String descStokOpname, String simpan,
+			List<String> key_kode_obat, @As("dd-MM-yyyy") List<Date> tglKadaluarsa,
 			List<Integer> stokApotekSekarang, List<Integer> stokGudangSekarang) {
 		StokOpname stokOpname = new StokOpname();
 		stokOpname.setTglStokOpname(tglStokOpname);
@@ -115,13 +115,44 @@ public class StokControl extends Controller {
 				detilOpname.setJmlGudangSekarang(jmlGudangSekarang);
 				detilOpname.setJmlSekarang(jmlSekarang);
 				detilOpname.validateAndSave();
-				stokOpname.addDetilOpnameIdStokOpname(detilOpname);
-
+				stokOpname.addDetilOpnameIdStokOpname(detilOpname);				
 			}
 		}
 		
 		String hasil = "Stok Opname Berhasil Disimpan!";
-		//stokOpname.setDescStokOpname(stokOpname.getDescStokOpname() != null ? stokOpname.getDescStokOpname() : "");
+		
+		if(simpan.equals("Tutup")){
+			for (int i = 0; i < key_kode_obat.size(); i++) {
+				if (key_kode_obat.get(i) != null
+						&& !"".equals(key_kode_obat.get(i))) {
+					StokObatAlat stokObatAlat = new StokObatAlat();
+					stokObatAlat.setIdObatAlat((ObatAlat) ObatAlat
+							.findById(key_kode_obat.get(i)));
+					stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
+					List<StokObatAlat> fetch = StokObatAlat
+							.find("id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
+									stokObatAlat.getIdObatAlat().getIdObatAlat(),
+									stokObatAlat.getTglKadaluarsa()).fetch();
+					StokObatAlat tmp = fetch.get(0);
+					stokObatAlat.setIdStok(tmp.getIdStok());
+					Integer jmlStokApotek = stokApotekSekarang.get(i) == null ? 0
+							: stokApotekSekarang.get(i);
+					Integer jmlStokGudang = stokGudangSekarang.get(i) == null ? 0
+							: stokGudangSekarang.get(i);
+					stokObatAlat.setJmlStokApotek(jmlStokApotek);
+					stokObatAlat.setJmlStokGudang(jmlStokGudang);
+					stokObatAlat = stokObatAlat.merge();
+					stokObatAlat.validateAndSave();
+				}
+			}
+			stokOpname.setIdStokOpname(idStokOpname);
+			stokOpname.setStsTransaksi("1");
+			stokOpname = stokOpname.merge();
+			stokOpname.validateAndSave();
+			
+			hasil = "Stok Opname Berhasil Ditutup!";
+		}
+		
 		renderTemplate("StokControl/transaksi.html", stokOpname, hasil);
 		
 	}

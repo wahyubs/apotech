@@ -185,7 +185,7 @@ public class PembelianControl extends Controller {
 
 	public static void saveReturBeli(String simpan,String idReturBeli,
 			@Required @As("dd-MM-yyyy") Date tglReturBeli,
-			@Required String key_idSupplier, @Required String key_noFakturBeli,
+			@Required String key_idSupplier, String key_noFakturBeli,
 			String descReturBeli, List<String> key_pilihStok,
 			List<Integer> returApotek, List<Integer> returGudang) {
 		ReturPembelian returPembelian = new ReturPembelian();

@@ -17,11 +17,11 @@ function hitungGen(indeks) {
 <div class="yui3-u-1-5"><div class="entriClass label">Tanggal Retur Pembelian</div></div>
 <div class="yui3-u-4-5"><div class="entriClass">#{dateTime id:'tglReturBeli', name:'tglReturBeli', value:returPembelian.tglReturBeli.format('dd-MM-yyyy')/}<span class="error">#{error 'tglReturBeli' /}</span></div></div>
 <div class="yui3-u-1-5"><div class="entriClass label">Supplier</div></div>
-<div class="yui3-u-4-5"><div class="entriClass">#{autocomplete id:'idSupplier',name:'idSupplier',url:@PembelianControl.autocompleteSupplier(),size:'50',value:returPembelian.idSupplier?.idSupplier,label:returPembelian.idSupplier?.namaSupplier /}<span class="error">#{error 'idSupplier' /}</span></div></div>
+<div class="yui3-u-4-5"><div class="entriClass">#{autocomplete id:'idSupplier',name:'idSupplier',url:@PembelianControl.autocompleteSupplier(),size:'50',value:returPembelian.idSupplier?.idSupplier,label:returPembelian.idSupplier?.namaSupplier /}<span class="error">#{error 'key_idSupplier' /}</span></div></div>
 <div class="yui3-u-1-5"><div class="entriClass label">No Faktur Pembelian</div></div>
-<div class="yui3-u-4-5"><div class="entriClass">#{autocomplete id:'noFakturBeli',name:'noFakturBeli',url:@PembelianControl.autocompleteFaktur(),size:'50',value:returPembelian.noFakturBeli,label:returPembelian.noFakturBeli /}<span class="error">#{error 'noFakturBeli' /}</span></div></div>
+<div class="yui3-u-4-5"><div class="entriClass">#{autocomplete id:'noFakturBeli',name:'noFakturBeli',url:@PembelianControl.autocompleteFaktur(),size:'50',value:returPembelian.noFakturBeli,label:returPembelian.noFakturBeli /}</div></div>
 <div class="yui3-u-1-5"><div class="entriClass label">Deskripsi Retur Pembelian</div></div>
-<div class="yui3-u-4-5"><div class="entriClass"><textarea id="descReturBeli" name="descReturBeli" rows="4" maxlength="500">${returPembelian.descReturBeli}</textarea><span class="error">#{error 'descReturBeli' /}</span></div></div>
+<div class="yui3-u-4-5"><div class="entriClass"><textarea id="descReturBeli" name="descReturBeli" rows="4" maxlength="500">${returPembelian.descReturBeli}</textarea></div></div>
 <div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.transaksi_retur()}'"/>&nbsp;#{if !returPembelian.detilReturPembelianIdReturBeli.isEmpty()}<input value="Tutup" id="tutup" type="submit" />#{/if}</div></div>
 </fieldset>
 </div>
