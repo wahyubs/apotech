@@ -54,7 +54,10 @@ public class Pembelian extends GenericModel implements IGeneratedModel{
 	
 	@ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private UserPegawai userId; 
+    private UserPegawai userId;
+	
+	@Column(name="sts_transaksi",  length=1,  nullable=true,  unique=false)
+    private String stsTransaksi; 
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_supplier", nullable = true, unique = false)
@@ -116,6 +119,14 @@ public class Pembelian extends GenericModel implements IGeneratedModel{
 	
     public void setUserId (UserPegawai userId) {
     	this.userId = userId;
+    }
+    
+    public String getStsTransaksi() {
+        return stsTransaksi;
+    }
+	
+    public void setStsTransaksi (String stsTransaksi) {
+        this.stsTransaksi =  stsTransaksi;
     }
 
 	public Supplier getIdSupplier() {

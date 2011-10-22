@@ -32,7 +32,7 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "Supplier")
 @Table(name = "supplier")
-public class Supplier extends GenericModel implements IGeneratedModel{
+public class Supplier extends GenericModel implements IGeneratedModel {
 
 	@Id
 	@Column(name = "id_supplier", length = 32)
@@ -48,13 +48,13 @@ public class Supplier extends GenericModel implements IGeneratedModel{
 
 	@Column(name = "kota_supplier", length = 50, nullable = true, unique = false)
 	private String kotaSupplier;
-	
-	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
-    private Date tglAktivitas; 
-	
-	@ManyToOne (fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private UserPegawai userId; 
+
+	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
+	private Date tglAktivitas;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = true, unique = false)
+	private UserPegawai userId;
 
 	@OneToMany(targetEntity = Pembelian.class, fetch = FetchType.LAZY, mappedBy = "idSupplier", cascade = CascadeType.REMOVE)
 	private Set<Pembelian> pembelianIdSupplier = new HashSet<Pembelian>();
@@ -96,22 +96,22 @@ public class Supplier extends GenericModel implements IGeneratedModel{
 	public void setKotaSupplier(String kotaSupplier) {
 		this.kotaSupplier = kotaSupplier;
 	}
-	
+
 	public Date getTglAktivitas() {
-        return tglAktivitas;
-    }
-	
-    public void setTglAktivitas (Date tglAktivitas) {
-        this.tglAktivitas =  tglAktivitas;
-    }
-	
-	public UserPegawai getUserId () {
-    	return userId;
-    }
-	
-    public void setUserId (UserPegawai userId) {
-    	this.userId = userId;
-    }
+		return tglAktivitas;
+	}
+
+	public void setTglAktivitas(Date tglAktivitas) {
+		this.tglAktivitas = tglAktivitas;
+	}
+
+	public UserPegawai getUserId() {
+		return userId;
+	}
+
+	public void setUserId(UserPegawai userId) {
+		this.userId = userId;
+	}
 
 	public Set<Pembelian> getPembelianIdSupplier() {
 		if (pembelianIdSupplier == null) {
@@ -135,5 +135,9 @@ public class Supplier extends GenericModel implements IGeneratedModel{
 	@Override
 	public String getGeneratedValue() {
 		return idSupplier;
+	}
+
+	public String getLabelSupplier() {
+		return getNamaSupplier() + " (" + getKotaSupplier() + ")";
 	}
 }

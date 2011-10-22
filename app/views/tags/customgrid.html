@@ -3,8 +3,8 @@
 </div>
 <script>
 $(function() {
-	$('#${_id} :input').live('keypress', function(event) {
-		if(event.which=9) {
+	$('#${_id} :input').live('keydown', function(event) {
+		if(event.which==9) {
 			var pos = $(this).getTabIndex();
 			var maxPos = $(this).getMaxTabIndex();
 			i = pos + 1; // get the next item
