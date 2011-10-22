@@ -10,6 +10,11 @@ function hitung(val1,val2,totalSelector) {
 function hitungGen(indeks) {
 	hitung($('#stokApotekSekarang'+indeks).val(),$('#stokGudangSekarang'+indeks).val(),$('#totalStokSekarang'+indeks));
 }
+$(function() {
+#{if stokOpname.stsTransaksi!=null}
+$(':input').attr('disabled', 'disabled');
+#{/if}
+});
 </script>
 
 #{form @StokControl.saveOpname(), method:'POST', id:'opnameForm'}
