@@ -141,10 +141,9 @@ public class PembelianControl extends Controller {
 				detilPembelian.setJmlPenerimaanApotek(jmlTerimaApotek);
 				detilPembelian.setJmlPenerimaanGudang(jmlTerimaGudang);
 				detilPembelian.validateAndSave();
-
+				pembelian.addDetilPembelianIdPembelian(detilPembelian);
 			}
 		}
-		pembelian = Pembelian.findById(pembelian.getIdPembelian());
 		String hasil = "Pembelian Berhasil Disimpan!";
 		pembelian
 				.getIdSupplier()
@@ -161,11 +160,13 @@ public class PembelianControl extends Controller {
 	public static void cariPembelian() {
 		render();
 	}
-	
+
 	public static void showVolume(String idObatAlat) {
-		renderText("");
+		ObatAlat obatAlatTmp = ObatAlat.findById(idObatAlat);
+		String data = obatAlatTmp.getVolumeObatAlat();
+		renderJSON(data, String.class);
 	}
-	
+
 	public static void saveTransfer() {
 		System.out.println("tesz");
 	}

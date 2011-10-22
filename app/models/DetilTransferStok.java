@@ -32,13 +32,13 @@ public class DetilTransferStok extends GenericModel {
     @Column(name="jml_kirim_gudang",    nullable=true,  unique=false)
     private java.lang.Integer jmlKirimGudang; 
     
-    @MapsId ("$localColumnName")
+    @MapsId ("$id_stok")
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_stok", nullable=false,  unique=false , insertable=false, updatable=false )
     @Required
     private StokObatAlat idStok; 
     
-    @MapsId ("id_stok")
+    @MapsId ("id_transfer")
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_transfer", nullable=false,  unique=false , insertable=false, updatable=false )
     @Required

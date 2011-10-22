@@ -16,14 +16,14 @@ $(function() {
 				var jml = $('[id^="'+strip_id+'"]').length;
 				if(jml>0) { 
 					$(this).attr('id',strip_id+'_'+jml);
-					$(this).attr('name',myId+'['+jml+']');
+					$(this).attr('name',strip_id+'['+jml+']');
 				} else {
 					var myId = $(this).attr('name').replace('[0]','');
 					jml = $('[name^="'+myId+'"]').length;
 					$(this).attr('name',myId+'['+jml+']');
 				}
 				});
-				$('#detilPembelian').append(kopian);
+				$('#${_id}').append(kopian);
 				var tabindex = 1;
 				$(':input').each(function() {
 					if (this.type != "hidden") {
@@ -60,6 +60,7 @@ $(function() {
 			         // Save the selection item and value in the two inputs.
 			         $input.val(ui.item.label);
 			         $hidden.val(ui.item.value);
+			         $input.trigger('ubah');
 			         return false;
 			      }
 			   });

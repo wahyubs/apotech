@@ -174,7 +174,7 @@ $('input.autocomplete-relation').each(function() {
 	   $(':input[name="key_'+controlName+'"]').remove();
 	   var $hidden = $('<input type="hidden"/>').attr('name', "key_"+controlName).attr('id', "key_"+controlId);
 	   if(real_value.length>0) {
-		   $hidden.attr('value', real_value);
+		   $hidden.val(real_value);
 	   }
 	   $input.after($hidden);//.attr('name', controlName + '_label');
 	   // Set-up the autocomplete widget.
@@ -190,6 +190,7 @@ $('input.autocomplete-relation').each(function() {
 	         // Save the selection item and value in the two inputs.
 	         $input.val(ui.item.label);
 	         $hidden.val(ui.item.value);
+	         $input.trigger('ubah');
 	         return false;
 	      }
 	   });

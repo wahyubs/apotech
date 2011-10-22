@@ -21,18 +21,28 @@ import javax.persistence.*;
 public class DetilTransferStokId implements Serializable {
 
     @Column(name="id_transfer" ,length=32 ,nullable=false)
-    private String idTransfer;
-
-    public String getIdTransfer() {
-        return idTransfer;
-    }
-	
-    public void setIdTransfer (String idTransfer) {
-        this.idTransfer =  idTransfer;
-    }
+    private String id_transfer;
     
+    @Column(name="id_stok" ,length=32 ,nullable=false)
+    private String id_stok;
 
-    @Override
+    public String getId_transfer() {
+		return id_transfer;
+	}
+
+	public void setId_transfer(String id_transfer) {
+		this.id_transfer = id_transfer;
+	}
+
+	public String getId_stok() {
+		return id_stok;
+	}
+
+	public void setId_stok(String id_stok) {
+		this.id_stok = id_stok;
+	}
+
+	@Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
         return obj.toString().equals(this.toString());
@@ -46,7 +56,7 @@ public class DetilTransferStokId implements Serializable {
     @Override
     public String toString() {
         return "DetilTransferStokId:" 
-        + ":" + idTransfer
+        + ":" + id_transfer+ ":" + id_stok
         ;
     }
     
