@@ -1,11 +1,39 @@
 #{extends 'menu.html' /}
 #{set title:'Stok Opname' /}
+#{ifErrors}
+   <span class="error">Oops…</span>
+#{/ifErrors}
+<script>
+function hitung(val1,val2,totalSelector) {
+	totalSelector.val(parseInt(val1)+parseInt(val2));
+}
+function hitungGen(indeks) {
+	hitung($('#stokApotekSekarang'+indeks).val(),$('#stokGudangSekarang'+indeks).val(),$('#totalStokSekarang'+indeks));
+}
+</script>
+
 #{form @StokControl.saveOpname(), method:'POST', id:'opnameForm'}
 <div class="yui3-g" id="entri">
 <fieldset><legend>Entri Stok Opname #{if stokOpname.idStokOpname!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idStokOpname" type="hidden" value="${stokOpname.idStokOpname}"/>
 <div class="yui3-u-1-6"><div class="entriClass label">Tanggal Stok Opname</div></div>
 <div class="yui3-u-5-6"><div class="entriClass">#{dateTime id:'tglStokOpname', name:'tglStokOpname', value:stokOpname.tglStokOpname.format('dd-MM-yyyy')/}<span class="error">#{error 'tglStokOpname' /}</span></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Deskripsi Stok Opname</div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><textarea id="descStokOpname" name="descStokOpname" rows="4" maxlength="500">${stokOpname.descStokOpname}</textarea><span class="error">#{error 'descStokOpname' /}</span></div></div>
 <div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{StokControl.transaksi()}'"/>&nbsp;</div></div>
 </fieldset>
 </div>
+#{customgrid class:'yui3-g',id:'detilOpname'}
+<div class="yui3-u-1-2"><div class="isi header">Obat</div></div><div class="yui3-u-1-4"><div class="isi header">Qty Sebelumnya</div></div><div class="yui3-u-1-4"><div class="isi header">Qty Sekarang</div></div>
+<div class="yui3-u-3-8"><div class="isi header">Kode-Nama</div></div><div class="yui3-u-1-8"><div class="isi header">Kadaluarsa</div></div><div class="yui3-u-1-12"><div class="isi header">Apotek</div></div><div class="yui3-u-1-12"><div class="isi header">Gudang</div></div><div class="yui3-u-1-12"><div class="isi header">Total</div></div><div class="yui3-u-1-12"><div class="isi header">Apotek</div></div><div class="yui3-u-1-12"><div class="isi header">Gudang</div></div><div class="yui3-u-1-12"><div class="isi header">Total</div></div>
+<div id="baris">
+#{list items:stokOpname.detilOpnameIdStokOpname, as:'detilOpname'}
+%{ x=detilOpname_index-1 }%
+<div class="yui3-u-3-8"><div class="isi">#{autocomplete id:'kode_obat_'+x+'',name:'kode_obat['+x+']',url:@StokControl.autocompleteKodeObat(),size:'50',value:detilOpname.idStok.idObatAlat.idObatAlat,label:detilOpname.idStok.idObatAlat.kodeObatAlat+" - "+detilOpname.idStok.idObatAlat.namaObatAlat /}</div></div><div class="yui3-u-1-8"><div class="isi">#{dateTime id:'tglKadaluarsa_'+x+'',name:'tglKadaluarsa['+x+']',value:detilOpname.tglKadaluarsa.format('dd-MM-yyyy')/}</div></div><div class="yui3-u-1-12"><div class="isi">-</div></div><div class="yui3-u-1-12"><div class="isi">-</div></div><div class="yui3-u-1-12"><div class="isi">-</div></div><div class="yui3-u-1-12"><div class="isi"><input name="stokApotekSekarang[${x}]" id="stokApotekSekarang_${x}" size="6" value="${detilOpname.jmlApotekSekarang}" onchange="hitung($('#stokApotekSekarang_${x}').val(),$('#stokGudangSekarang_${x}').val(),$('#totalStokSekarang_${x}'));"/></div></div><div class="yui3-u-1-12"><div class="isi"><input  name="stokGudangSekarang[${x}]" id="stokGudangSekarang_${x}" size="6" value="${detilOpname.jmlGudangSekarang}" onchange="hitung($('#stokApotekSekarang_${x}').val(),$('#stokGudangSekarang_${x}').val(),$('#totalStokSekarang_${x}'));"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="totalStokSekarang[${x}]" id="totalStokSekarang_${x}" size="6" disabled="disabled" value="${detilOpname.jmlApotekSekarang+detilOpname.jmlGudangSekarang}"/></div></div>
+#{/list}
+#{else}
+<div class="yui3-u-3-8"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@StokControl.autocompleteKodeObat(),size:'50'/}</div></div><div class="yui3-u-1-8"><div class="isi">#{dateTime id:'tglKadaluarsa_0',name:'tglKadaluarsa[0]'/}</div></div><div class="yui3-u-1-12"><div class="isi">-</div></div><div class="yui3-u-1-12"><div class="isi">-</div></div><div class="yui3-u-1-12"><div class="isi">-</div></div><div class="yui3-u-1-12"><div class="isi"><input name="stokApotekSekarang[0]" id="stokApotekSekarang_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="stokGudangSekarang[0]" id="stokGudangSekarang_0" size="6" value="0" onchange="hitungGen($(this).attr('id').substring($(this).attr('id').lastIndexOf('_')));"/></div></div><div class="yui3-u-1-12"><div class="isi"><input name="totalStokSekarang[0]" id="totalStokSekarang_0" size="6" disabled="disabled" value="0"/></div></div>
+#{/else}
+</div>
+#{/customgrid}
 #{/form}
+#{if hasil!=null}<script>alert("${hasil}");</script>#{/if}
