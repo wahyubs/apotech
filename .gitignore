@@ -9,3 +9,4 @@ eclipse/**/*
 /crud
 /.classpath
 /.project
+/.settings

@@ -11,6 +11,8 @@ import models.Pembelian;
 import models.StokObatAlat;
 import models.Supplier;
 import models.TransferStok;
+import models.ReturPembelian;
+import models.DetilReturPembelian;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.mvc.Controller;
@@ -28,6 +30,14 @@ public class PembelianControl extends Controller {
 		render(pembelian, hasil);
 	}
 
+	public static void transaksi_retur(ReturPembelian returPembelian, String hasil) {
+		if (returPembelian == null)
+			returPembelian = new ReturPembelian();
+		if (returPembelian.getTglReturBeli() == null)
+			returPembelian.setTglReturBeli(new Date());
+		render(returPembelian, hasil);
+	}
+	
 	public static void transfer(TransferStok transfer) {
 		if (transfer == null)
 			transfer = new TransferStok();
@@ -70,6 +80,17 @@ public class PembelianControl extends Controller {
 		renderJSON(response);
 	}
 
+	public static void autocompleteFaktur(final String term) {
+		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
+		List<Pembelian> findAll = Pembelian.find("no_faktur like ?",
+				"%" + term + "%").fetch();
+		for (Iterator iterator = findAll.iterator(); iterator.hasNext();) {
+			Pembelian pembelianTmp = (Pembelian) iterator.next();
+			response.add(new AutocompleteValue(pembelianTmp.getNoFaktur(),pembelianTmp.getNoFaktur()));
+		}
+		renderJSON(response);
+	}
+	
 	public static void savePembelian(String idPembelian,
 			@Required @As("dd-MM-yyyy") Date tglPembelian,
 			@Required String key_idSupplier, List<String> key_kode_obat,
@@ -157,6 +178,85 @@ public class PembelianControl extends Controller {
 		renderTemplate("PembelianControl/transaksi.html", pembelian, hasil);
 	}
 
+	public static void saveReturBeli(String idReturBeli,
+			@Required @As("dd-MM-yyyy") Date tglReturBeli,
+			@Required String key_idSupplier, @Required String key_noFakturBeli,
+			@Required String descReturBeli, List<String> key_kode_obat,
+			List<Integer> returApotek, List<Integer> returGudang) {
+		ReturPembelian returPembelian = new ReturPembelian();
+		returPembelian.setTglReturBeli(tglReturBeli);
+		if (returPembelian.getTglReturBeli() == null)
+			returPembelian.setTglReturBeli(new Date());
+		returPembelian.setIdSupplier((Supplier) Supplier.findById(key_idSupplier));
+		returPembelian.setNoFakturBeli(key_noFakturBeli);
+		returPembelian.setDescReturBeli(descReturBeli);
+		if (CommonUtil.isEmpty(idReturBeli)) {
+			returPembelian.validateAndSave();
+		} else {
+			returPembelian.setIdReturBeli(idReturBeli);
+			returPembelian = returPembelian.merge();
+			returPembelian.validateAndSave();
+			DetilReturPembelian.delete("id_retur_beli=?", idReturBeli);
+		}
+		if (validation.hasErrors()) {
+			params.flash(); // add http parameters to the flash scope
+			validation.keep(); // keep the errors for the next request
+			transaksi_retur(returPembelian, null);
+			return;
+		}
+		for (int i = 0; i < key_kode_obat.size(); i++) {
+			if (key_kode_obat.get(i) != null
+					&& !"".equals(key_kode_obat.get(i))) {
+				Integer jmlReturBeliApotek = returApotek.get(i) == null ? 0
+						: returApotek.get(i);
+				Integer jmlReturBeliGudang = returGudang.get(i) == null ? 0
+						: returGudang.get(i);
+				DetilReturPembelian detilReturPembelian = new DetilReturPembelian();
+				StokObatAlat stokObatAlat = new StokObatAlat();
+				stokObatAlat.setIdObatAlat((ObatAlat) ObatAlat
+						.findById(key_kode_obat.get(i)));
+				/*stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
+				List<StokObatAlat> fetch = StokObatAlat
+						.find("id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
+								stokObatAlat.getIdObatAlat().getIdObatAlat(),
+								stokObatAlat.getTglKadaluarsa()).fetch();
+				if (fetch.isEmpty()) {
+					stokObatAlat.setJmlStokApotek(0);
+					stokObatAlat.setJmlStokGudang(0);
+					stokObatAlat.validateAndSave();
+					if (validation.hasErrors()) {
+						params.flash(); // add http parameters to the flash
+										// scope
+						validation.keep(); // keep the errors for the next
+											// request
+						transaksi(pembelian, null);
+						return;
+					}
+				} else {
+					StokObatAlat tmp = fetch.get(0);
+					stokObatAlat.setIdStok(tmp.getIdStok());
+					Integer jmlStokApotek = tmp.getJmlStokApotek() == null ? 0
+							: tmp.getJmlStokApotek();
+					Integer jmlStokGudang = tmp.getJmlStokGudang() == null ? 0
+							: tmp.getJmlStokGudang();
+					stokObatAlat.setJmlStokApotek(jmlStokApotek);
+					stokObatAlat.setJmlStokGudang(jmlStokGudang);
+					stokObatAlat = stokObatAlat.merge();
+					stokObatAlat.validateAndSave();
+				}
+				*/
+				detilReturPembelian.setIdReturBeli(returPembelian);
+				detilReturPembelian.setIdStok(stokObatAlat);
+				detilReturPembelian.setJmlReturBeliApotek(jmlReturBeliApotek);
+				detilReturPembelian.setJmlReturBeliGudang(jmlReturBeliGudang);
+				detilReturPembelian.validateAndSave();
+				returPembelian.addDetilReturPembelianIdReturBeli(detilReturPembelian);
+			}
+		}
+		String hasil = "Retur Pembelian Berhasil Disimpan!";
+		renderTemplate("PembelianControl/transaksi_retur.html", returPembelian, hasil);
+	}
+	
 	public static void cariPembelian() {
 		render();
 	}
