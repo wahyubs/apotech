@@ -7,3 +7,5 @@ eclipse/**/*
 .settings/**/* 
 /eclipse
 /crud
+/.classpath
+/.project
