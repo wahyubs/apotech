@@ -32,6 +32,12 @@ public class DetilReturPembelian extends GenericModel {
     @Column(name="jml_retur_beli_gudang",    nullable=true,  unique=false)
     private java.lang.Integer jmlReturBeliGudang; 
     
+    @Column(name="jml_redelivery_apotek",    nullable=true,  unique=false)
+    private java.lang.Integer jmlRedeliveryApotek; 
+    
+    @Column(name="jml_redelivery_gudang",    nullable=true,  unique=false)
+    private java.lang.Integer jmlRedeliveryGudang; 
+    
     @MapsId ("id_retur_beli")
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_retur_beli", nullable=false,  unique=false , insertable=false, updatable=false )
@@ -74,6 +80,22 @@ public class DetilReturPembelian extends GenericModel {
 	
     public void setJmlReturBeliGudang (java.lang.Integer jmlReturBeliGudang) {
         this.jmlReturBeliGudang =  jmlReturBeliGudang;
+    }
+    
+    public java.lang.Integer getJmlRedeliveryApotek() {
+        return jmlRedeliveryApotek;
+    }
+	
+    public void setJmlRedeliveryiApotek (java.lang.Integer jmlRedeliveryiApotek) {
+        this.jmlRedeliveryApotek =  jmlRedeliveryApotek;
+    }
+    
+    public java.lang.Integer getJmlRedeliveryGudang() {
+        return jmlRedeliveryGudang;
+    }
+	
+    public void setJmlRedeliveryGudang (java.lang.Integer jmlRedeliveryGudang) {
+        this.jmlRedeliveryGudang =  jmlRedeliveryGudang;
     }
     
     public ReturPembelian getIdReturBeli () {
