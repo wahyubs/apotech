@@ -217,9 +217,11 @@ public class PembelianControl extends Controller {
 			@Required @As("dd-MM-yyyy") Date tglReturBeli,
 			@Required String key_idSupplier, String key_noFakturBeli,
 			String descReturBeli, List<String> key_pilihStok,
-			List<Integer> returApotek, List<Integer> returGudang) {
+			List<Integer> returApotek, List<Integer> returGudang,
+			List<Integer> redeliveryApotek, List<Integer> redeliveryGudang) {
 		ReturPembelian returPembelian = new ReturPembelian();
 		returPembelian.setTglReturBeli(tglReturBeli);
+		returPembelian.setTglAktivitas(new Date());
 		if (returPembelian.getTglReturBeli() == null)
 			returPembelian.setTglReturBeli(new Date());
 		returPembelian.setIdSupplier((Supplier) Supplier
@@ -247,18 +249,52 @@ public class PembelianControl extends Controller {
 						: returApotek.get(i);
 				Integer jmlReturBeliGudang = returGudang.get(i) == null ? 0
 						: returGudang.get(i);
+				Integer jmlRedeliveryApotek = redeliveryApotek.get(i) == null ? 0
+						: redeliveryApotek.get(i);
+				Integer jmlRedeliveryGudang = redeliveryGudang.get(i) == null ? 0
+						: redeliveryGudang.get(i);
 				DetilReturPembelian detilReturPembelian = new DetilReturPembelian();
 				detilReturPembelian.setIdReturBeli(returPembelian);
 				detilReturPembelian.setIdStok((StokObatAlat) StokObatAlat
 						.findById(key_pilihStok.get(i)));
 				detilReturPembelian.setJmlReturBeliApotek(jmlReturBeliApotek);
 				detilReturPembelian.setJmlReturBeliGudang(jmlReturBeliGudang);
+				detilReturPembelian.setJmlRedeliveryApotek(jmlRedeliveryApotek);
+				detilReturPembelian.setJmlRedeliveryGudang(jmlRedeliveryGudang);
 				detilReturPembelian.validateAndSave();
 				returPembelian
 						.addDetilReturPembelianIdReturBeli(detilReturPembelian);
 			}
 		}
 		String hasil = "Retur Pembelian Berhasil Disimpan!";
+		if(simpan.equals("Tutup")){
+			for (int i = 0; i < key_pilihStok.size(); i++) {
+				if (key_pilihStok.get(i) != null
+						&& !"".equals(key_pilihStok.get(i))) {
+					StokObatAlat stokObatAlat = StokObatAlat
+							.findById(key_pilihStok.get(i));
+					Integer jmlStokApotekSebelumnya = stokObatAlat.getJmlStokApotek();
+					Integer jmlStokGudangSebelumnya = stokObatAlat.getJmlStokGudang();
+					Integer jmlReturApotek = returApotek.get(i) == null ? 0
+							: returApotek.get(i);
+					Integer jmlReturGudang = returGudang.get(i) == null ? 0
+							: returGudang.get(i);
+					Integer jmlRedeliveryApotek = redeliveryApotek.get(i) == null ? 0
+							: redeliveryApotek.get(i);
+					Integer jmlRedeliveryGudang = redeliveryGudang.get(i) == null ? 0
+							: redeliveryGudang.get(i);
+					stokObatAlat.setJmlStokApotek(jmlStokApotekSebelumnya+jmlReturApotek-jmlRedeliveryApotek);
+					stokObatAlat.setJmlStokGudang(jmlStokGudangSebelumnya+jmlReturGudang-jmlRedeliveryGudang);
+					stokObatAlat = stokObatAlat.merge();
+					stokObatAlat.validateAndSave();
+				}
+			}
+			returPembelian.setIdReturBeli(idReturBeli);
+			returPembelian.setStsTransaksi("1");
+			returPembelian = returPembelian.merge();
+			returPembelian.validateAndSave();			
+			hasil = "Retur Pembelian Berhasil Ditutup!";
+		}
 		renderTemplate("PembelianControl/transaksi_retur.html", returPembelian,
 				hasil);
 	}

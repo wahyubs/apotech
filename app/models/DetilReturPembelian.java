@@ -86,7 +86,7 @@ public class DetilReturPembelian extends GenericModel {
         return jmlRedeliveryApotek;
     }
 	
-    public void setJmlRedeliveryiApotek (java.lang.Integer jmlRedeliveryiApotek) {
+    public void setJmlRedeliveryApotek (java.lang.Integer jmlRedeliveryApotek) {
         this.jmlRedeliveryApotek =  jmlRedeliveryApotek;
     }
     
