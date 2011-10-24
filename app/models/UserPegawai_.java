@@ -9,9 +9,10 @@ public class UserPegawai_ {
 
     public static volatile SingularAttribute<UserPegawai, String> userId;
 
-    public static volatile SingularAttribute<UserPegawai, String> password;
+    public static volatile SingularAttribute<UserPegawai, String> passwordUser;
     public static volatile SingularAttribute<UserPegawai, String> namaUser;
     public static volatile SingularAttribute<UserPegawai, String> noPeg;
+    public static volatile SingularAttribute<UserPegawai, String> jnsUser;
 
 
     public static volatile SetAttribute<UserPegawai, HargaObat> hargaObatUserId;

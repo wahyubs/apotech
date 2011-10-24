@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="yui3-loading">
+    <head>
+        <title>#{get 'title' /}</title>
+        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
+        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/secure.css'}" />
+        <link rel="stylesheet" href="@{'/public/stylesheets/reset-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/grids-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/fonts-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/base-min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/node-menunav.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/jquery-ui-1.8.16.custom.css'}">
+       #{get 'moreStyles' /}
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+        <script src="@{'/public/javascripts/jquery-1.6.2.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/jquery-ui-1.8.16.custom.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/jquery.maskedinput-1.3.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/application.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/shortcut.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/oop-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-custom-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-core-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/selector-native-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/selector-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-core-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-delegate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-event-delegate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/pluginhost-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/pluginhost-config-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-pluginhost-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-style-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/dom-screen-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-screen-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-style-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/classnamemanager-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-custom-complex-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/attribute-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/attribute-complex-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/base-base-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/plugin-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-simulate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-event-simulate-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-synthetic-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-key-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/event-focus-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-focusmanager-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/node-menunav-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        <script src="@{'/public/javascripts/yui/intl-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+        #{get 'moreScripts' /}
+    </head>
+    <body class="yui3-skin-sam">
+    <div class="yui3-g" id="hd">
+    <div class="yui3-u-1-5"></div>
+    <div class="yui3-u-3-5">
+    APOTEK
+    </div>
+    <div class="yui3-u-1-5"></div>
+    </div>
+    <div class="yui3-g" id="bd">
+    <div class="yui3-u-1-8"></div>
+    <div class="yui3-u-3-4" id="main">
+        #{doLayout /} 
+    </div>
+    <div class="yui3-u-1-8"></div>
+    </div>
+<script>
+$(function() {
+$('input.autocomplete-relation').each(function() {
+	   var $input = $(this);
+	   
+	   // Create a hidden input with the same form control name to submit the value.
+	   var controlId = $input.attr('id');
+	   var controlName = $input.attr('name');
+	   var real_value = $input.attr('real_value');
+	   $(':input[name="key_'+controlName+'"]').remove();
+	   var $hidden = $('<input type="hidden"/>').attr('name', "key_"+controlName).attr('id', "key_"+controlId);
+	   if(real_value.length>0) {
+		   $hidden.val(real_value);
+	   }
+	   $input.after($hidden);//.attr('name', controlName + '_label');
+	   // Set-up the autocomplete widget.
+	   var serverUrl = $input.data('url');
+	   $(this).autocomplete({
+	      source: serverUrl,
+	      focus: function(event, ui) {
+	         // Set the text input value to the focused item's label, instead of the value.
+	         $input.val(ui.item.label);
+	         return false;
+	      },
+	      select: function(event, ui) {
+	         // Save the selection item and value in the two inputs.
+	         $input.val(ui.item.label);
+	         $hidden.val(ui.item.value);
+	         $input.trigger('ubah');
+	         return false;
+	      }
+	   });
+	});
+$(':input').moveNext();
+var tabindex = 1;
+$(':input').each(function() {
+	if (this.type != "hidden") {
+    	var $input = $(this);
+        $input.attr("tabIndex", tabindex);
+        tabindex++;
+	}
+});
+$('form').submit(function() {
+   $(this).find('input.autocomplete-relation').attr('disabled', 'disabled');
+});
+});</script>
+    </body>
+</html>

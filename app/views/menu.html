@@ -118,14 +118,13 @@
                                 <ul>
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{CRUD.index()}suppliers" key="Ctrl+l">Supplier</a></li>
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{CRUD.index()}obatalats" key="Ctrl+a">Obat/Alkes</a></li>
-                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+e">Jenis Obat/Alkes</a></li>
-                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+d">User</a></li>
+                                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{CRUD.index()}userpegawais" key="Ctrl+e">User</a></li>
                                     <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="#" key="Ctrl+f">Konfigurasi</a></li>
                                 </ul>
                             </div>
                         </div>
                     </li>
-                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{Application.index(true)}" key="ctrl+`">Logout</a></li>
+                    <li class="yui3-menuitem"><a class="yui3-menuitem-content" href="@{Secure.logout()}" key="ctrl+`">Logout</a></li>
                 </ul>
             </div>
         </div>

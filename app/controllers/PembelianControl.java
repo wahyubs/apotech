@@ -2,30 +2,27 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import models.DetilPembelian;
+import models.DetilReturPembelian;
 import models.DetilTransferStok;
 import models.DetilTransferStokId;
 import models.ObatAlat;
 import models.Pembelian;
+import models.ReturPembelian;
 import models.StokObatAlat;
 import models.Supplier;
 import models.TransferStok;
-import models.ReturPembelian;
-import models.DetilReturPembelian;
 import play.data.binding.As;
 import play.data.validation.Required;
-import play.db.jpa.JPABase;
 import play.mvc.Controller;
+import play.mvc.With;
 import tool.AutocompleteValue;
 import tool.CommonUtil;
 
+@With(Secure.class)
 public class PembelianControl extends Controller {
 	public static int AUTOCOMPLETE_MAX = 20;
 
@@ -286,6 +283,8 @@ public class PembelianControl extends Controller {
 			transferStok.validateAndSave();
 		} else {
 			transferStok.setIdTransfer(idTransfer);
+			if ("Tutup".equals(simpan))
+				transferStok.setStsTransaksi("1");
 			transferStok = transferStok.merge();
 			transferStok.validateAndSave();
 			DetilTransferStok.delete("id_transfer=?", idTransfer);
@@ -344,8 +343,6 @@ public class PembelianControl extends Controller {
 					stokObatAlat.validateAndSave();
 				}
 			}
-			transferStok.setStsTransaksi("A");
-			transferStok.validateAndSave();
 			hasil = "Transfer Berhasil Ditutup!";
 		}
 		renderTemplate("PembelianControl/transfer.html", transferStok, hasil);

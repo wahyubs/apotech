@@ -44,7 +44,7 @@ $(function() {
 				$hidden = $('<input type="hidden"/>').attr('name', "key_pilihStok["+indek+"]").attr('id', "key_pilihStok"+indeks);
 			}
 			var $input = $("#pilihStok"+indeks);
-			$input.after($hidden);
+			$input.after($hidden);			
 			$input.autocomplete({
 			    source: data,
 			    focus: function(event, ui) {

@@ -1,5 +1,6 @@
 package models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -161,8 +162,11 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 	}
 
 	public String getLabelStok() {
-		return "exp:" + getTglKadaluarsa() + ",jmlA:" + getJmlStokApotek()
-				+ ",jmlG:" + getJmlStokGudang();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		String format = getTglKadaluarsa() == null ? "-" : dateFormat
+				.format(getTglKadaluarsa());
+		return "exp:" + format + " ,jmlA:" + getJmlStokApotek() + " ,jmlG:"
+				+ getJmlStokGudang();
 	}
 
 	@Override
