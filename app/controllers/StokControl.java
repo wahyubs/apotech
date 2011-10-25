@@ -14,9 +14,11 @@ import models.StokOpname;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.mvc.Controller;
+import play.mvc.With;
 import tool.AutocompleteValue;
 import tool.CommonUtil;
 
+@With(Secure.class)
 public class StokControl extends Controller {
 	public static int AUTOCOMPLETE_MAX = 20;
 	

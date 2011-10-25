@@ -12,6 +12,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import play.db.jpa.GenericModel;
+import play.db.jpa.JPABase;
+import play.libs.Crypto;
+import tool.CommonUtil;
 
 /**
  * 
@@ -40,7 +43,7 @@ public class UserPegawai extends GenericModel {
 
 	@Column(name = "no_peg", length = 50, nullable = true, unique = false)
 	private String noPeg;
-	
+
 	@Column(name = "jns_user", length = 1, nullable = true, unique = false)
 	private String jnsUser;
 
@@ -206,5 +209,15 @@ public class UserPegawai extends GenericModel {
 
 	public String toString() {
 		return userId + ":" + namaUser;
+	}
+
+	@Override
+	public void _save() {
+		if (CommonUtil.isEmpty(passwordUser) && userId != null) {
+			UserPegawai userPegawai = UserPegawai.findById(userId);
+			passwordUser = userPegawai.getPasswordUser();
+		}
+		passwordUser = Crypto.passwordHash(passwordUser);
+		super._save();
 	}
 }
