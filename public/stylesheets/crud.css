@@ -171,6 +171,10 @@ label {
 	position: relative;
 }
 
+.crudField label {
+	background-color: #C6CCCC;
+}
+
 .crud_hidden {
     display: none;
 }
@@ -336,4 +340,9 @@ form .removeAttachment {
 
 .crudDelete input:hover {
 	opacity: .7;
+}
+
+.crud_unknown {
+	display: none;
+}
 }

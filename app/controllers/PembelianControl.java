@@ -100,7 +100,7 @@ public class PembelianControl extends Controller {
 			@Required String key_idSupplier, List<String> key_kode_obat,
 			@As("dd-MM-yyyy") List<Date> tglKadaluarsa,
 			List<Integer> stokApotek, List<Integer> stokGudang,
-			List<String> harga) {
+			List<Integer> harga, List<Integer> ppn, List<Integer> diskon) {
 		Pembelian pembelian = new Pembelian();
 		pembelian.setTglPembelian(tglPembelian);
 		if (pembelian.getTglPembelian() == null)
@@ -167,6 +167,13 @@ public class PembelianControl extends Controller {
 				detilPembelian.setTglKadaluarsa(tglKadaluarsa.get(i));
 				detilPembelian.setJmlPenerimaanApotek(jmlTerimaApotek);
 				detilPembelian.setJmlPenerimaanGudang(jmlTerimaGudang);
+				Integer diskonTmp = diskon.get(i) == null ? 0 : diskon.get(i);
+				Integer hargaTmp = harga.get(i) == null ? 0 : harga.get(i);
+				Integer ppnTmp = ppn.get(i) == null ? 10 : ppn.get(i);
+				detilPembelian.setHargaPenerimaan(hargaTmp);
+				detilPembelian.setPpn(ppnTmp);
+				detilPembelian.setDiscountPercent(diskonTmp);
+				detilPembelian.setDiscountCharge(diskonTmp * hargaTmp / 100);
 				detilPembelian.validateAndSave();
 				pembelian.addDetilPembelianIdPembelian(detilPembelian);
 			}
@@ -200,6 +207,15 @@ public class PembelianControl extends Controller {
 								+ jmlTerimaApotek);
 						stokObatAlat.setJmlStokGudang(jmlStokGudang
 								+ jmlTerimaGudang);
+						Integer diskonTmp = diskon.get(i) == null ? 0 : diskon
+								.get(i);
+						Integer hargaTmp = harga.get(i) == null ? 0 : harga
+								.get(i);
+						Integer ppnTmp = ppn.get(i) == null ? 10 : ppn.get(i);
+						stokObatAlat.setHargaBeliStok(hargaTmp);
+						stokObatAlat.setPpnStok(ppnTmp);
+						stokObatAlat.setDiscPercStok(diskonTmp);
+						stokObatAlat.setDiscCharge(diskonTmp * hargaTmp / 100);
 						stokObatAlat = stokObatAlat.merge();
 						stokObatAlat.validateAndSave();
 					}

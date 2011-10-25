@@ -13,6 +13,10 @@ public class DetilPembelian_ {
     public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> jmlPenerimaanApotek;
     public static volatile SingularAttribute<DetilPembelian, Date> tglKadaluarsa;
     public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> jmlPenerimaanGudang;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> hargaPenerimaan;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> ppn;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> discountPercent;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> discountCharge;
 
     public static volatile SingularAttribute<DetilPembelian, Pembelian> idPembelian;
     public static volatile SingularAttribute<DetilPembelian, StokObatAlat> idStok;

@@ -42,6 +42,18 @@ public class DetilPembelian extends GenericModel {
 
 	@Column(name = "jml_penerimaan_gudang", nullable = true, unique = false)
 	private java.lang.Integer jmlPenerimaanGudang;
+	
+	@Column(name="harga_penerimaan",    nullable=true,  unique=false)
+    private java.lang.Integer hargaPenerimaan; 
+    
+    @Column(name="ppn",    nullable=true,  unique=false)
+    private java.lang.Integer ppn; 
+    
+    @Column(name="discount_percent",    nullable=true,  unique=false)
+    private java.lang.Integer discountPercent; 
+    
+    @Column(name="discount_charge",    nullable=true,  unique=false)
+    private java.lang.Integer discountCharge; 
 
 	@MapsId ("id_pembelian")
 	@ManyToOne (fetch=FetchType.LAZY)
@@ -91,6 +103,38 @@ public class DetilPembelian extends GenericModel {
 	public void setJmlPenerimaanGudang(java.lang.Integer jmlPenerimaanGudang) {
 		this.jmlPenerimaanGudang = jmlPenerimaanGudang;
 	}
+	
+	public java.lang.Integer getHargaPenerimaan() {
+        return hargaPenerimaan;
+    }
+	
+    public void setHargaPenerimaan (java.lang.Integer hargaPenerimaan) {
+        this.hargaPenerimaan =  hargaPenerimaan;
+    }
+    
+    public java.lang.Integer getPpn() {
+        return ppn;
+    }
+	
+    public void setPpn (java.lang.Integer ppn) {
+        this.ppn =  ppn;
+    }
+    
+    public java.lang.Integer getDiscountPercent() {
+        return discountPercent;
+    }
+	
+    public void setDiscountPercent (java.lang.Integer discountPercent) {
+        this.discountPercent =  discountPercent;
+    }
+    
+    public java.lang.Integer getDiscountCharge() {
+        return discountCharge;
+    }
+	
+    public void setDiscountCharge (java.lang.Integer discountCharge) {
+        this.discountCharge =  discountCharge;
+    }
 
 	public Pembelian getIdPembelian() {
 		return idPembelian;
