@@ -64,6 +64,10 @@ public class Resep extends GenericModel {
     private Date tglAktivitas; 
     
     @ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="id_jns_harga",  nullable=true,  unique=false  )
+    private JenisHarga idJnsHarga; 
+    
+    @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="user_id",  nullable=true,  unique=false  )
     private UserPegawai userId; 
     
@@ -175,6 +179,14 @@ public class Resep extends GenericModel {
 	
     public void setTglAktivitas (Date tglAktivitas) {
         this.tglAktivitas =  tglAktivitas;
+    }
+    
+    public JenisHarga getIdJnsHarga () {
+    	return idJnsHarga;
+    }
+	
+    public void setIdJnsHarga (JenisHarga idJnsHarga) {
+    	this.idJnsHarga = idJnsHarga;
     }
     
     public UserPegawai getUserId () {

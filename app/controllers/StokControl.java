@@ -7,6 +7,7 @@ import java.util.List;
 
 import models.DetilOpname;
 import models.DetilPembelian;
+import models.JenisHarga;
 import models.ObatAlat;
 import models.Pembelian;
 import models.StokObatAlat;
@@ -179,6 +180,25 @@ public class StokControl extends Controller {
 			data.add(totalStok);
 		}
 		renderJSON(data);
+	}
+	
+	public static void monitoring_stok() {
+		render();
+	}
+	
+	public static void hargaObat() {
+		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
+		render(jenisHargaList);
+	}
+	
+	public static void saveHarga() {
+		render();
+	}
+	
+	public static void showVolume(String idObatAlat) {
+		ObatAlat obatAlatTmp = ObatAlat.findById(idObatAlat);
+		String data = obatAlatTmp.getVolumeObatAlat();
+		renderJSON(data, String.class);
 	}
 	
 }

@@ -23,6 +23,7 @@ public class Resep_ {
 	public static volatile SingularAttribute<Resep, Date> tglPenjualan;
 	public static volatile SingularAttribute<ObatAlat, Date> tglAktivitas;
 
+	public static volatile SingularAttribute<Resep, JenisHarga> idJnsHarga;
 	public static volatile SingularAttribute<ObatAlat, UserPegawai> userId;
 	public static volatile SingularAttribute<Resep, Tagihan> idTagihan;
 

@@ -7,8 +7,8 @@ import models.HargaObat;
 @CRUD.For(HargaObat.class)
 public class HargaObats extends CRUD {
 
-    public static void showHargaObat(String idHarga) {
-        HargaObat hargaObat = HargaObat.findById (idHarga);
+    public static void showHargaObat(String idObatAlat) {
+        HargaObat hargaObat = HargaObat.findById (idObatAlat);
         if (hargaObat==null) hargaObat = new HargaObat();
         render (hargaObat);
     }

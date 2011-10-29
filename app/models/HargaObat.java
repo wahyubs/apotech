@@ -3,16 +3,15 @@ package models;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-
+import play.data.validation.Required;
 import play.db.jpa.GenericModel;
 
 /**
@@ -28,51 +27,60 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "HargaObat")
 @Table(name = "harga_obat")
-public class HargaObat extends GenericModel implements IGeneratedModel{
+public class HargaObat extends GenericModel {
 
-	@Id
-	@Column(name = "id_harga", length = 32)
-	@GeneratedValue(generator = "MyIdGenerator")
-	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")
-	private String idHarga;
+	@EmbeddedId
+	private HargaObatId hargaObatId;
 
-	@Column(name = "thn_bln_harga", length = 6, nullable = true, unique = false)
-	private String thnBlnHarga;
+	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
+	private Date tglAktivitas;
 
 	@Column(name = "harga_obat", nullable = true, unique = false)
 	private java.lang.Integer hargaObat;
-	
-	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
-    private Date tglAktivitas; 
+
+	@Column(name = "active_sts", length = 1, nullable = true, unique = false)
+	private String activeSts;
+
+	@Column(name = "percent_laba", nullable = true, unique = false)
+	private java.lang.Integer percentLaba;
+
+	@MapsId("id_jns_harga")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_jns_harga", nullable = false, unique = false, insertable = false, updatable = false)
+	@Required
+	private JenisHarga idJnsHarga;
+
+	@MapsId("id_obat_alat")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_obat_alat", nullable = false, unique = false, insertable = false, updatable = false)
+	@Required
+	private ObatAlat idObatAlat;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_obat_alat", nullable = true, unique = false)
-	private ObatAlat idObatAlat;
-	
-	@ManyToOne (fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private UserPegawai userId; 
+	@JoinColumn(name = "user_id", nullable = true, unique = false)
+	private UserPegawai userId;
 
 	/**
 	 * Default constructor
 	 */
 	public HargaObat() {
+		hargaObatId = new HargaObatId();
 	}
 
-	public String getIdHarga() {
-		return idHarga;
+	public HargaObatId getHargaObatId() {
+		return hargaObatId;
 	}
 
-	public void setIdHarga(String idHarga) {
-		this.idHarga = idHarga;
+	public void setHargaObatId(HargaObatId hargaObatId) {
+		this.hargaObatId = hargaObatId;
 	}
 
-	public String getThnBlnHarga() {
-		return thnBlnHarga;
+	public Date getTglAktivitas() {
+		return tglAktivitas;
 	}
 
-	public void setThnBlnHarga(String thnBlnHarga) {
-		this.thnBlnHarga = thnBlnHarga;
+	public void setTglAktivitas(Date tglAktivitas) {
+		this.tglAktivitas = tglAktivitas;
 	}
 
 	public java.lang.Integer getHargaObat() {
@@ -82,14 +90,30 @@ public class HargaObat extends GenericModel implements IGeneratedModel{
 	public void setHargaObat(java.lang.Integer hargaObat) {
 		this.hargaObat = hargaObat;
 	}
-	
-	public Date getTglAktivitas() {
-        return tglAktivitas;
-    }
-	
-    public void setTglAktivitas (Date tglAktivitas) {
-        this.tglAktivitas =  tglAktivitas;
-    }
+
+	public String getActiveSts() {
+		return activeSts;
+	}
+
+	public void setActiveSts(String activeSts) {
+		this.activeSts = activeSts;
+	}
+
+	public java.lang.Integer getPercentLaba() {
+		return percentLaba;
+	}
+
+	public void setPercentLaba(java.lang.Integer percentLaba) {
+		this.percentLaba = percentLaba;
+	}
+
+	public JenisHarga getIdJnsHarga() {
+		return idJnsHarga;
+	}
+
+	public void setIdJnsHarga(JenisHarga idJnsHarga) {
+		this.idJnsHarga = idJnsHarga;
+	}
 
 	public ObatAlat getIdObatAlat() {
 		return idObatAlat;
@@ -98,21 +122,16 @@ public class HargaObat extends GenericModel implements IGeneratedModel{
 	public void setIdObatAlat(ObatAlat idObatAlat) {
 		this.idObatAlat = idObatAlat;
 	}
-	
-	public UserPegawai getUserId () {
-    	return userId;
-    }
-	
-    public void setUserId (UserPegawai userId) {
-    	this.userId = userId;
-    }
 
-	public String toString() {
-		return thnBlnHarga + "";
+	public UserPegawai getUserId() {
+		return userId;
 	}
 
-	@Override
-	public String getGeneratedValue() {
-		return idHarga;
+	public void setUserId(UserPegawai userId) {
+		this.userId = userId;
+	}
+
+	public String toString() {
+		return hargaObatId + "";
 	}
 }
