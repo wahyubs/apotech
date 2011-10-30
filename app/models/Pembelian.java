@@ -1,7 +1,9 @@
 package models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,11 +15,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import play.data.binding.As;
 import play.db.jpa.GenericModel;
+import play.db.jpa.JPA;
 
 /**
  * 
@@ -157,6 +162,48 @@ public class Pembelian extends GenericModel implements IGeneratedModel{
 		return tglPembelian + "";
 	}
 
+	public List monitoring(String key_idSupplier, String key_idObatAlat,@As("dd-MM-yyyy") Date tglPembelianAwal,
+			@As("dd-MM-yyyy") Date tglPembelianAkhir){
+		String sql = "select pembelian.id_pembelian, pembelian.tgl_pembelian, supplier.nama_supplier," +
+				" sum(detil_pembelian.jml_penerimaan_apotek) as jmlapotek, sum(detil_pembelian.jml_penerimaan_gudang) as jmlgudang, sum(detil_pembelian.harga_penerimaan) as harga, sum(detil_pembelian.discount_charge) as diskon" +
+				" from pembelian join detil_pembelian on pembelian.id_pembelian=detil_pembelian.id_pembelian" + 
+				" join stok_obat_alat on detil_pembelian.id_stok=stok_obat_alat.id_stok" + 
+				" join supplier on pembelian.id_supplier=supplier.id_supplier" +
+				" where 1=1";
+		if(tglPembelianAwal!=null)
+			sql += " and pembelian.tgl_pembelian >= ?";
+		if(tglPembelianAkhir!=null)
+			sql += " and pembelian.tgl_pembelian <= ?";
+		if(!key_idSupplier.equals(""))
+			sql += " and pembelian.id_supplier = ?";
+		if(!key_idObatAlat.equals(""))
+			sql += " and stok_obat_alat.id_obat_alat = ?";
+		
+		sql += " group by pembelian.id_pembelian, pembelian.tgl_pembelian, supplier.nama_supplier";
+		Query query = JPA.em().createNativeQuery(sql); 
+		
+		int $i = 0;
+		if(tglPembelianAwal!=null){
+			SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+			String dateAwal = dt.format(tglPembelianAwal);
+			$i++;
+			query.setParameter( $i, dateAwal );
+		}if(tglPembelianAkhir!=null){
+			SimpleDateFormat dt2 = new SimpleDateFormat("yyyy-MM-dd");
+			String dateAkhir = dt2.format(tglPembelianAkhir);
+			$i++;
+			query.setParameter( $i, dateAkhir );
+		}if(!key_idSupplier.equals("")){
+			$i++;
+			query.setParameter( $i, key_idSupplier );
+		}if(!key_idObatAlat.equals("")){
+			$i++;
+			query.setParameter( $i, key_idObatAlat );
+		}
+		List a = query.getResultList(); 
+		return a;
+	}
+	
 	@Override
 	public String getGeneratedValue() {
 		return idPembelian;

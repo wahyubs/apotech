@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import models.DetilPembelian;
 import models.DetilTransferStok;
 import models.DetilTransferStokId;
@@ -21,6 +24,7 @@ import models.ReturPembelian;
 import models.DetilReturPembelian;
 import play.data.binding.As;
 import play.data.validation.Required;
+import play.db.jpa.JPA;
 import play.db.jpa.JPABase;
 import play.mvc.Controller;
 import tool.AutocompleteValue;
@@ -54,11 +58,13 @@ public class PembelianControl extends Controller {
 		render(transferStok, hasil);
 	}
 
-	public static void monitoring(Date tglPembelianAwal,
-			Date tglPembelianAkhir, String idSupplier, String idObatAlat) {
+	public static void monitoring(List pembelian, @As("dd-MM-yyyy") Date tglPembelianAwal,
+			@As("dd-MM-yyyy") Date tglPembelianAkhir, String idSupplier, String idObatAlat) {
+		if (pembelian == null)
+			pembelian = new ArrayList();
 		tglPembelianAwal = new Date();
 		tglPembelianAkhir = new Date();
-		render(tglPembelianAwal, tglPembelianAkhir, idSupplier, idObatAlat);
+		render(pembelian, tglPembelianAwal, tglPembelianAkhir, idSupplier, idObatAlat);
 	}
 
 	public static void autocompleteSupplier(final String term) {
@@ -299,8 +305,15 @@ public class PembelianControl extends Controller {
 				hasil);
 	}
 
-	public static void cariPembelian() {
-		render();
+	public static void cariPembelian(String key_idSupplier, String key_idObatAlat,@As("dd-MM-yyyy") Date tglPembelianAwal,
+			@As("dd-MM-yyyy") Date tglPembelianAkhir) {
+		/*List<Pembelian> pembelian = Pembelian
+				.find("date_trunc('day', tgl_pembelian)>=? and date_trunc('day', tgl_pembelian)<=? and id_supplier=?",
+						tglPembelianAwal, tglPembelianAkhir, key_idSupplier).fetch();
+		*/
+		Pembelian p = new Pembelian();
+		List pembelian = p.monitoring(key_idSupplier,key_idObatAlat,tglPembelianAwal,tglPembelianAkhir);
+		renderTemplate("PembelianControl/monitoring.html", pembelian, tglPembelianAwal, tglPembelianAkhir, key_idSupplier, key_idObatAlat);
 	}
 
 	public static void showVolume(String idObatAlat) {
