@@ -1,0 +1,24 @@
+#{extends 'menu.html' /}
+#{set title:'Monitoring Opname' /}
+%{labelObatAlat = null
+if(kodeObatAlat!=null)
+labelObatAlat = kodeObatAlat+" - "+namaObatAlat}%
+#{form @StokControl.cariOpname(), method:'POST', id:'filterForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Filter Opname</legend>
+<div class="yui3-u-1-6"><div class="entriClass label">Range Tgl Beli</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglPembelianAwal', name:'tglPembelianAwal', value:tglPembelianAwal?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">s/d</div></div>
+<div class="yui3-u-1-2"><div class="entriClass">#{dateTime id:'tglPembelianAkhir', name:'tglPembelianAkhir', value:tglPembelianAkhir?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Obat/Alat</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@PembelianControl.autocompleteKodeObat(),size:'50',value:idObatAlat,label:labelObatAlat /}</div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Cari" id="cari" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{StokControl.monitoring_opname()}'"/></div></div>
+</fieldset>
+</div>
+#{customgrid class:'yui3-g',id:'hasilFilter'}
+<div class="yui3-u-1-4"><div class="isi header">Tgl Opname</div></div><div class="yui3-u-1-2"><div class="isi header">Deskripsi</div></div><div class="yui3-u-1-4"><div class="isi header">Jml Opname</div></div>
+#{list items:stokOpname, as:'stokOpname_tmp'}
+<div class="yui3-u-1-4"><div class="isi"><a href="@{StokControl.lihatOpname(stokOpname_tmp[0])}">${stokOpname_tmp[1].format('dd-MM-yyyy')}</a></div></div><div class="yui3-u-1-2"><div class="isi">${stokOpname_tmp[2]}</div></div><div class="yui3-u-1-4"><div class="isi">${stokOpname_tmp[3]}</div></div>
+#{/list}
+#{/customgrid}
+#{/form}
