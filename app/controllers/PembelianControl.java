@@ -2,34 +2,32 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import models.DetilPembelian;
+import models.DetilReturPembelian;
 import models.DetilTransferStok;
 import models.DetilTransferStokId;
 import models.ObatAlat;
 import models.Pembelian;
+import models.ReturPembelian;
 import models.StokObatAlat;
 import models.Supplier;
 import models.TransferStok;
-import models.ReturPembelian;
-import models.DetilReturPembelian;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.JPABase;
 import play.mvc.Controller;
+import play.mvc.With;
 import tool.AutocompleteValue;
 import tool.CommonUtil;
 
+@With(Secure.class)
 public class PembelianControl extends Controller {
 	public static int AUTOCOMPLETE_MAX = 20;
 
@@ -109,7 +107,7 @@ public class PembelianControl extends Controller {
 			@Required String key_idSupplier, List<String> key_kode_obat,
 			@As("dd-MM-yyyy") List<Date> tglKadaluarsa,
 			List<Integer> stokApotek, List<Integer> stokGudang,
-			List<String> harga) {
+			List<Integer> harga, List<Integer> ppn, List<Integer> diskon) {
 		Pembelian pembelian = new Pembelian();
 		pembelian.setTglPembelian(tglPembelian);
 		if (pembelian.getTglPembelian() == null)
@@ -176,6 +174,13 @@ public class PembelianControl extends Controller {
 				detilPembelian.setTglKadaluarsa(tglKadaluarsa.get(i));
 				detilPembelian.setJmlPenerimaanApotek(jmlTerimaApotek);
 				detilPembelian.setJmlPenerimaanGudang(jmlTerimaGudang);
+				Integer diskonTmp = diskon.get(i) == null ? 0 : diskon.get(i);
+				Integer hargaTmp = harga.get(i) == null ? 0 : harga.get(i);
+				Integer ppnTmp = ppn.get(i) == null ? 10 : ppn.get(i);
+				detilPembelian.setHargaPenerimaan(hargaTmp);
+				detilPembelian.setPpn(ppnTmp);
+				detilPembelian.setDiscountPercent(diskonTmp);
+				detilPembelian.setDiscountCharge(diskonTmp * hargaTmp / 100);
 				detilPembelian.validateAndSave();
 				pembelian.addDetilPembelianIdPembelian(detilPembelian);
 			}
@@ -209,6 +214,15 @@ public class PembelianControl extends Controller {
 								+ jmlTerimaApotek);
 						stokObatAlat.setJmlStokGudang(jmlStokGudang
 								+ jmlTerimaGudang);
+						Integer diskonTmp = diskon.get(i) == null ? 0 : diskon
+								.get(i);
+						Integer hargaTmp = harga.get(i) == null ? 0 : harga
+								.get(i);
+						Integer ppnTmp = ppn.get(i) == null ? 10 : ppn.get(i);
+						stokObatAlat.setHargaBeliStok(hargaTmp);
+						stokObatAlat.setPpnStok(ppnTmp);
+						stokObatAlat.setDiscPercStok(diskonTmp);
+						stokObatAlat.setDiscCharge(diskonTmp * hargaTmp / 100);
 						stokObatAlat = stokObatAlat.merge();
 						stokObatAlat.validateAndSave();
 					}
@@ -315,6 +329,12 @@ public class PembelianControl extends Controller {
 		List pembelian = p.monitoring(key_idSupplier,key_idObatAlat,tglPembelianAwal,tglPembelianAkhir);
 		renderTemplate("PembelianControl/monitoring.html", pembelian, tglPembelianAwal, tglPembelianAkhir, key_idSupplier, key_idObatAlat);
 	}
+	
+	public static void lihatPembelian(String idPembelian) {
+		Pembelian pembelian = Pembelian.findById(idPembelian);
+		String hasil = null;
+		renderTemplate("PembelianControl/transaksi.html", pembelian, hasil);
+	}
 
 	public static void showVolume(String idObatAlat) {
 		ObatAlat obatAlatTmp = ObatAlat.findById(idObatAlat);
@@ -335,6 +355,8 @@ public class PembelianControl extends Controller {
 			transferStok.validateAndSave();
 		} else {
 			transferStok.setIdTransfer(idTransfer);
+			if ("Tutup".equals(simpan))
+				transferStok.setStsTransaksi("1");
 			transferStok = transferStok.merge();
 			transferStok.validateAndSave();
 			DetilTransferStok.delete("id_transfer=?", idTransfer);
@@ -393,8 +415,6 @@ public class PembelianControl extends Controller {
 					stokObatAlat.validateAndSave();
 				}
 			}
-			transferStok.setStsTransaksi("A");
-			transferStok.validateAndSave();
 			hasil = "Transfer Berhasil Ditutup!";
 		}
 		renderTemplate("PembelianControl/transfer.html", transferStok, hasil);

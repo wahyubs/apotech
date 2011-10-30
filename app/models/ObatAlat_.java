@@ -14,10 +14,10 @@ public class ObatAlat_ {
     public static volatile SingularAttribute<ObatAlat, Date> tglAktivitas;
     public static volatile SingularAttribute<ObatAlat, String> kodeObatAlat;
     public static volatile SingularAttribute<ObatAlat, String> namaObatAlat;
-    public static volatile SingularAttribute<ObatAlat, String> jenisObatAlat;
     public static volatile SingularAttribute<ObatAlat, java.lang.Integer> hargaTerakhir;
     public static volatile SingularAttribute<ObatAlat, String> volumeObatAlat;
 
+    public static volatile SingularAttribute<ObatAlat, JenisObatAlat> idJnsObatAlat;
     public static volatile SingularAttribute<ObatAlat, UserPegawai> userId;
 
     public static volatile SetAttribute<ObatAlat, HargaObat> hargaObatIdObatAlat;

@@ -1,0 +1,80 @@
+<div id="productsandservices" class="yui3-menu yui3-menu-horizontal">
+	<div class="yui3-menu-content">
+		<ul class="first-of-type">
+			<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+				href="@{Application.index()}" key="Ctrl+h">Home</a></li>
+			<li><a class="yui3-menu-label" href="#stok">Transaksi Stok</a>
+				<div id="stok" class="yui3-menu">
+					<div class="yui3-menu-content">
+						<ul>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{StokControl.transaksi()}" key="Ctrl+o">Stok Opname</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{StokControl.hargaObat()}" key="Ctrl+g">Harga Obat</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="#" key="Ctrl+m">Monitoring Stok</a></li>
+						</ul>
+					</div>
+				</div></li>
+			<li><a class="yui3-menu-label" href="#pembelian">Pembelian</a>
+				<div id="pembelian" class="yui3-menu">
+					<div class="yui3-menu-content">
+						<ul>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{PembelianControl.transaksi()}" key="Ctrl+b">Pembelian</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{PembelianControl.monitoring()}" key="Ctrl+n">Mon.
+									Pembelian</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{PembelianControl.transaksi_retur()}" key="Ctrl+r">Retur
+									Pembelian</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{PembelianControl.transfer()}" key="Ctrl+t">Transfer
+									Stok</a></li>
+						</ul>
+					</div>
+				</div></li>
+			<li><a class="yui3-menu-label" href="#penjualan">Penjualan</a>
+				<div id="penjualan" class="yui3-menu">
+					<div class="yui3-menu-content">
+						<ul>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{PenjualanControl.transaksi()}" " key="Ctrl+j">Penjualan</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="#" key="Ctrl+u">Retur Penjualan</a></li>
+						</ul>
+					</div>
+				</div></li>
+			<li><a class="yui3-menu-label" href="#laporan">Laporan</a>
+				<div id="laporan" class="yui3-menu">
+					<div class="yui3-menu-content">
+						<ul>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="#" key="Ctrl+k">Kartu Stok</a></li>
+						</ul>
+					</div>
+				</div></li>
+			<li><a class="yui3-menu-label" href="@{CRUD.index()}">Admin</a>
+				<div id="admin" class="yui3-menu">
+					<div class="yui3-menu-content">
+						<ul>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{CRUD.index()}suppliers" key="Ctrl+l">Supplier</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{CRUD.index()}obatalats" key="Ctrl+a">Obat/Alkes</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{CRUD.index()}stokobatalats" key="Ctrl+s">Stok</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{CRUD.index()}jenishargas" key="Ctrl+i">Jenis Harga</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{CRUD.index()}userpegawais" key="Ctrl+e">User</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="#" key="Ctrl+f">Konfigurasi</a></li>
+						</ul>
+					</div>
+				</div></li>
+			<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+				href="@{Secure.logout()}" key="ctrl+`">Logout</a></li>
+		</ul>
+	</div>
+</div>

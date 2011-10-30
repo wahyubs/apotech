@@ -10,6 +10,8 @@ public class DetilReturPembelian_ {
 
     public static volatile SingularAttribute<DetilReturPembelian, java.lang.Integer> jmlReturBeliApotek;
     public static volatile SingularAttribute<DetilReturPembelian, java.lang.Integer> jmlReturBeliGudang;
+    public static volatile SingularAttribute<DetilReturPembelian, java.lang.Integer> jmlRedeliveryApotek;
+    public static volatile SingularAttribute<DetilReturPembelian, java.lang.Integer> jmlRedeliveryGudang;
 
     public static volatile SingularAttribute<DetilReturPembelian, ReturPembelian> idReturBeli;
     public static volatile SingularAttribute<DetilReturPembelian, StokObatAlat> idStok;

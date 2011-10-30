@@ -1,0 +1,49 @@
+#{extends 'CRUD/layout.html' /}
+#{set title:messages.get('crud.blank.title', type.modelName) /}
+
+<div id="crudBlank" class="${type.name}">
+
+    <h2 id="crudBlankTitle">&{'crud.blank.title', type.modelName}</h2>
+
+    <div class="objectForm">
+    #{form action:@create(), enctype:'multipart/form-data'}
+        #{crud.form}
+        #{crud.custom 'passwordUser'}
+        <label for="passwordUser"> Password </label>
+        <input id="object_passwordUser" class="" type="password" size="50" value="" name="object.passwordUser">
+        <span class="crudHelp"> </span>
+        </div>
+        <div class="crudField crud_text">
+        <label for="passwordUser"> Ulangi Password </label>
+        <input id="passwordUser2" class="" type="password" size="50" value="" name="passwordUser2">
+        <span class="crudHelp"> </span>        
+        #{/crud.custom}
+        #{crud.custom 'jnsUser'}
+        <div>
+        <label for="passwordUser"> Hak Akses </label>
+        #{select 'object.jnsUser', value:1, id:'object_jnsUser'}
+			#{option 'A'}Admin#{/option}
+			#{option 'U'}User Biasa#{/option}
+		#{/select}
+        </div>
+        #{/crud.custom}
+        #{/crud.form}
+        <p class="crudButtons">
+            <input type="submit" name="_save" value="&{'crud.save', type.modelName}" onclick="return cekPassword();"/>
+            <input type="submit" name="_saveAndContinue" value="&{'crud.saveAndContinue', type.modelName}" />
+            <input type="submit" name="_saveAndAddAnother" value="&{'crud.saveAndAddAnother', type.modelName}" />
+        <script type="text/javascript">
+        function cekPassword() {
+        		if($('#passwordUser2').val()!=$('#object_passwordUser').val()) {
+        			alert("Password tidak cocok!");
+        			$('#object_passwordUser').focus();
+        			return false;
+        		}
+        		return true;
+        	}
+        </script>
+        </p>
+    #{/form}
+    </div>
+
+</div>

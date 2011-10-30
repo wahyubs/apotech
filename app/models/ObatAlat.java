@@ -46,9 +46,6 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	@Column(name = "kode_obat_alat", length = 20, nullable = true, unique = false)
 	private String kodeObatAlat;
 
-	@Column(name = "jenis_obat_alat", length = 1, nullable = true, unique = false)
-	private String jenisObatAlat;
-
 	@Column(name = "harga_terakhir", nullable = true, unique = false)
 	private java.lang.Integer hargaTerakhir;
 
@@ -57,6 +54,10 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 
 	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
 	private Date tglAktivitas;
+	
+	@ManyToOne (fetch=FetchType.LAZY)
+    @JoinColumn(name="id_jns_obat_alat",  nullable=true,  unique=false  )
+    private JenisObatAlat idJnsObatAlat; 
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = true, unique = false)
@@ -98,14 +99,6 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 		this.kodeObatAlat = kodeObatAlat;
 	}
 
-	public String getJenisObatAlat() {
-		return jenisObatAlat;
-	}
-
-	public void setJenisObatAlat(String jenisObatAlat) {
-		this.jenisObatAlat = jenisObatAlat;
-	}
-
 	public java.lang.Integer getHargaTerakhir() {
 		return hargaTerakhir;
 	}
@@ -129,6 +122,14 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	public void setTglAktivitas(Date tglAktivitas) {
 		this.tglAktivitas = tglAktivitas;
 	}
+	
+	public JenisObatAlat getIdJnsObatAlat () {
+    	return idJnsObatAlat;
+    }
+	
+    public void setIdJnsObatAlat (JenisObatAlat idJnsObatAlat) {
+    	this.idJnsObatAlat = idJnsObatAlat;
+    }
 
 	public UserPegawai getUserId() {
 		return userId;

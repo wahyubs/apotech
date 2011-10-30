@@ -7,6 +7,7 @@ import java.util.List;
 
 import models.DetilOpname;
 import models.DetilPembelian;
+import models.JenisHarga;
 import models.ObatAlat;
 import models.Pembelian;
 import models.StokObatAlat;
@@ -14,9 +15,11 @@ import models.StokOpname;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.mvc.Controller;
+import play.mvc.With;
 import tool.AutocompleteValue;
 import tool.CommonUtil;
 
+@With(Secure.class)
 public class StokControl extends Controller {
 	public static int AUTOCOMPLETE_MAX = 20;
 	
@@ -177,6 +180,25 @@ public class StokControl extends Controller {
 			data.add(totalStok);
 		}
 		renderJSON(data);
+	}
+	
+	public static void monitoring_stok() {
+		render();
+	}
+	
+	public static void hargaObat() {
+		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
+		render(jenisHargaList);
+	}
+	
+	public static void saveHarga() {
+		render();
+	}
+	
+	public static void showVolume(String idObatAlat) {
+		ObatAlat obatAlatTmp = ObatAlat.findById(idObatAlat);
+		String data = obatAlatTmp.getVolumeObatAlat();
+		renderJSON(data, String.class);
 	}
 	
 }

@@ -2,8 +2,11 @@ package controllers;
 
 import java.util.List;
 
+import play.mvc.With;
+
 import models.UserPegawai;
 
+@With(Secure.class)
 @CRUD.For(UserPegawai.class)
 public class UserPegawais extends CRUD {
 

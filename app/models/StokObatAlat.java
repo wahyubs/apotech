@@ -1,5 +1,6 @@
 package models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +49,18 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 
 	@Column(name = "jml_stok_gudang", nullable = true, unique = false)
 	private java.lang.Integer jmlStokGudang;
+	
+	@Column(name="harga_beli_stok",    nullable=true,  unique=false)
+    private java.lang.Integer hargaBeliStok; 
+    
+    @Column(name="ppn_stok",    nullable=true,  unique=false)
+    private java.lang.Integer ppnStok; 
+    
+    @Column(name="disc_perc_stok",    nullable=true,  unique=false)
+    private java.lang.Integer discPercStok; 
+    
+    @Column(name="disc_charge",    nullable=true,  unique=false)
+    private java.lang.Integer discCharge; 
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_obat_alat", nullable = true, unique = false)
@@ -102,6 +115,38 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 	public void setJmlStokGudang(java.lang.Integer jmlStokGudang) {
 		this.jmlStokGudang = jmlStokGudang;
 	}
+	
+	public java.lang.Integer getHargaBeliStok() {
+        return hargaBeliStok;
+    }
+	
+    public void setHargaBeliStok (java.lang.Integer hargaBeliStok) {
+        this.hargaBeliStok =  hargaBeliStok;
+    }
+    
+    public java.lang.Integer getPpnStok() {
+        return ppnStok;
+    }
+	
+    public void setPpnStok (java.lang.Integer ppnStok) {
+        this.ppnStok =  ppnStok;
+    }
+    
+    public java.lang.Integer getDiscPercStok() {
+        return discPercStok;
+    }
+	
+    public void setDiscPercStok (java.lang.Integer discPercStok) {
+        this.discPercStok =  discPercStok;
+    }
+    
+    public java.lang.Integer getDiscCharge() {
+        return discCharge;
+    }
+	
+    public void setDiscCharge (java.lang.Integer discCharge) {
+        this.discCharge =  discCharge;
+    }
 
 	public ObatAlat getIdObatAlat() {
 		return idObatAlat;
@@ -161,8 +206,11 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 	}
 
 	public String getLabelStok() {
-		return "exp:" + getTglKadaluarsa() + ",jmlA:" + getJmlStokApotek()
-				+ ",jmlG:" + getJmlStokGudang();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		String format = getTglKadaluarsa() == null ? "-" : dateFormat
+				.format(getTglKadaluarsa());
+		return "exp:" + format + " ,jmlA:" + getJmlStokApotek() + " ,jmlG:"
+				+ getJmlStokGudang();
 	}
 
 	@Override
