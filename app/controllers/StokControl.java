@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.Query;
 
 import models.DetilOpname;
-import models.DetilPembelian;
+import models.HargaObat;
+import models.HargaObatId;
 import models.JenisHarga;
 import models.ObatAlat;
-import models.Pembelian;
 import models.StokObatAlat;
 import models.StokOpname;
 import play.data.binding.As;
@@ -22,7 +26,7 @@ import tool.CommonUtil;
 @With(Secure.class)
 public class StokControl extends Controller {
 	public static int AUTOCOMPLETE_MAX = 20;
-	
+
 	public static void transaksi(StokOpname stokOpname, String hasil) {
 		if (stokOpname == null)
 			stokOpname = new StokOpname();
@@ -44,11 +48,11 @@ public class StokControl extends Controller {
 		}
 		renderJSON(response);
 	}
-	
+
 	public static void saveOpname(String idStokOpname,
 			@Required @As("dd-MM-yyyy") Date tglStokOpname,
-			String descStokOpname, String simpan,
-			List<String> key_kode_obat, @As("dd-MM-yyyy") List<Date> tglKadaluarsa,
+			String descStokOpname, String simpan, List<String> key_kode_obat,
+			@As("dd-MM-yyyy") List<Date> tglKadaluarsa,
 			List<Integer> stokApotekSekarang, List<Integer> stokGudangSekarang) {
 		StokOpname stokOpname = new StokOpname();
 		stokOpname.setTglStokOpname(tglStokOpname);
@@ -104,10 +108,10 @@ public class StokControl extends Controller {
 				} else {
 					StokObatAlat tmp = fetch.get(0);
 					stokObatAlat.setIdStok(tmp.getIdStok());
-					jmlStokApotek = tmp.getJmlStokApotek() == null ? 0
-							: tmp.getJmlStokApotek();
-					jmlStokGudang = tmp.getJmlStokGudang() == null ? 0
-							: tmp.getJmlStokGudang();
+					jmlStokApotek = tmp.getJmlStokApotek() == null ? 0 : tmp
+							.getJmlStokApotek();
+					jmlStokGudang = tmp.getJmlStokGudang() == null ? 0 : tmp
+							.getJmlStokGudang();
 					stokObatAlat.setJmlStokApotek(jmlStokApotek);
 					stokObatAlat.setJmlStokGudang(jmlStokGudang);
 					stokObatAlat = stokObatAlat.merge();
@@ -124,13 +128,13 @@ public class StokControl extends Controller {
 				detilOpname.setJmlSebelumnya(totalStok);
 				detilOpname.setJmlSekarang(jmlSekarang);
 				detilOpname.validateAndSave();
-				stokOpname.addDetilOpnameIdStokOpname(detilOpname);				
+				stokOpname.addDetilOpnameIdStokOpname(detilOpname);
 			}
 		}
-		
+
 		String hasil = "Stok Opname Berhasil Disimpan!";
-		
-		if(simpan.equals("Tutup")){
+
+		if (simpan.equals("Tutup")) {
 			for (int i = 0; i < key_kode_obat.size(); i++) {
 				if (key_kode_obat.get(i) != null
 						&& !"".equals(key_kode_obat.get(i))) {
@@ -140,7 +144,8 @@ public class StokControl extends Controller {
 					stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
 					List<StokObatAlat> fetch = StokObatAlat
 							.find("id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
-									stokObatAlat.getIdObatAlat().getIdObatAlat(),
+									stokObatAlat.getIdObatAlat()
+											.getIdObatAlat(),
 									stokObatAlat.getTglKadaluarsa()).fetch();
 					StokObatAlat tmp = fetch.get(0);
 					stokObatAlat.setIdStok(tmp.getIdStok());
@@ -158,47 +163,89 @@ public class StokControl extends Controller {
 			stokOpname.setStsTransaksi("1");
 			stokOpname = stokOpname.merge();
 			stokOpname.validateAndSave();
-			
+
 			hasil = "Stok Opname Berhasil Ditutup!";
 		}
-		
+
 		renderTemplate("StokControl/transaksi.html", stokOpname, hasil);
-		
+
 	}
-	
-	public static void showQtySblmnya(String idObatAlat, @As("dd-MM-yyyy") Date tglKadaluarsa) {
-		List<StokObatAlat> fetch = StokObatAlat.find("id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
-				idObatAlat,tglKadaluarsa).fetch();
+
+	public static void showQtySblmnya(String idObatAlat,
+			@As("dd-MM-yyyy") Date tglKadaluarsa) {
+		List<StokObatAlat> fetch = StokObatAlat.find(
+				"id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
+				idObatAlat, tglKadaluarsa).fetch();
 		final List data = new ArrayList();
 		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
-			StokObatAlat stokObatAlat = (StokObatAlat) iterator.next();			
+			StokObatAlat stokObatAlat = (StokObatAlat) iterator.next();
 			Integer jmlStokApotek = stokObatAlat.getJmlStokApotek();
 			Integer jmlStokGudang = stokObatAlat.getJmlStokGudang();
-			Integer totalStok = jmlStokApotek+jmlStokGudang;
+			Integer totalStok = jmlStokApotek + jmlStokGudang;
 			data.add(jmlStokApotek);
 			data.add(jmlStokGudang);
 			data.add(totalStok);
 		}
 		renderJSON(data);
 	}
-	
+
 	public static void monitoring_stok() {
 		render();
 	}
-	
+
 	public static void hargaObat() {
 		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
 		render(jenisHargaList);
 	}
-	
-	public static void saveHarga() {
-		render();
+
+	public static void saveHarga(String key_idObatAlat, Integer hargaRata,
+			Map<String, String> laba, Map<String, String> hargaJual) {
+		HargaObat.delete("id_obat_alat=? and active_sts='A'", key_idObatAlat);
+		Set keySet = laba.keySet();
+		for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
+			String idJnsHarga = (String) iterator.next();
+			String percentLaba = laba.get(idJnsHarga);
+			String hargaJualTmp = hargaJual.get(idJnsHarga);
+			HargaObat hargaObat = new HargaObat();
+			hargaObat.setHargaObatId(new HargaObatId(key_idObatAlat,
+					idJnsHarga, CommonUtil.getFormatThnBln(new Date())));
+			hargaObat.setIdObatAlat((ObatAlat) ObatAlat
+					.findById(key_idObatAlat));
+			hargaObat.setIdJnsHarga((JenisHarga) JenisHarga
+					.findById(idJnsHarga));
+			hargaObat.setPercentLaba(Integer.parseInt(percentLaba));
+			hargaObat.setHargaObat(Integer.parseInt(hargaJualTmp));
+			hargaObat.setActiveSts("A");
+			hargaObat.save();
+		}
 	}
-	
-	public static void showVolume(String idObatAlat) {
+
+	public static void showHarga(String idObatAlat) {
+		final List<AutocompleteValue> resp = new ArrayList<AutocompleteValue>();
 		ObatAlat obatAlatTmp = ObatAlat.findById(idObatAlat);
 		String data = obatAlatTmp.getVolumeObatAlat();
-		renderJSON(data, String.class);
+		resp.add(new AutocompleteValue(data, "volume"));
+		Query createNativeQuery = StokObatAlat
+				.em()
+				.createNativeQuery(
+						"select avg(x.harga_beli_stok) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
+		createNativeQuery.setParameter("idObatAlat", idObatAlat);
+		Number hargaRata = (Number) createNativeQuery.getSingleResult();
+		resp.add(new AutocompleteValue(hargaRata != null ? "" + hargaRata
+				: null, "hargaRata"));
+		String thnBlnHarga = CommonUtil.getFormatThnBln(new Date());
+		List<HargaObat> fetch = HargaObat.find(
+				"id_obat_alat=? and active_sts='A'", idObatAlat).fetch();
+		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
+			HargaObat hargaObat = (HargaObat) iterator.next();
+			thnBlnHarga = hargaObat.getHargaObatId().getThn_bln_harga();
+			resp.add(new AutocompleteValue("" + hargaObat.getPercentLaba(),
+					"laba." + hargaObat.getIdJnsHarga().getIdJnsHarga()));
+			resp.add(new AutocompleteValue("" + hargaObat.getHargaObat(),
+					"hargaJual." + hargaObat.getIdJnsHarga().getIdJnsHarga()));
+		}
+		resp.add(new AutocompleteValue(thnBlnHarga, "thnBlnHarga"));
+		renderJSON(resp);
 	}
-	
+
 }

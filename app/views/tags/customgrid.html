@@ -12,6 +12,7 @@ $(function() {
 				var kopian = $('#baris').clone();
 				kopian.removeAttr('id');
 				kopian.find(':input').each(function() {
+				if($(this).attr('id').lastIndexOf("_")>=0) {
 				var strip_id=$(this).attr('id').substring(0, $(this).attr('id').lastIndexOf("_"));
 				var jml = $('[id^="'+strip_id+'"]').length;
 				if(jml>0) { 
@@ -21,6 +22,7 @@ $(function() {
 					var myId = $(this).attr('name').replace('[0]','');
 					jml = $('[name^="'+myId+'"]').length;
 					$(this).attr('name',myId+'['+jml+']');
+				}
 				}
 				});
 				$('#${_id}').append(kopian);

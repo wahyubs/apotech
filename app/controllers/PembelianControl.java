@@ -423,12 +423,12 @@ public class PembelianControl extends Controller {
 	public static void showStok(String idObatAlat) {
 		List<StokObatAlat> fetch = StokObatAlat.find("id_obat_alat=?",
 				idObatAlat).fetch();
-		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
+		final List<AutocompleteValue> resp = new ArrayList<AutocompleteValue>();
 		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
 			StokObatAlat stokObatAlat = (StokObatAlat) iterator.next();
-			response.add(new AutocompleteValue(stokObatAlat.getIdStok(),
+			resp.add(new AutocompleteValue(stokObatAlat.getIdStok(),
 					stokObatAlat.getLabelStok()));
 		}
-		renderJSON(response);
+		renderJSON(resp);
 	}
 }

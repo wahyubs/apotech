@@ -33,6 +33,13 @@ public class HargaObatId implements Serializable {
 	@Column(name = "id_jns_harga", length = 32, nullable = false)
 	private String id_jns_harga;
 
+	public HargaObatId(String id_obat_alat, String id_jns_harga,
+			String thn_bln_harga) {
+		this.id_obat_alat = id_obat_alat;
+		this.id_jns_harga = id_jns_harga;
+		this.thn_bln_harga = thn_bln_harga;
+	}
+
 	public String getThn_bln_harga() {
 		return thn_bln_harga;
 	}

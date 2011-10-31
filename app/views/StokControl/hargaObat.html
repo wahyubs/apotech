@@ -1,7 +1,7 @@
 #{extends 'menu.html' /}
 #{set title:'Harga Obat' /}
 #{ifErrors}
-   <span class="error">Oops…</span>
+   <span class="error">Oops</span>
 #{/ifErrors}
 #{form @StokControl.saveHarga(), method:'POST', id:'hargaForm'}
 <div class="yui3-g" id="entri">
@@ -9,37 +9,30 @@
 <div class="yui3-u-1-6"><div class="entriClass label">Obat Alat</div></div>
 <div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@StokControl.autocompleteKodeObat(),size:'50',value:idObatAlat,label:namaObatAlat/}</div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Volume</div></div>
-<div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="volume" name="volume"/></div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="volume" name="volume" readonly="readonly"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Tahun-Bulan Harga</div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="thnBlnHarga" name="thnBlnHarga" readonly="readonly"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Harga Rata-rata</div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="hargaRata" name="hargaRata"/></div></div>
+#{list items:jenisHargaList, as:'jenisHarga'}
+%{ff=jenisHarga_index-1}%
+<div class="yui3-u-1-6"><div class="entriClass label">Laba ${jenisHarga.jnsHarga}</div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="laba.${jenisHarga.idJnsHarga}" name="laba.${jenisHarga.idJnsHarga}" size="5"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Harga ${jenisHarga.jnsHarga}</div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="hargaJual.${jenisHarga.idJnsHarga}" name="hargaJual.${jenisHarga.idJnsHarga}"/></div></div>
+#{/list}
 <div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{StokControl.hargaObat()}'"/></div></div>
 </fieldset>
 </div>
-#{customgrid class:'yui3-g',id:'detilOpname'}
-<div class="yui3-u-1-8"><div class="isi header">Harga Rata2</div></div><div class="yui3-u-3-8"><div class="isi header">% Laba</div></div><div class="yui3-u-1-2"><div class="isi header">Harga Jual</div></div>
-<div class="yui3-u-1-8"><div class="isi header">&nbsp;</div></div>
-#{list items:jenisHargaList, as:'jenisHarga'}
-%{ x=jenisHargaList.size()
-y=Math.floor(9/x).intValue()
-z=9%x
-aa=y*(jenisHarga_index+1) }%
-#{if aa<9}
-<div class="yui3-u-${y}-24"><div class="isi header">&nbsp;</div></div>
-#{/if}
-#{else}
-<div class="yui3-u-${y+z}-24"><div class="isi header">&nbsp;</div></div>
-#{/else}
-#{/list}
-<div class="yui3-u-1-2"><div class="isi header">Harga Jual</div></div>
-<div id="baris">
-
-</div>
-#{/customgrid}
 <script>
 $(function() {
-	var listAction = #{jsAction @showVolume(':idObatAlat') /}
+	var listAction = #{jsAction @showHarga(':idObatAlat') /}
 	$('#idObatAlat').live('ubah',function() {
 		var key_obat=$('#key_idObatAlat').val();
 		$.getJSON(listAction({idObatAlat:key_obat}),function(data) {
-			$('#volume').val(data);
+			$.each(data, function(key, val) {		
+				$('[id="'+val.label+'"]').val(val.value);
+			  });
 		});
 	});
 });

@@ -64,7 +64,7 @@ public class HargaObat extends GenericModel {
 	 * Default constructor
 	 */
 	public HargaObat() {
-		hargaObatId = new HargaObatId();
+		hargaObatId = new HargaObatId(null, null, null);
 	}
 
 	public HargaObatId getHargaObatId() {
