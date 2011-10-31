@@ -247,5 +247,26 @@ public class StokControl extends Controller {
 		resp.add(new AutocompleteValue(thnBlnHarga, "thnBlnHarga"));
 		renderJSON(resp);
 	}
-
+	
+	public static void monitoring_opname(List stokOpname, @As("dd-MM-yyyy") Date tglPembelianAwal,
+			@As("dd-MM-yyyy") Date tglPembelianAkhir, String idObatAlat) {
+		if (stokOpname == null)
+			stokOpname = new ArrayList();
+		tglPembelianAwal = new Date();
+		tglPembelianAkhir = new Date();
+		render(stokOpname, tglPembelianAwal, tglPembelianAkhir, idObatAlat);
+	}
+	
+	public static void cariOpname(String key_idObatAlat,@As("dd-MM-yyyy") Date tglPembelianAwal,
+			@As("dd-MM-yyyy") Date tglPembelianAkhir) {
+		StokOpname so = new StokOpname();
+		List stokOpname = so.monitoringOpname(key_idObatAlat,tglPembelianAwal,tglPembelianAkhir);
+		renderTemplate("StokControl/monitoring_opname.html", stokOpname, tglPembelianAwal, tglPembelianAkhir, key_idObatAlat);
+	}
+	
+	public static void lihatOpname(String idStokOpname) {
+		StokOpname stokOpname = StokOpname.findById(idStokOpname);
+		String hasil = null;
+		renderTemplate("StokControl/transaksi.html", stokOpname, hasil);
+	}
 }
