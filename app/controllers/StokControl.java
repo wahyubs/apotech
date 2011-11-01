@@ -1,5 +1,7 @@
 package controllers;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import models.StokObatAlat;
 import models.StokOpname;
 import play.data.binding.As;
 import play.data.validation.Required;
+import play.db.jpa.JPABase;
 import play.mvc.Controller;
 import play.mvc.With;
 import tool.AutocompleteValue;
@@ -200,6 +203,7 @@ public class StokControl extends Controller {
 
 	public static void saveHarga(String key_idObatAlat, Integer hargaRata,
 			Map<String, String> laba, Map<String, String> hargaJual) {
+		String thnBlnHarga = CommonUtil.getFormatThnBln(new Date());
 		HargaObat.delete("id_obat_alat=? and active_sts='A'", key_idObatAlat);
 		Set keySet = laba.keySet();
 		for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
@@ -208,16 +212,21 @@ public class StokControl extends Controller {
 			String hargaJualTmp = hargaJual.get(idJnsHarga);
 			HargaObat hargaObat = new HargaObat();
 			hargaObat.setHargaObatId(new HargaObatId(key_idObatAlat,
-					idJnsHarga, CommonUtil.getFormatThnBln(new Date())));
+					idJnsHarga, thnBlnHarga));
 			hargaObat.setIdObatAlat((ObatAlat) ObatAlat
 					.findById(key_idObatAlat));
 			hargaObat.setIdJnsHarga((JenisHarga) JenisHarga
 					.findById(idJnsHarga));
 			hargaObat.setPercentLaba(Integer.parseInt(percentLaba));
-			hargaObat.setHargaObat(Integer.parseInt(hargaJualTmp));
+			hargaObat.setHargaObat(Double.parseDouble(hargaJualTmp));
 			hargaObat.setActiveSts("A");
 			hargaObat.save();
 		}
+		ObatAlat tmp = ObatAlat.findById(key_idObatAlat);
+		String labelObatAlat = tmp.getLabelObat();
+		String volumeObatAlat = tmp.getVolumeObatAlat();
+		renderTemplate("StokControl/hargaObat.html", key_idObatAlat,
+				labelObatAlat, thnBlnHarga, hargaRata, laba, hargaJual);
 	}
 
 	public static void showHarga(String idObatAlat) {
@@ -231,8 +240,10 @@ public class StokControl extends Controller {
 						"select avg(x.harga_beli_stok) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
 		createNativeQuery.setParameter("idObatAlat", idObatAlat);
 		Number hargaRata = (Number) createNativeQuery.getSingleResult();
-		resp.add(new AutocompleteValue(hargaRata != null ? "" + hargaRata
-				: null, "hargaRata"));
+		DecimalFormat decimalFormat = new DecimalFormat();
+		decimalFormat.setDecimalSeparatorAlwaysShown(false);
+		resp.add(new AutocompleteValue(hargaRata != null ? decimalFormat
+				.format(hargaRata) : null, "hargaRata"));
 		String thnBlnHarga = CommonUtil.getFormatThnBln(new Date());
 		List<HargaObat> fetch = HargaObat.find(
 				"id_obat_alat=? and active_sts='A'", idObatAlat).fetch();
@@ -247,8 +258,9 @@ public class StokControl extends Controller {
 		resp.add(new AutocompleteValue(thnBlnHarga, "thnBlnHarga"));
 		renderJSON(resp);
 	}
-	
-	public static void monitoring_opname(List stokOpname, @As("dd-MM-yyyy") Date tglPembelianAwal,
+
+	public static void monitoring_opname(List stokOpname,
+			@As("dd-MM-yyyy") Date tglPembelianAwal,
 			@As("dd-MM-yyyy") Date tglPembelianAkhir, String idObatAlat) {
 		if (stokOpname == null)
 			stokOpname = new ArrayList();
@@ -256,14 +268,17 @@ public class StokControl extends Controller {
 		tglPembelianAkhir = new Date();
 		render(stokOpname, tglPembelianAwal, tglPembelianAkhir, idObatAlat);
 	}
-	
-	public static void cariOpname(String key_idObatAlat,@As("dd-MM-yyyy") Date tglPembelianAwal,
+
+	public static void cariOpname(String key_idObatAlat,
+			@As("dd-MM-yyyy") Date tglPembelianAwal,
 			@As("dd-MM-yyyy") Date tglPembelianAkhir) {
 		StokOpname so = new StokOpname();
-		List stokOpname = so.monitoringOpname(key_idObatAlat,tglPembelianAwal,tglPembelianAkhir);
-		renderTemplate("StokControl/monitoring_opname.html", stokOpname, tglPembelianAwal, tglPembelianAkhir, key_idObatAlat);
+		List stokOpname = so.monitoringOpname(key_idObatAlat, tglPembelianAwal,
+				tglPembelianAkhir);
+		renderTemplate("StokControl/monitoring_opname.html", stokOpname,
+				tglPembelianAwal, tglPembelianAkhir, key_idObatAlat);
 	}
-	
+
 	public static void lihatOpname(String idStokOpname) {
 		StokOpname stokOpname = StokOpname.findById(idStokOpname);
 		String hasil = null;

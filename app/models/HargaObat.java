@@ -36,7 +36,7 @@ public class HargaObat extends GenericModel {
 	private Date tglAktivitas;
 
 	@Column(name = "harga_obat", nullable = true, unique = false)
-	private java.lang.Integer hargaObat;
+	private java.lang.Double hargaObat;
 
 	@Column(name = "active_sts", length = 1, nullable = true, unique = false)
 	private String activeSts;
@@ -83,11 +83,11 @@ public class HargaObat extends GenericModel {
 		this.tglAktivitas = tglAktivitas;
 	}
 
-	public java.lang.Integer getHargaObat() {
+	public java.lang.Double getHargaObat() {
 		return hargaObat;
 	}
 
-	public void setHargaObat(java.lang.Integer hargaObat) {
+	public void setHargaObat(java.lang.Double hargaObat) {
 		this.hargaObat = hargaObat;
 	}
 

@@ -7,17 +7,17 @@
 <div class="yui3-g" id="entri">
 <fieldset><legend>Entri Harga Obat #{if idObatAlat!=null}<span class="error">(UPDATE)</span>#{/if}</legend>
 <div class="yui3-u-1-6"><div class="entriClass label">Obat Alat</div></div>
-<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@StokControl.autocompleteKodeObat(),size:'50',value:idObatAlat,label:namaObatAlat/}</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@StokControl.autocompleteKodeObat(),size:'50',value:key_idObatAlat,label:labelObatAlat/}</div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Volume</div></div>
-<div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="volume" name="volume" readonly="readonly"/></div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="volume" name="volume" readonly="readonly" value="${volumeObatAlat}"/></div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Tahun-Bulan Harga</div></div>
-<div class="yui3-u-5-6"><div class="entriClass"><input id="thnBlnHarga" name="thnBlnHarga" readonly="readonly"/></div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="thnBlnHarga" name="thnBlnHarga" readonly="readonly" value="${thnBlnHarga}"/></div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Harga Rata-rata</div></div>
-<div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="hargaRata" name="hargaRata"/></div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="hargaRata" name="hargaRata" readonly="readonly" value="${hargaRata}"/></div></div>
 #{list items:jenisHargaList, as:'jenisHarga'}
 %{ff=jenisHarga_index-1}%
 <div class="yui3-u-1-6"><div class="entriClass label">Laba ${jenisHarga.jnsHarga}</div></div>
-<div class="yui3-u-5-6"><div class="entriClass"><input id="laba.${jenisHarga.idJnsHarga}" name="laba.${jenisHarga.idJnsHarga}" size="5"/></div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="laba.${jenisHarga.idJnsHarga}" name="laba.${jenisHarga.idJnsHarga}" size="5" onchange="hitungHarga('hargaRata','laba.${jenisHarga.idJnsHarga}','hargaJual.${jenisHarga.idJnsHarga}')"/></div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Harga ${jenisHarga.jnsHarga}</div></div>
 <div class="yui3-u-5-6"><div class="entriClass"><input id="hargaJual.${jenisHarga.idJnsHarga}" name="hargaJual.${jenisHarga.idJnsHarga}"/></div></div>
 #{/list}
@@ -25,6 +25,12 @@
 </fieldset>
 </div>
 <script>
+function hitungHarga(selectorName1,selectorName2,totalSelectorName) {
+	var selector1 = $('[id="'+selectorName1+'"]');
+	var selector2 = $('[id="'+selectorName2+'"]');
+	var totalSelector = $('[id="'+totalSelectorName+'"]');
+	totalSelector.val((100+parseInt(selector2.val()))*parseInt(selector1.val())/100);
+}
 $(function() {
 	var listAction = #{jsAction @showHarga(':idObatAlat') /}
 	$('#idObatAlat').live('ubah',function() {
