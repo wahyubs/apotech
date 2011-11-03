@@ -47,29 +47,35 @@ public class UserPegawai extends GenericModel {
 	@Column(name = "jns_user", length = 1, nullable = true, unique = false)
 	private String jnsUser;
 
-	@OneToMany(targetEntity = HargaObat.class, fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
-	private Set<HargaObat> hargaObatUserId = new HashSet<HargaObat>();
-
-	@OneToMany(targetEntity = ObatAlat.class, fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
-	private Set<ObatAlat> obatAlatUserId = new HashSet<ObatAlat>();
-
-	@OneToMany(targetEntity = Resep.class, fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
-	private Set<Resep> resepUserId = new HashSet<Resep>();
-
-	@OneToMany(targetEntity = StokOpname.class, fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
-	private Set<StokOpname> stokOpnameUserId = new HashSet<StokOpname>();
-
-	@OneToMany(targetEntity = Supplier.class, fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
-	private Set<Supplier> supplierUserId = new HashSet<Supplier>();
-
-	@OneToMany(targetEntity = Tagihan.class, fetch = FetchType.LAZY, mappedBy = "userId", cascade = CascadeType.REMOVE)
-	// , cascade=CascadeType.ALL)
-	private Set<Tagihan> tagihanUserId = new HashSet<Tagihan>();
+	@OneToMany (targetEntity=HargaObat.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <HargaObat> hargaObatUserId = new HashSet<HargaObat>(); 
+   
+    @OneToMany (targetEntity=Konfigurasi.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Konfigurasi> konfigurasiUserId = new HashSet<Konfigurasi>(); 
+   
+    @OneToMany (targetEntity=ObatAlat.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <ObatAlat> obatAlatUserId = new HashSet<ObatAlat>(); 
+   
+    @OneToMany (targetEntity=Pembelian.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Pembelian> pembelianUserId = new HashSet<Pembelian>(); 
+   
+    @OneToMany (targetEntity=Resep.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Resep> resepUserId = new HashSet<Resep>(); 
+   
+    @OneToMany (targetEntity=ReturPembelian.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <ReturPembelian> returPembelianUserId = new HashSet<ReturPembelian>(); 
+   
+    @OneToMany (targetEntity=StokOpname.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <StokOpname> stokOpnameUserId = new HashSet<StokOpname>(); 
+   
+    @OneToMany (targetEntity=Supplier.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Supplier> supplierUserId = new HashSet<Supplier>(); 
+   
+    @OneToMany (targetEntity=Tagihan.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <Tagihan> tagihanUserId = new HashSet<Tagihan>(); 
+   
+    @OneToMany (targetEntity=TransferStok.class, fetch=FetchType.LAZY, mappedBy="userId", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <TransferStok> transferStokUserId = new HashSet<TransferStok>(); 
 
 	/**
 	 * Default constructor
@@ -118,94 +124,154 @@ public class UserPegawai extends GenericModel {
 	}
 
 	public Set<HargaObat> getHargaObatUserId() {
-		if (hargaObatUserId == null) {
-			hargaObatUserId = new HashSet<HargaObat>();
-		}
-		return hargaObatUserId;
-	}
+        if (hargaObatUserId == null){
+            hargaObatUserId = new HashSet<HargaObat>();
+        }
+        return hargaObatUserId;
+    }
 
-	public void setHargaObatUserId(Set<HargaObat> hargaObatUserId) {
-		this.hargaObatUserId = hargaObatUserId;
-	}
+    public void setHargaObatUserId (Set<HargaObat> hargaObatUserId) {
+        this.hargaObatUserId = hargaObatUserId;
+    }	
+    
+    public void addHargaObatUserId (HargaObat hargaObat) {
+    	    getHargaObatUserId().add(hargaObat);
+    }
+    
+    public Set<Konfigurasi> getKonfigurasiUserId() {
+        if (konfigurasiUserId == null){
+            konfigurasiUserId = new HashSet<Konfigurasi>();
+        }
+        return konfigurasiUserId;
+    }
 
-	public void addHargaObatUserId(HargaObat hargaObat) {
-		getHargaObatUserId().add(hargaObat);
-	}
+    public void setKonfigurasiUserId (Set<Konfigurasi> konfigurasiUserId) {
+        this.konfigurasiUserId = konfigurasiUserId;
+    }	
+    
+    public void addKonfigurasiUserId (Konfigurasi konfigurasi) {
+    	    getKonfigurasiUserId().add(konfigurasi);
+    }
+    
+    public Set<ObatAlat> getObatAlatUserId() {
+        if (obatAlatUserId == null){
+            obatAlatUserId = new HashSet<ObatAlat>();
+        }
+        return obatAlatUserId;
+    }
 
-	public Set<ObatAlat> getObatAlatUserId() {
-		if (obatAlatUserId == null) {
-			obatAlatUserId = new HashSet<ObatAlat>();
-		}
-		return obatAlatUserId;
-	}
+    public void setObatAlatUserId (Set<ObatAlat> obatAlatUserId) {
+        this.obatAlatUserId = obatAlatUserId;
+    }	
+    
+    public void addObatAlatUserId (ObatAlat obatAlat) {
+    	    getObatAlatUserId().add(obatAlat);
+    }
+    
+    public Set<Pembelian> getPembelianUserId() {
+        if (pembelianUserId == null){
+            pembelianUserId = new HashSet<Pembelian>();
+        }
+        return pembelianUserId;
+    }
 
-	public void setObatAlatUserId(Set<ObatAlat> obatAlatUserId) {
-		this.obatAlatUserId = obatAlatUserId;
-	}
+    public void setPembelianUserId (Set<Pembelian> pembelianUserId) {
+        this.pembelianUserId = pembelianUserId;
+    }	
+    
+    public void addPembelianUserId (Pembelian pembelian) {
+    	    getPembelianUserId().add(pembelian);
+    }
+    
+    public Set<Resep> getResepUserId() {
+        if (resepUserId == null){
+            resepUserId = new HashSet<Resep>();
+        }
+        return resepUserId;
+    }
 
-	public void addObatAlatUserId(ObatAlat obatAlat) {
-		getObatAlatUserId().add(obatAlat);
-	}
+    public void setResepUserId (Set<Resep> resepUserId) {
+        this.resepUserId = resepUserId;
+    }	
+    
+    public void addResepUserId (Resep resep) {
+    	    getResepUserId().add(resep);
+    }
+    
+    public Set<ReturPembelian> getReturPembelianUserId() {
+        if (returPembelianUserId == null){
+            returPembelianUserId = new HashSet<ReturPembelian>();
+        }
+        return returPembelianUserId;
+    }
 
-	public Set<Resep> getResepUserId() {
-		if (resepUserId == null) {
-			resepUserId = new HashSet<Resep>();
-		}
-		return resepUserId;
-	}
+    public void setReturPembelianUserId (Set<ReturPembelian> returPembelianUserId) {
+        this.returPembelianUserId = returPembelianUserId;
+    }	
+    
+    public void addReturPembelianUserId (ReturPembelian returPembelian) {
+    	    getReturPembelianUserId().add(returPembelian);
+    }
+    
+    public Set<StokOpname> getStokOpnameUserId() {
+        if (stokOpnameUserId == null){
+            stokOpnameUserId = new HashSet<StokOpname>();
+        }
+        return stokOpnameUserId;
+    }
 
-	public void setResepUserId(Set<Resep> resepUserId) {
-		this.resepUserId = resepUserId;
-	}
+    public void setStokOpnameUserId (Set<StokOpname> stokOpnameUserId) {
+        this.stokOpnameUserId = stokOpnameUserId;
+    }	
+    
+    public void addStokOpnameUserId (StokOpname stokOpname) {
+    	    getStokOpnameUserId().add(stokOpname);
+    }
+    
+    public Set<Supplier> getSupplierUserId() {
+        if (supplierUserId == null){
+            supplierUserId = new HashSet<Supplier>();
+        }
+        return supplierUserId;
+    }
 
-	public void addResepUserId(Resep resep) {
-		getResepUserId().add(resep);
-	}
+    public void setSupplierUserId (Set<Supplier> supplierUserId) {
+        this.supplierUserId = supplierUserId;
+    }	
+    
+    public void addSupplierUserId (Supplier supplier) {
+    	    getSupplierUserId().add(supplier);
+    }
+    
+    public Set<Tagihan> getTagihanUserId() {
+        if (tagihanUserId == null){
+            tagihanUserId = new HashSet<Tagihan>();
+        }
+        return tagihanUserId;
+    }
 
-	public Set<StokOpname> getStokOpnameUserId() {
-		if (stokOpnameUserId == null) {
-			stokOpnameUserId = new HashSet<StokOpname>();
-		}
-		return stokOpnameUserId;
-	}
+    public void setTagihanUserId (Set<Tagihan> tagihanUserId) {
+        this.tagihanUserId = tagihanUserId;
+    }	
+    
+    public void addTagihanUserId (Tagihan tagihan) {
+    	    getTagihanUserId().add(tagihan);
+    }
+    
+    public Set<TransferStok> getTransferStokUserId() {
+        if (transferStokUserId == null){
+            transferStokUserId = new HashSet<TransferStok>();
+        }
+        return transferStokUserId;
+    }
 
-	public void setStokOpnameUserId(Set<StokOpname> stokOpnameUserId) {
-		this.stokOpnameUserId = stokOpnameUserId;
-	}
-
-	public void addStokOpnameUserId(StokOpname stokOpname) {
-		getStokOpnameUserId().add(stokOpname);
-	}
-
-	public Set<Supplier> getSupplierUserId() {
-		if (supplierUserId == null) {
-			supplierUserId = new HashSet<Supplier>();
-		}
-		return supplierUserId;
-	}
-
-	public void setSupplierUserId(Set<Supplier> supplierUserId) {
-		this.supplierUserId = supplierUserId;
-	}
-
-	public void addSupplierUserId(Supplier supplier) {
-		getSupplierUserId().add(supplier);
-	}
-
-	public Set<Tagihan> getTagihanUserId() {
-		if (tagihanUserId == null) {
-			tagihanUserId = new HashSet<Tagihan>();
-		}
-		return tagihanUserId;
-	}
-
-	public void setTagihanUserId(Set<Tagihan> tagihanUserId) {
-		this.tagihanUserId = tagihanUserId;
-	}
-
-	public void addTagihanUserId(Tagihan tagihan) {
-		getTagihanUserId().add(tagihan);
-	}
+    public void setTransferStokUserId (Set<TransferStok> transferStokUserId) {
+        this.transferStokUserId = transferStokUserId;
+    }	
+    
+    public void addTransferStokUserId (TransferStok transferStok) {
+    	    getTransferStokUserId().add(transferStok);
+    }
 
 	public String toString() {
 		return userId + ":" + namaUser;

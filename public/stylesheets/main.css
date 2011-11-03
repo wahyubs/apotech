@@ -2,9 +2,6 @@
     text-align: center;
 }
 #main {
-    border-left: 3px solid;
-    border-right: 3px solid;
-    border-bottom: 3px solid;
     height: 600px;
 }
 legend {
@@ -28,12 +25,6 @@ fieldset {
 	text-align: center;
 	border: 2px solid;
 }
-.label {
-	background-color: #c6cccc;
-}
-.header {
-	background-color: silver;
-}
 .yui3-g {
 	border-bottom: 1px solid #000;
 }
@@ -46,10 +37,6 @@ fieldset {
 	margin-right:5px;
 	padding: 0.3em;
 }
-.error {
-	color: red;
+#left,#right {
+	height: 600px;
 }
-input:focus,select:focus,textarea:focus
-{
-background-color:yellow;
-} 

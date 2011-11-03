@@ -1,8 +1,9 @@
 <div id="productsandservices" class="yui3-menu yui3-menu-horizontal">
 	<div class="yui3-menu-content">
 		<ul class="first-of-type">
+			#{if session.contains("username")}
 			<li class="yui3-menuitem"><a class="yui3-menuitem-content"
-				href="@{Application.index()}" key="Ctrl+h">Home</a></li>
+				href="@{Application.index()}" key="Ctrl+h">Home</a></li>			
 			<li><a class="yui3-menu-label" href="#stok">Transaksi Stok</a>
 				<div id="stok" class="yui3-menu">
 					<div class="yui3-menu-content">
@@ -71,12 +72,26 @@
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
 								href="@{CRUD.index()}userpegawais" key="Ctrl+e">User</a></li>
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
-								href="#" key="Ctrl+f">Konfigurasi</a></li>
+								href="@{CRUD.index()}konfigurasis" key="Ctrl+f">Konfigurasi</a></li>
 						</ul>
 					</div>
 				</div></li>
+			<li><a class="yui3-menu-label" href="@{CRUD.index()}">Warna</a>
+				<div id="admin" class="yui3-menu">
+					<div class="yui3-menu-content">
+						<ul>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content colorLink"
+								href="#">white</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content colorLink"
+								href="#">blue</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content colorLink"
+								href="#">green</a></li>
+						</ul>
+					</div>
+				</div></li>			
 			<li class="yui3-menuitem"><a class="yui3-menuitem-content"
 				href="@{Secure.logout()}" key="ctrl+`">Logout</a></li>
+			#{/if}
 		</ul>
 	</div>
 </div>

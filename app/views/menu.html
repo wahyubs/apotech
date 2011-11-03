@@ -3,6 +3,7 @@
     <head>
         <title>#{get 'title' /}</title>
         <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
+        <link id="colorCss" rel="stylesheet" href="@{'/public/stylesheets/white.css'}">
         <link rel="stylesheet" href="@{'/public/stylesheets/reset-min.css'}">
         <link rel="stylesheet" href="@{'/public/stylesheets/grids-min.css'}">
         <link rel="stylesheet" href="@{'/public/stylesheets/fonts-min.css'}">
@@ -60,12 +61,12 @@
     <div class="yui3-u-1-5"></div>
     </div>
     <div class="yui3-g" id="bd">
-    <div class="yui3-u-1-8"></div>
-    <div class="yui3-u-3-4" id="main">
+    <div class="yui3-u-1-12" id="left">&nbsp;</div>
+    <div class="yui3-u-5-6" id="main">
     	#{include 'menulist.html'/}
         #{doLayout /}
     </div>
-    <div class="yui3-u-1-8"></div>
+    <div class="yui3-u-1-12" id="right">&nbsp;</div>
     </div>
     <script>
 	
@@ -98,6 +99,14 @@
 	</script>
 <script>
 $(function() {
+var listAction = #{jsAction @Application.saveConfigColor(':colorId') /}
+$('a.colorLink').click(function() {
+	var teks = $(this).text();
+	var hrefCss = $('#colorCss').attr('href');
+	hrefCss=hrefCss.substring(0,hrefCss.lastIndexOf('/'))+'/'+teks+'.css';
+	$('#colorCss').attr('href',hrefCss);
+	$.getJSON(listAction({colorId:teks}));
+});
 $('input.autocomplete-relation').each(function() {
 	   var $input = $(this);
 	   
@@ -140,6 +149,13 @@ $(':input').each(function() {
 });
 $('form').submit(function() {
    $(this).find('input.autocomplete-relation').attr('disabled', 'disabled');
+});
+var listActionGetColor = #{jsAction @Application.getConfigColor(':userId') /}
+var userid='${session.get("username")}';
+$.getJSON(listActionGetColor({userId:userid}), function(data) {
+	var hrefCss = $('#colorCss').attr('href');
+	hrefCss=hrefCss.substring(0,hrefCss.lastIndexOf('/'))+'/'+data+'.css';
+	$('#colorCss').attr('href',hrefCss);
 });
 });</script>
     </body>

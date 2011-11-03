@@ -225,8 +225,10 @@ public class StokControl extends Controller {
 		ObatAlat tmp = ObatAlat.findById(key_idObatAlat);
 		String labelObatAlat = tmp.getLabelObat();
 		String volumeObatAlat = tmp.getVolumeObatAlat();
+		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
 		renderTemplate("StokControl/hargaObat.html", key_idObatAlat,
-				labelObatAlat, thnBlnHarga, hargaRata, laba, hargaJual);
+				labelObatAlat, volumeObatAlat, thnBlnHarga, hargaRata, laba,
+				hargaJual, jenisHargaList);
 	}
 
 	public static void showHarga(String idObatAlat) {

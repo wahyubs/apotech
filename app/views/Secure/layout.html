@@ -3,6 +3,7 @@
     <head>
         <title>#{get 'title' /}</title>
         <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
+        <link id="colorCss" rel="stylesheet" href="@{'/public/stylesheets/white.css'}">
         <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/secure.css'}" />
         <link rel="stylesheet" href="@{'/public/stylesheets/reset-min.css'}">
         <link rel="stylesheet" href="@{'/public/stylesheets/grids-min.css'}">
@@ -61,11 +62,12 @@
     <div class="yui3-u-1-5"></div>
     </div>
     <div class="yui3-g" id="bd">
-    <div class="yui3-u-1-8"></div>
-    <div class="yui3-u-3-4" id="main">
+    <div class="yui3-u-1-12" id="left">&nbsp;</div>
+    <div class="yui3-u-5-6" id="main">
+    	#{include 'menulist.html'/}
         #{doLayout /} 
     </div>
-    <div class="yui3-u-1-8"></div>
+    <div class="yui3-u-1-12" id="right">&nbsp;</div>
     </div>
 <script>
 $(function() {

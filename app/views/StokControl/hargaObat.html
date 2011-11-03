@@ -16,10 +16,14 @@
 <div class="yui3-u-5-6"><div class="entriClass"><input type="text" id="hargaRata" name="hargaRata" readonly="readonly" value="${hargaRata}"/></div></div>
 #{list items:jenisHargaList, as:'jenisHarga'}
 %{ff=jenisHarga_index-1}%
+#{if hargaJual!=null}
+%{labaTxt=laba.get(jenisHarga.idJnsHarga)
+hargaTxt=hargaJual.get(jenisHarga.idJnsHarga)}%
+#{/if}
 <div class="yui3-u-1-6"><div class="entriClass label">Laba ${jenisHarga.jnsHarga}</div></div>
-<div class="yui3-u-5-6"><div class="entriClass"><input id="laba.${jenisHarga.idJnsHarga}" name="laba.${jenisHarga.idJnsHarga}" size="5" onchange="hitungHarga('hargaRata','laba.${jenisHarga.idJnsHarga}','hargaJual.${jenisHarga.idJnsHarga}')"/></div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="laba.${jenisHarga.idJnsHarga}" name="laba.${jenisHarga.idJnsHarga}" size="5" onchange="hitungHarga('hargaRata','laba.${jenisHarga.idJnsHarga}','hargaJual.${jenisHarga.idJnsHarga}')" value="${labaTxt}"/></div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Harga ${jenisHarga.jnsHarga}</div></div>
-<div class="yui3-u-5-6"><div class="entriClass"><input id="hargaJual.${jenisHarga.idJnsHarga}" name="hargaJual.${jenisHarga.idJnsHarga}"/></div></div>
+<div class="yui3-u-5-6"><div class="entriClass"><input id="hargaJual.${jenisHarga.idJnsHarga}" name="hargaJual.${jenisHarga.idJnsHarga}" value="${hargaTxt}"/></div></div>
 #{/list}
 <div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{StokControl.hargaObat()}'"/></div></div>
 </fieldset>

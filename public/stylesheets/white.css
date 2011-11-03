@@ -1,0 +1,19 @@
+.header {
+	background-color: #cecfce;
+}
+.error {
+	color: red;
+}
+input:focus,select:focus,textarea:focus
+{
+background-color:yellow;
+}
+.label {
+	background-color: #b58aa5;
+}
+#left,#right {
+	background-color: #84596b;
+}
+#main {
+	background-color: white;
+}
