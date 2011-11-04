@@ -92,6 +92,10 @@
 			<li class="yui3-menuitem"><a class="yui3-menuitem-content"
 				href="@{Secure.logout()}" key="ctrl+`">Logout</a></li>
 			#{/if}
+			#{else}
+			<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+				href="@{Secure.login()}" key="Ctrl+h">Login</a></li>
+			#{/else}
 		</ul>
 	</div>
 </div>
