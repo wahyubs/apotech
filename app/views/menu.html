@@ -138,15 +138,19 @@ $('input.autocomplete-relation').each(function() {
 	      }
 	   });
 	});
-$(':input').moveNext();
 var tabindex = 1;
 $(':input').each(function() {
 	if (this.type != "hidden") {
     	var $input = $(this);
+    	if(!$input.attr("readonly")) {
         $input.attr("tabIndex", tabindex);
         tabindex++;
+		} else {
+			$input.attr("tabIndex", "-1");
+		}
 	}
 });
+$(':input[tabIndex="1"]').focus();
 $('form').submit(function() {
    $(this).find('input.autocomplete-relation').attr('disabled', 'disabled');
 });

@@ -27,7 +27,7 @@ import tool.AutocompleteValue;
 import tool.CommonUtil;
 
 @With(Secure.class)
-public class StokControl extends Controller {
+public class StokControl extends BaseController {
 	public static int AUTOCOMPLETE_MAX = 20;
 
 	public static void transaksi(StokOpname stokOpname, String hasil) {
@@ -36,21 +36,7 @@ public class StokControl extends Controller {
 		if (stokOpname.getTglStokOpname() == null)
 			stokOpname.setTglStokOpname(new Date());
 		render(stokOpname, hasil);
-	}
-
-	public static void autocompleteKodeObat(final String term) {
-		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
-		List<ObatAlat> findAll = ObatAlat
-				.find("lower(nama_obat_alat) like lower(?) or lower(kode_obat_alat) like lower(?)",
-						"%" + term + "%", "%" + term + "%").fetch();
-		for (Iterator iterator = findAll.iterator(); iterator.hasNext();) {
-			ObatAlat obatAlatTmp = (ObatAlat) iterator.next();
-			response.add(new AutocompleteValue(obatAlatTmp.getIdObatAlat(),
-					obatAlatTmp.getKodeObatAlat() + " - "
-							+ obatAlatTmp.getNamaObatAlat()));
-		}
-		renderJSON(response);
-	}
+	}	
 
 	public static void saveOpname(String idStokOpname,
 			@Required @As("dd-MM-yyyy") Date tglStokOpname,

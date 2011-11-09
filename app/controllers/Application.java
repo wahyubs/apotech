@@ -1,15 +1,15 @@
 package controllers;
 
-import play.*;
-import play.mvc.*;
-import tool.AutocompleteValue;
+import java.util.List;
 
-import java.util.*;
-
+import models.ApotekConstant;
+import models.Konfigurasi;
+import models.UserPegawai;
+import play.mvc.Controller;
+import play.mvc.With;
 import controllers.Secure.Security;
 
-import models.*;
-
+@With(Secure.class)
 public class Application extends Controller {
 
 	public static void index(boolean logout) {

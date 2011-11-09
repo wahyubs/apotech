@@ -209,7 +209,7 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		String format = getTglKadaluarsa() == null ? "-" : dateFormat
 				.format(getTglKadaluarsa());
-		return "exp:" + format + " ,jmlA:" + getJmlStokApotek() + " ,jmlG:"
+		return "exp:" + format + ", Apotek:" + getJmlStokApotek() + ", Gudang:"
 				+ getJmlStokGudang();
 	}
 

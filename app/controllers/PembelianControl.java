@@ -28,7 +28,7 @@ import tool.AutocompleteValue;
 import tool.CommonUtil;
 
 @With(Secure.class)
-public class PembelianControl extends Controller {
+public class PembelianControl extends BaseController {
 	public static int AUTOCOMPLETE_MAX = 20;
 
 	public static void transaksi(Pembelian pembelian, String hasil) {
@@ -73,19 +73,6 @@ public class PembelianControl extends Controller {
 			Supplier supplierTmp = (Supplier) iterator.next();
 			response.add(new AutocompleteValue(supplierTmp.getIdSupplier(),
 					supplierTmp.getLabelSupplier()));
-		}
-		renderJSON(response);
-	}
-
-	public static void autocompleteKodeObat(final String term) {
-		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
-		List<ObatAlat> findAll = ObatAlat
-				.find("lower(nama_obat_alat) like lower(?) or lower(kode_obat_alat) like lower(?)",
-						"%" + term + "%", "%" + term + "%").fetch();
-		for (Iterator iterator = findAll.iterator(); iterator.hasNext();) {
-			ObatAlat obatAlatTmp = (ObatAlat) iterator.next();
-			response.add(new AutocompleteValue(obatAlatTmp.getIdObatAlat(),
-					obatAlatTmp.getLabelObat()));
 		}
 		renderJSON(response);
 	}

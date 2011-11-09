@@ -16,4 +16,9 @@ public class CommonUtil {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
 		return dateFormat.format(date);
 	}
+	
+	public static String getFormatThn(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+		return dateFormat.format(date);
+	}
 }
