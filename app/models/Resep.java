@@ -67,6 +67,9 @@ public class Resep extends GenericModel implements IGeneratedModel {
     
     @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
     private Date tglAktivitas; 
+
+    @Column(name="sts_transaksi",  length=1,  nullable=true,  unique=false)
+    private String stsTransaksi; 
     
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_jns_harga",  nullable=true,  unique=false  )
@@ -184,6 +187,14 @@ public class Resep extends GenericModel implements IGeneratedModel {
 	
     public void setTglAktivitas (Date tglAktivitas) {
         this.tglAktivitas =  tglAktivitas;
+    }
+    
+    public String getStsTransaksi() {
+        return stsTransaksi;
+    }
+	
+    public void setStsTransaksi (String stsTransaksi) {
+        this.stsTransaksi =  stsTransaksi;
     }
     
     public JenisHarga getIdJnsHarga () {

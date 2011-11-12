@@ -21,9 +21,10 @@ public class StokObatAlat_ {
 
     public static volatile SingularAttribute<StokObatAlat, ObatAlat> idObatAlat;
 
+    public static volatile SetAttribute<StokObatAlat, DetailReturPenjualan> detailReturPenjualanIdStok;
     public static volatile SetAttribute<StokObatAlat, DetilOpname> detilOpnameIdStok;
     public static volatile SetAttribute<StokObatAlat, DetilPembelian> detilPembelianIdStok;
+    public static volatile SetAttribute<StokObatAlat, DetilReturPembelian> detilReturPembelianIdStok;
+    public static volatile SetAttribute<StokObatAlat, DetilTransferStok> detilTransferStokIdStok;
     public static volatile SetAttribute<StokObatAlat, ObatResep> obatResepIdStok;
-
-
 }

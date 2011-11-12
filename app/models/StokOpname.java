@@ -25,149 +25,157 @@ import play.db.jpa.GenericModel;
 import play.db.jpa.JPA;
 
 /**
- *
- * <p>Title: StokOpname</p>
- *
- * <p>Description: Play Domain Object describing a StokOpname entity</p>
- *
+ * 
+ * <p>
+ * Title: StokOpname
+ * </p>
+ * 
+ * <p>
+ * Description: Play Domain Object describing a StokOpname entity
+ * </p>
+ * 
  */
-@Entity (name="StokOpname")
-@Table (name="stok_opname")
+@Entity(name = "StokOpname")
+@Table(name = "stok_opname")
 public class StokOpname extends GenericModel implements IGeneratedModel {
 
-    @Id @Column(name="id_stok_opname" ,length=32)
-    @GeneratedValue(generator = "MyIdGenerator")
+	@Id
+	@Column(name = "id_stok_opname", length = 32)
+	@GeneratedValue(generator = "MyIdGenerator")
 	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")
-    private String idStokOpname;
+	private String idStokOpname;
 
-    @Column(name="tgl_aktivitas",    nullable=true,  unique=false)
-    private Date tglAktivitas; 
-    
-    @Column(name="tgl_stok_opname",    nullable=true,  unique=false)
-    private Date tglStokOpname; 
-    
-    @Column(name="desc_stok_opname",  length=500,  nullable=true,  unique=false)
-    private String descStokOpname; 
-    
-    @Column(name="sts_transaksi",  length=1,  nullable=true,  unique=false)
-    private String stsTransaksi; 
-    
-    @ManyToOne (fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private UserPegawai userId; 
-    
-    @OneToMany (targetEntity=DetilOpname.class, fetch=FetchType.LAZY, mappedBy="idStokOpname", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
-    private Set <DetilOpname> detilOpnameIdStokOpname = new HashSet<DetilOpname>(); 
-   
-    /**
-    * Default constructor
-    */
-    public StokOpname() {
-    }
+	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
+	private Date tglAktivitas;
 
+	@Column(name = "tgl_stok_opname", nullable = true, unique = false)
+	private Date tglStokOpname;
 
-    public String getIdStokOpname() {
-        return idStokOpname;
-    }
-	
-    public void setIdStokOpname (String idStokOpname) {
-        this.idStokOpname =  idStokOpname;
-    }
-    
-    public Date getTglAktivitas() {
-        return tglAktivitas;
-    }
-	
-    public void setTglAktivitas (Date tglAktivitas) {
-        this.tglAktivitas =  tglAktivitas;
-    }
-    
-    public Date getTglStokOpname() {
-        return tglStokOpname;
-    }
-	
-    public void setTglStokOpname (Date tglStokOpname) {
-        this.tglStokOpname =  tglStokOpname;
-    }
-    
-    public String getDescStokOpname() {
-        return descStokOpname;
-    }
-	
-    public void setDescStokOpname (String descStokOpname) {
-        this.descStokOpname =  descStokOpname;
-    }
-    
-    public String getStsTransaksi() {
-        return stsTransaksi;
-    }
-	
-    public void setStsTransaksi (String stsTransaksi) {
-        this.stsTransaksi =  stsTransaksi;
-    }
-    
-    public UserPegawai getUserId () {
-    	return userId;
-    }
-	
-    public void setUserId (UserPegawai userId) {
-    	this.userId = userId;
-    }
-    
-    public Set<DetilOpname> getDetilOpnameIdStokOpname() {
-        if (detilOpnameIdStokOpname == null){
-            detilOpnameIdStokOpname = new HashSet<DetilOpname>();
-        }
-        return detilOpnameIdStokOpname;
-    }
+	@Column(name = "desc_stok_opname", length = 500, nullable = true, unique = false)
+	private String descStokOpname;
 
-    public void setDetilOpnameIdStokOpname (Set<DetilOpname> detilOpnameIdStokOpname) {
-        this.detilOpnameIdStokOpname = detilOpnameIdStokOpname;
-    }	
-    
-    public void addDetilOpnameIdStokOpname (DetilOpname detilOpname) {
-    	    getDetilOpnameIdStokOpname().add(detilOpname);
-    }
-    
-    public String toString(){
-       return tglAktivitas+"";
-    }
-    
-    public List monitoringOpname(String key_idObatAlat,@As("dd-MM-yyyy") Date tglPembelianAwal,
-			@As("dd-MM-yyyy") Date tglPembelianAkhir){
-		String sql = "select stok_opname.id_stok_opname, stok_opname.tgl_stok_opname, stok_opname.desc_stok_opname, count(detil_opname.id_stok)" + 
-				" from stok_opname join detil_opname on stok_opname.id_stok_opname=detil_opname.id_stok_opname" + 
-				" join stok_obat_alat on detil_opname.id_stok=stok_obat_alat.id_stok" + 
-				" where 1=1";
-		if(tglPembelianAwal!=null)
-			sql += " and stok_opname.tgl_stok_opname >= ?";
-		if(tglPembelianAkhir!=null)
-			sql += " and stok_opname.tgl_stok_opname <= ?";
-		if(!key_idObatAlat.equals(""))
-			sql += " and stok_obat_alat.id_obat_alat = ?";
-		
-		sql += " group by stok_opname.id_stok_opname, stok_opname.tgl_stok_opname, stok_opname.desc_stok_opname";
-		Query query = JPA.em().createNativeQuery(sql); 
-		
-		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-		int $i = 0;
-		if(tglPembelianAwal!=null){			
-			String dateAwal = dt.format(tglPembelianAwal);
-			$i++;
-			query.setParameter( $i, dateAwal );
-		}if(tglPembelianAkhir!=null){
-			String dateAkhir = dt.format(tglPembelianAkhir);
-			$i++;
-			query.setParameter( $i, dateAkhir );
-		}if(!key_idObatAlat.equals("")){
-			$i++;
-			query.setParameter( $i, key_idObatAlat );
+	@Column(name = "sts_transaksi", length = 1, nullable = true, unique = false)
+	private String stsTransaksi;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = true, unique = false)
+	private UserPegawai userId;
+
+	@OneToMany(targetEntity = DetilOpname.class, fetch = FetchType.LAZY, mappedBy = "idStokOpname", cascade = CascadeType.REMOVE)
+	// , cascade=CascadeType.ALL)
+	private Set<DetilOpname> detilOpnameIdStokOpname = new HashSet<DetilOpname>();
+
+	/**
+	 * Default constructor
+	 */
+	public StokOpname() {
+	}
+
+	public String getIdStokOpname() {
+		return idStokOpname;
+	}
+
+	public void setIdStokOpname(String idStokOpname) {
+		this.idStokOpname = idStokOpname;
+	}
+
+	public Date getTglAktivitas() {
+		return tglAktivitas;
+	}
+
+	public void setTglAktivitas(Date tglAktivitas) {
+		this.tglAktivitas = tglAktivitas;
+	}
+
+	public Date getTglStokOpname() {
+		return tglStokOpname;
+	}
+
+	public void setTglStokOpname(Date tglStokOpname) {
+		this.tglStokOpname = tglStokOpname;
+	}
+
+	public String getDescStokOpname() {
+		return descStokOpname;
+	}
+
+	public void setDescStokOpname(String descStokOpname) {
+		this.descStokOpname = descStokOpname;
+	}
+
+	public String getStsTransaksi() {
+		return stsTransaksi;
+	}
+
+	public void setStsTransaksi(String stsTransaksi) {
+		this.stsTransaksi = stsTransaksi;
+	}
+
+	public UserPegawai getUserId() {
+		return userId;
+	}
+
+	public void setUserId(UserPegawai userId) {
+		this.userId = userId;
+	}
+
+	public Set<DetilOpname> getDetilOpnameIdStokOpname() {
+		if (detilOpnameIdStokOpname == null) {
+			detilOpnameIdStokOpname = new HashSet<DetilOpname>();
 		}
-		List a = query.getResultList(); 
+		return detilOpnameIdStokOpname;
+	}
+
+	public void setDetilOpnameIdStokOpname(
+			Set<DetilOpname> detilOpnameIdStokOpname) {
+		this.detilOpnameIdStokOpname = detilOpnameIdStokOpname;
+	}
+
+	public void addDetilOpnameIdStokOpname(DetilOpname detilOpname) {
+		getDetilOpnameIdStokOpname().add(detilOpname);
+	}
+
+	public String toString() {
+		return tglAktivitas + "";
+	}
+
+	public List monitoringOpname(String key_idObatAlat,
+			@As("dd-MM-yyyy") Date tglPembelianAwal,
+			@As("dd-MM-yyyy") Date tglPembelianAkhir) {
+		String sql = "select stok_opname.id_stok_opname, stok_opname.tgl_stok_opname, stok_opname.desc_stok_opname, count(detil_opname.id_stok)"
+				+ " from stok_opname left join detil_opname on stok_opname.id_stok_opname=detil_opname.id_stok_opname"
+				+ " left join stok_obat_alat on detil_opname.id_stok=stok_obat_alat.id_stok"
+				+ " where 1=1";
+		if (tglPembelianAwal != null)
+			sql += " and stok_opname.tgl_stok_opname >= :tglPembelianAwal";
+		if (tglPembelianAkhir != null)
+			sql += " and stok_opname.tgl_stok_opname <= :tglPembelianAkhir";
+		if (!key_idObatAlat.equals(""))
+			sql += " and stok_obat_alat.id_obat_alat = :key_idObatAlat";
+
+		sql += " group by stok_opname.id_stok_opname, stok_opname.tgl_stok_opname, stok_opname.desc_stok_opname";
+		Query query = StokObatAlat.em().createNativeQuery(sql);
+
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+		if (tglPembelianAwal != null) {
+			query.setParameter("tglPembelianAwal", tglPembelianAwal);
+		}
+		if (tglPembelianAkhir != null) {
+			query.setParameter("tglPembelianAkhir", tglPembelianAkhir);
+		}
+		if (!key_idObatAlat.equals("")) {
+			query.setParameter("key_idObatAlat", key_idObatAlat);
+		}
+		List a = null;
+		try {
+			a = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return a;
 	}
-    
-    @Override
+
+	@Override
 	public String getGeneratedValue() {
 		return idStokOpname;
 	}

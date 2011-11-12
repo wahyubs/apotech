@@ -10,9 +10,12 @@ import java.util.List;
 import javax.persistence.Query;
 
 import models.DetailResep;
+import models.DetilTransferStok;
+import models.DetilTransferStokId;
 import models.HargaObat;
 import models.JenisHarga;
 import models.ObatResep;
+import models.ObatResepId;
 import models.Resep;
 import models.StokObatAlat;
 import play.data.binding.As;
@@ -32,7 +35,7 @@ public class PenjualanControl extends BaseController {
 		render(resep, hasil);
 	}
 
-	public static void savePenjualan(String idResep, String kodeResep,
+	public static void savePenjualan(String simpan,String idResep, String kodeResep,
 			@As("dd-MM-yyyy") Date tglPenjualan, String key_idObatAlat,
 			String key_pilihStok, Integer jumlahObatAlat, Integer hargaObatAlat) {
 		Resep resep = new Resep();
@@ -41,6 +44,8 @@ public class PenjualanControl extends BaseController {
 		resep.setKodeResep(kodeResep);
 		resep.setTglPenjualan(tglPenjualan);
 		resep.setTglResep(tglPenjualan);
+		if ("Tutup".equals(simpan))
+			resep.setStsTransaksi("1");
 		resep = resep.merge();
 		resep = resep.save();
 		DetailResep detailResep = new DetailResep();
@@ -61,6 +66,24 @@ public class PenjualanControl extends BaseController {
 		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
 			DetailResep tmp = (DetailResep) iterator.next();
 			resep.addDetailResepIdResep(tmp);
+		}
+		if ("Tutup".equals(simpan)) {
+			if (key_pilihStok != null
+					&& !"".equals(key_pilihStok)) {
+				StokObatAlat stokObatAlat = StokObatAlat
+						.findById(key_pilihStok);
+				ObatResep dtl = ObatResep
+						.findById(new ObatResepId(detailResep
+								.getIdResepDtl(), key_pilihStok));
+				if (dtl.getJmlObatResep() != null
+						&& dtl.getJmlObatResep() > 0) {
+					Integer jmlStokApotek = stokObatAlat.getJmlStokApotek()
+							- dtl.getJmlObatResep();
+					stokObatAlat.setJmlStokApotek(jmlStokApotek);
+				} 
+				stokObatAlat = stokObatAlat.merge();
+				stokObatAlat.validateAndSave();
+			}
 		}
 		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
 		renderTemplate("PenjualanControl/transaksi.html", resep, jenisHargaList);

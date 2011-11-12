@@ -2,7 +2,7 @@
     text-align: center;
 }
 #main {
-    height: 600px;
+    
 }
 legend {
 	margin-left: 0.5em !important;
@@ -38,10 +38,22 @@ fieldset {
 	padding: 0.3em;
 }
 #left,#right {
-	height: 600px;
+	height: 580px;
 }
 .bigEntriClass {
 	margin-right:5px;
 	padding: 0.3em;
 	font-size: x-large;
+}
+.stokKosong {
+	background-color: red;
+}
+.stokKurang {
+	background-color: orange;
+}
+.stokKadaluarsa {
+	background-color: maroon;
+}
+.stokAkanKadaluarsa {
+	background-color: #ff2222;
 }

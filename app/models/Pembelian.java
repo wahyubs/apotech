@@ -37,7 +37,7 @@ import play.db.jpa.JPA;
  */
 @Entity(name = "Pembelian")
 @Table(name = "pembelian")
-public class Pembelian extends GenericModel implements IGeneratedModel{
+public class Pembelian extends GenericModel implements IGeneratedModel {
 
 	@Id
 	@Column(name = "id_pembelian", length = 32)
@@ -53,16 +53,16 @@ public class Pembelian extends GenericModel implements IGeneratedModel{
 
 	@Column(name = "no_faktur", length = 30, nullable = true, unique = false)
 	private String noFaktur;
-	
-	@Column(name="tgl_aktivitas",    nullable=true,  unique=false)
-    private Date tglAktivitas; 
-	
-	@ManyToOne (fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id",  nullable=true,  unique=false  )
-    private UserPegawai userId;
-	
-	@Column(name="sts_transaksi",  length=1,  nullable=true,  unique=false)
-    private String stsTransaksi; 
+
+	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
+	private Date tglAktivitas;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = true, unique = false)
+	private UserPegawai userId;
+
+	@Column(name = "sts_transaksi", length = 1, nullable = true, unique = false)
+	private String stsTransaksi;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_supplier", nullable = true, unique = false)
@@ -109,30 +109,30 @@ public class Pembelian extends GenericModel implements IGeneratedModel{
 	public void setNoFaktur(String noFaktur) {
 		this.noFaktur = noFaktur;
 	}
-	
+
 	public Date getTglAktivitas() {
-        return tglAktivitas;
-    }
-	
-    public void setTglAktivitas (Date tglAktivitas) {
-        this.tglAktivitas =  tglAktivitas;
-    }
-	
-	public UserPegawai getUserId () {
-    	return userId;
-    }
-	
-    public void setUserId (UserPegawai userId) {
-    	this.userId = userId;
-    }
-    
-    public String getStsTransaksi() {
-        return stsTransaksi;
-    }
-	
-    public void setStsTransaksi (String stsTransaksi) {
-        this.stsTransaksi =  stsTransaksi;
-    }
+		return tglAktivitas;
+	}
+
+	public void setTglAktivitas(Date tglAktivitas) {
+		this.tglAktivitas = tglAktivitas;
+	}
+
+	public UserPegawai getUserId() {
+		return userId;
+	}
+
+	public void setUserId(UserPegawai userId) {
+		this.userId = userId;
+	}
+
+	public String getStsTransaksi() {
+		return stsTransaksi;
+	}
+
+	public void setStsTransaksi(String stsTransaksi) {
+		this.stsTransaksi = stsTransaksi;
+	}
 
 	public Supplier getIdSupplier() {
 		return idSupplier;
@@ -162,48 +162,48 @@ public class Pembelian extends GenericModel implements IGeneratedModel{
 		return tglPembelian + "";
 	}
 
-	public List monitoring(String key_idSupplier, String key_idObatAlat,@As("dd-MM-yyyy") Date tglPembelianAwal,
-			@As("dd-MM-yyyy") Date tglPembelianAkhir){
-		String sql = "select pembelian.id_pembelian, pembelian.tgl_pembelian, supplier.nama_supplier," +
-				" sum(detil_pembelian.jml_penerimaan_apotek) as jmlapotek, sum(detil_pembelian.jml_penerimaan_gudang) as jmlgudang, sum(detil_pembelian.harga_penerimaan) as harga, sum(detil_pembelian.discount_charge) as diskon" +
-				" from pembelian join detil_pembelian on pembelian.id_pembelian=detil_pembelian.id_pembelian" + 
-				" join stok_obat_alat on detil_pembelian.id_stok=stok_obat_alat.id_stok" + 
-				" join supplier on pembelian.id_supplier=supplier.id_supplier" +
-				" where 1=1";
-		if(tglPembelianAwal!=null)
-			sql += " and pembelian.tgl_pembelian >= ?";
-		if(tglPembelianAkhir!=null)
-			sql += " and pembelian.tgl_pembelian <= ?";
-		if(!key_idSupplier.equals(""))
-			sql += " and pembelian.id_supplier = ?";
-		if(!key_idObatAlat.equals(""))
-			sql += " and stok_obat_alat.id_obat_alat = ?";
-		
+	public List monitoring(String key_idSupplier, String key_idObatAlat,
+			@As("dd-MM-yyyy") Date tglPembelianAwal,
+			@As("dd-MM-yyyy") Date tglPembelianAkhir) {
+		String sql = "select pembelian.id_pembelian, pembelian.tgl_pembelian, supplier.nama_supplier,"
+				+ " sum(detil_pembelian.jml_penerimaan_apotek) as jmlapotek, sum(detil_pembelian.jml_penerimaan_gudang) as jmlgudang, sum(detil_pembelian.harga_penerimaan) as harga, sum(detil_pembelian.discount_charge) as diskon"
+				+ " from pembelian join detil_pembelian on pembelian.id_pembelian=detil_pembelian.id_pembelian"
+				+ " join stok_obat_alat on detil_pembelian.id_stok=stok_obat_alat.id_stok"
+				+ " join supplier on pembelian.id_supplier=supplier.id_supplier"
+				+ " where 1=1";
+		if (tglPembelianAwal != null)
+			sql += " and pembelian.tgl_pembelian >= :tglPembelianAwal";
+		if (tglPembelianAkhir != null)
+			sql += " and pembelian.tgl_pembelian <= :tglPembelianAkhir";
+		if (!key_idSupplier.equals(""))
+			sql += " and pembelian.id_supplier = :key_idSupplier";
+		if (!key_idObatAlat.equals(""))
+			sql += " and stok_obat_alat.id_obat_alat = :key_idObatAlat";
+
 		sql += " group by pembelian.id_pembelian, pembelian.tgl_pembelian, supplier.nama_supplier";
-		Query query = JPA.em().createNativeQuery(sql); 
-		
-		int $i = 0;
-		if(tglPembelianAwal!=null){
-			SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-			String dateAwal = dt.format(tglPembelianAwal);
-			$i++;
-			query.setParameter( $i, dateAwal );
-		}if(tglPembelianAkhir!=null){
-			SimpleDateFormat dt2 = new SimpleDateFormat("yyyy-MM-dd");
-			String dateAkhir = dt2.format(tglPembelianAkhir);
-			$i++;
-			query.setParameter( $i, dateAkhir );
-		}if(!key_idSupplier.equals("")){
-			$i++;
-			query.setParameter( $i, key_idSupplier );
-		}if(!key_idObatAlat.equals("")){
-			$i++;
-			query.setParameter( $i, key_idObatAlat );
+		Query query = StokObatAlat.em().createNativeQuery(sql);
+
+		if (tglPembelianAwal != null) {
+			query.setParameter("tglPembelianAwal", tglPembelianAwal);
 		}
-		List a = query.getResultList(); 
+		if (tglPembelianAkhir != null) {
+			query.setParameter("tglPembelianAkhir", tglPembelianAkhir);
+		}
+		if (!key_idSupplier.equals("")) {
+			query.setParameter("key_idSupplier", key_idSupplier);
+		}
+		if (!key_idObatAlat.equals("")) {
+			query.setParameter("key_idObatAlat", key_idObatAlat);
+		}
+		List a = null;
+		try {
+			a = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return a;
 	}
-	
+
 	@Override
 	public String getGeneratedValue() {
 		return idPembelian;

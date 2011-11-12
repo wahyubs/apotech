@@ -2,6 +2,8 @@ package models;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -156,7 +159,7 @@ public class DetailResep extends GenericModel implements IGeneratedModel {
 		}
 		return hasil;
 	}
-	
+
 	public String getLabelHargaObat() {
 		DecimalFormat decimalFormat = new DecimalFormat("#######0");
 		List<ObatResep> fetch = ObatResep.find("id_resep_dtl=?", idResepDtl)
@@ -164,10 +167,51 @@ public class DetailResep extends GenericModel implements IGeneratedModel {
 		String hasil = "";
 		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
 			ObatResep obatResep = (ObatResep) iterator.next();
-			String hargaObat = obatResep.getHargaObat()==null?"":decimalFormat.format(obatResep.getHargaObat());
+			String hargaObat = obatResep.getHargaObat() == null ? ""
+					: decimalFormat.format(obatResep.getHargaObat());
 			hasil += hargaObat + " ";
 		}
 		return hasil;
+	}
+
+	public String getClassBaris() {
+		if (getIdResep().getStsTransaksi() == null) {
+			List<ObatResep> fetch = ObatResep.find("id_resep_dtl=?", getIdResepDtl()).fetch();
+			for (Iterator iterator = fetch.iterator(); iterator
+					.hasNext();) {
+				ObatResep obatResep = (ObatResep) iterator.next();
+				Date tglKadaluarsa = obatResep.getIdStok().getTglKadaluarsa();
+				Calendar instance = Calendar.getInstance();
+				instance.set(Calendar.HOUR_OF_DAY, 0);
+				instance.set(Calendar.MINUTE, 0);
+				instance.set(Calendar.SECOND, 0);
+				instance.set(Calendar.MILLISECOND, 0);
+				instance.add(Calendar.MONTH, 3);
+				Query createNativeQuery = StokObatAlat
+						.em()
+						.createNativeQuery(
+								"select sum(x.jml_stok_apotek) from stok_obat_alat x where x.id_obat_alat= :idObatAlat "
+										+ "and date_trunc('day', tgl_kadaluarsa)= :tglKadaluarsa");
+				createNativeQuery.setParameter("idObatAlat", obatResep
+						.getIdStok().getIdObatAlat().getIdObatAlat());
+				createNativeQuery.setParameter("tglKadaluarsa", tglKadaluarsa);
+				Number stokApotek = (Number) createNativeQuery
+						.getSingleResult();
+				if (stokApotek == null || stokApotek.intValue() <= 0) {
+					return "stokKosong";
+				} else if (stokApotek != null
+						&& stokApotek.intValue() < obatResep.getJmlObatResep()) {
+					return "stokKurang";
+				} else if (tglKadaluarsa != null
+						&& tglKadaluarsa.before(new Date())) {
+					return "stokKadaluarsa";
+				} else if (tglKadaluarsa != null
+						&& tglKadaluarsa.before(instance.getTime())) {
+					return "stokAkanKadaluarsa";
+				}
+			}
+		}
+		return "";
 	}
 
 	@Override

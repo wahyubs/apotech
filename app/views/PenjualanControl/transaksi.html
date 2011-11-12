@@ -21,13 +21,31 @@
 #{/select}</div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Harga Obat</div></div>
 <div class="yui3-u-1-3"><div class="entriClass"><input id="hargaObatAlat" name="hargaObatAlat" value="${hargaObatAlat}" readonly="readonly"/></div></div>
-<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PenjualanControl.transaksi()}'"/></div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PenjualanControl.transaksi()}'"/>&nbsp;#{if !resep.detailResepIdResep.isEmpty()}<input value="Tutup" id="tutup" name="simpan" type="submit" />#{/if}</div></div>
 </fieldset>
 </div>
+#{/form}
+<div id="baris">
+<div class="yui3-u-1-2"><div class="isi header">Obat</div></div><div class="yui3-u-1-4"><div class="isi header">Qty</div></div><div class="yui3-u-1-4"><div class="isi header">Harga</div></div>
+#{list items:resep.detailResepIdResep, as:'detilResep'}
+<div class="yui3-u-1-2"><div class="isi ${detilResep.classBaris}">${detilResep.labelObatResep}</div></div><div class="yui3-u-1-4"><div class="isi ${detilResep.classBaris}">${detilResep.jmlObat}</div></div><div class="yui3-u-1-4"><div class="isi ${detilResep.classBaris}">${detilResep.labelHargaObat}</div></div>
+#{/list}
 <script>
 $(function() {
 	var listActionStok = #{jsAction @showStok(':idObatAlat') /}
 	var listActionHarga = #{jsAction @showHargaStok(':idObatAlat',':idJnsHarga') /}
+	$('#idJnsHarga').live('change',function() {
+		var key_obat=$('#key_idObatAlat').val();
+		var id_jns_harga=$('#idJnsHarga').val();
+		$('#hargaObatAlat').val("");
+		$.getJSON(listActionHarga({idObatAlat:key_obat,idJnsHarga:id_jns_harga}),function(data) {
+			$.each(data, function(key, val) {
+				if(val && val.label=='hargaObatAlat') {
+					$('#hargaObatAlat').val(val.value);
+				}
+			  });
+		});
+	});
 	$('#idObatAlat').live('ubah',function() {
 		var key_obat=$('#key_idObatAlat').val();
 		var id_jns_harga=$('#idJnsHarga').val();
@@ -89,16 +107,8 @@ $(function() {
 			    }
 			});
 			$input.autocomplete("search", " ");
-			$input.val(data[0].label);
-			$hidden.val(data[0].value);
 		});		
 	});
 });
 </script>
-#{/form}
-<div id="baris">
-<div class="yui3-u-1-2"><div class="isi header">Obat</div></div><div class="yui3-u-1-4"><div class="isi header">Qty</div></div><div class="yui3-u-1-4"><div class="isi header">Harga</div></div>
-#{list items:resep.detailResepIdResep, as:'detilResep'}
-<div class="yui3-u-1-2"><div class="isi">${detilResep.labelObatResep}</div></div><div class="yui3-u-1-4"><div class="isi">${detilResep.jmlObat}</div></div><div class="yui3-u-1-4"><div class="isi">${detilResep.labelHargaObat}</div></div>
-#{/list}
 </div>

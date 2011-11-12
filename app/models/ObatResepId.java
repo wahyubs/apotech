@@ -24,6 +24,11 @@ public class ObatResepId implements Serializable {
 
 	@Column(name = "id_resep_dtl", length = 32, nullable = false)
 	private String id_resep_dtl;
+	
+	public ObatResepId(String id_resep_dtl, String id_stok) {
+		this.id_resep_dtl=id_resep_dtl;
+		this.id_stok=id_stok;
+	}
 
 	public String getId_stok() {
 		return id_stok;

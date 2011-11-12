@@ -49,18 +49,18 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 
 	@Column(name = "jml_stok_gudang", nullable = true, unique = false)
 	private java.lang.Integer jmlStokGudang;
-	
-	@Column(name="harga_beli_stok",    nullable=true,  unique=false)
-    private java.lang.Integer hargaBeliStok; 
-    
-    @Column(name="ppn_stok",    nullable=true,  unique=false)
-    private java.lang.Integer ppnStok; 
-    
-    @Column(name="disc_perc_stok",    nullable=true,  unique=false)
-    private java.lang.Integer discPercStok; 
-    
-    @Column(name="disc_charge",    nullable=true,  unique=false)
-    private java.lang.Integer discCharge; 
+
+	@Column(name = "harga_beli_stok", nullable = true, unique = false)
+	private java.lang.Integer hargaBeliStok;
+
+	@Column(name = "ppn_stok", nullable = true, unique = false)
+	private java.lang.Integer ppnStok;
+
+	@Column(name = "disc_perc_stok", nullable = true, unique = false)
+	private java.lang.Integer discPercStok;
+
+	@Column(name = "disc_charge", nullable = true, unique = false)
+	private java.lang.Integer discCharge;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_obat_alat", nullable = true, unique = false)
@@ -77,6 +77,10 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 	@OneToMany(targetEntity = ObatResep.class, fetch = FetchType.LAZY, mappedBy = "idStok", cascade = CascadeType.REMOVE)
 	// , cascade=CascadeType.ALL)
 	private Set<ObatResep> obatResepIdStok = new HashSet<ObatResep>();
+
+	@OneToMany(targetEntity = DetailReturPenjualan.class, fetch = FetchType.LAZY, mappedBy = "idStok", cascade = CascadeType.REMOVE)
+	// , cascade=CascadeType.ALL)
+	private Set<DetailReturPenjualan> detailReturPenjualanIdStok = new HashSet<DetailReturPenjualan>();
 
 	/**
 	 * Default constructor
@@ -115,38 +119,38 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 	public void setJmlStokGudang(java.lang.Integer jmlStokGudang) {
 		this.jmlStokGudang = jmlStokGudang;
 	}
-	
+
 	public java.lang.Integer getHargaBeliStok() {
-        return hargaBeliStok;
-    }
-	
-    public void setHargaBeliStok (java.lang.Integer hargaBeliStok) {
-        this.hargaBeliStok =  hargaBeliStok;
-    }
-    
-    public java.lang.Integer getPpnStok() {
-        return ppnStok;
-    }
-	
-    public void setPpnStok (java.lang.Integer ppnStok) {
-        this.ppnStok =  ppnStok;
-    }
-    
-    public java.lang.Integer getDiscPercStok() {
-        return discPercStok;
-    }
-	
-    public void setDiscPercStok (java.lang.Integer discPercStok) {
-        this.discPercStok =  discPercStok;
-    }
-    
-    public java.lang.Integer getDiscCharge() {
-        return discCharge;
-    }
-	
-    public void setDiscCharge (java.lang.Integer discCharge) {
-        this.discCharge =  discCharge;
-    }
+		return hargaBeliStok;
+	}
+
+	public void setHargaBeliStok(java.lang.Integer hargaBeliStok) {
+		this.hargaBeliStok = hargaBeliStok;
+	}
+
+	public java.lang.Integer getPpnStok() {
+		return ppnStok;
+	}
+
+	public void setPpnStok(java.lang.Integer ppnStok) {
+		this.ppnStok = ppnStok;
+	}
+
+	public java.lang.Integer getDiscPercStok() {
+		return discPercStok;
+	}
+
+	public void setDiscPercStok(java.lang.Integer discPercStok) {
+		this.discPercStok = discPercStok;
+	}
+
+	public java.lang.Integer getDiscCharge() {
+		return discCharge;
+	}
+
+	public void setDiscCharge(java.lang.Integer discCharge) {
+		this.discCharge = discCharge;
+	}
 
 	public ObatAlat getIdObatAlat() {
 		return idObatAlat;
@@ -199,6 +203,23 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 
 	public void addObatResepIdStok(ObatResep obatResep) {
 		getObatResepIdStok().add(obatResep);
+	}
+
+	public Set<DetailReturPenjualan> getDetailReturPenjualanIdStok() {
+		if (detailReturPenjualanIdStok == null) {
+			detailReturPenjualanIdStok = new HashSet<DetailReturPenjualan>();
+		}
+		return detailReturPenjualanIdStok;
+	}
+
+	public void setDetailReturPenjualanIdStok(
+			Set<DetailReturPenjualan> detailReturPenjualanIdStok) {
+		this.detailReturPenjualanIdStok = detailReturPenjualanIdStok;
+	}
+
+	public void addDetailReturPenjualanIdStok(
+			DetailReturPenjualan detailReturPenjualan) {
+		getDetailReturPenjualanIdStok().add(detailReturPenjualan);
 	}
 
 	public String toString() {

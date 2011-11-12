@@ -52,7 +52,7 @@ public class ObatResep extends GenericModel {
 	 * Default constructor
 	 */
 	public ObatResep() {
-		obatResepId = new ObatResepId();
+		obatResepId = new ObatResepId(null, null);
 	}
 
 	public ObatResepId getObatResepId() {
