@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Laporan Pembelian</title>
+</head>
+<body>
+<table border=1 cellpadding=0 cellspacing=0 width=1403>
+<tr height=20 style='height:15.0pt'>
+  <td>tgl</td>
+  <td>no faktur</td>
+  <td>supplier</td>
+  <td>Kode barang</td>
+  <td>Obat</td>
+  <td>Stok awal</td>
+  <td>pembelian</td>
+  <td class=xl7316112>stok akhir</td>
+  <td>harga beli</td>
+  <td>ppn</td>
+  <td>diskon</td>
+  <td>harga bersih satuan</td>
+  <td>harga bersih</td>
+  <td>ed</td>
+ </tr> #{list items:detilPembelianList, as:'detilpembelian_tmp'} #{if detilpembelian_tmp.idStok.idObatAlat.idObatAlat!=null}
+ <tr height=20 style='height:15.0pt'>
+  <td align=right>${detilpembelian_tmp.idPembelian.tglPembelian.format('dd-MM-yyyy')}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.idPembelian.noFaktur}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.idPembelian.idSupplier.labelSupplier}</td>
+  <td align=right style='border-left:none'>${detilpembelian_tmp.idStok.idObatAlat.kodeObatAlat}</td>
+  <td align=right style='border-left:none'>${detilpembelian_tmp.idStok.idObatAlat.namaObatAlat}</td>
+  <td align=right style='border-left:none'>${detilpembelian_tmp.stokAwal}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.jmlPenerimaan}</td>
+  <td align=right style='border-left:none'>${detilpembelian_tmp.stokAkhir}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.hargaPenerimaan}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.ppnCharge}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.discountCharge}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.hargaPenerimaan+detilpembelian_tmp.ppnCharge-detilpembelian_tmp.discountCharge}</td>
+  <td style='border-left:none'>${(detilpembelian_tmp.hargaPenerimaan+detilpembelian_tmp.ppnCharge-detilpembelian_tmp.discountCharge)*detilpembelian_tmp.jmlPenerimaan}</td>
+  <td style='border-left:none'>${detilpembelian_tmp.idStok.tglKadaluarsa.format('dd-MM-yyyy')}</td>
+ </tr> #{/if} #{else}
+ #{/else}	#{/list} 
+</table>
+</body>
+</html>

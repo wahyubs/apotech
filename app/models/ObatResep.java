@@ -35,6 +35,18 @@ public class ObatResep extends GenericModel {
 
 	@Column(name = "harga_obat", nullable = true, unique = false)
 	private java.lang.Integer hargaObat;
+	
+	@Column(name="stok_awal_apotek",    nullable=true,  unique=false)
+    private java.lang.Integer stokAwalApotek; 
+    
+    @Column(name="stok_awal_gudang",    nullable=true,  unique=false)
+    private java.lang.Integer stokAwalGudang; 
+    
+    @Column(name="stok_akhir_apotek",    nullable=true,  unique=false)
+    private java.lang.Integer stokAkhirApotek; 
+    
+    @Column(name="stok_akhir_gudang",    nullable=true,  unique=false)
+    private java.lang.Integer stokAkhirGudang; 
 
 	@MapsId("id_resep_dtl")
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -77,6 +89,38 @@ public class ObatResep extends GenericModel {
 
 	public void setHargaObat(java.lang.Integer hargaObat) {
 		this.hargaObat = hargaObat;
+	}
+
+	public java.lang.Integer getStokAwalApotek() {
+		return stokAwalApotek;
+	}
+
+	public void setStokAwalApotek(java.lang.Integer stokAwalApotek) {
+		this.stokAwalApotek = stokAwalApotek;
+	}
+
+	public java.lang.Integer getStokAwalGudang() {
+		return stokAwalGudang;
+	}
+
+	public void setStokAwalGudang(java.lang.Integer stokAwalGudang) {
+		this.stokAwalGudang = stokAwalGudang;
+	}
+
+	public java.lang.Integer getStokAkhirApotek() {
+		return stokAkhirApotek;
+	}
+
+	public void setStokAkhirApotek(java.lang.Integer stokAkhirApotek) {
+		this.stokAkhirApotek = stokAkhirApotek;
+	}
+
+	public java.lang.Integer getStokAkhirGudang() {
+		return stokAkhirGudang;
+	}
+
+	public void setStokAkhirGudang(java.lang.Integer stokAkhirGudang) {
+		this.stokAkhirGudang = stokAkhirGudang;
 	}
 
 	public DetailResep getIdResepDtl() {

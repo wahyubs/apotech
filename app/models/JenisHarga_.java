@@ -10,6 +10,7 @@ public class JenisHarga_ {
     public static volatile SingularAttribute<JenisHarga, String> idJnsHarga;
 
     public static volatile SingularAttribute<JenisHarga, String> jnsHarga;
+    public static volatile SingularAttribute<JenisHarga, String> kodeJnsHarga;
 
 
     public static volatile SetAttribute<JenisHarga, HargaObat> hargaObatIdJnsHarga;

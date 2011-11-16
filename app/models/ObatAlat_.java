@@ -16,6 +16,7 @@ public class ObatAlat_ {
     public static volatile SingularAttribute<ObatAlat, String> namaObatAlat;
     public static volatile SingularAttribute<ObatAlat, java.lang.Integer> hargaTerakhir;
     public static volatile SingularAttribute<ObatAlat, String> volumeObatAlat;
+    public static volatile SingularAttribute<ObatAlat, java.lang.Integer> minimumStok;
 
     public static volatile SingularAttribute<ObatAlat, JenisObatAlat> idJnsObatAlat;
     public static volatile SingularAttribute<ObatAlat, UserPegawai> userId;

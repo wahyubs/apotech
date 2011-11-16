@@ -75,12 +75,14 @@ public class PenjualanControl extends BaseController {
 				ObatResep dtl = ObatResep
 						.findById(new ObatResepId(detailResep
 								.getIdResepDtl(), key_pilihStok));
+				dtl.setStokAwalApotek(stokObatAlat.getJmlStokApotek());
 				if (dtl.getJmlObatResep() != null
 						&& dtl.getJmlObatResep() > 0) {
 					Integer jmlStokApotek = stokObatAlat.getJmlStokApotek()
 							- dtl.getJmlObatResep();
 					stokObatAlat.setJmlStokApotek(jmlStokApotek);
-				} 
+				}
+				dtl.setStokAkhirApotek(stokObatAlat.getJmlStokApotek());
 				stokObatAlat = stokObatAlat.merge();
 				stokObatAlat.validateAndSave();
 			}

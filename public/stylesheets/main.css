@@ -57,3 +57,12 @@ fieldset {
 .stokAkanKadaluarsa {
 	background-color: #ff2222;
 }
+.stokNormal {
+	background-color: lime;
+}
+.namaApotek {
+	font-size: xx-large;
+}
+.alamatApotek {
+	font-size: large;
+}

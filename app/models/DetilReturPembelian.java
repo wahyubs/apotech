@@ -38,6 +38,18 @@ public class DetilReturPembelian extends GenericModel {
     @Column(name="jml_redelivery_gudang",    nullable=true,  unique=false)
     private java.lang.Integer jmlRedeliveryGudang; 
     
+    @Column(name="stok_awal_apotek",    nullable=true,  unique=false)
+    private java.lang.Integer stokAwalApotek; 
+    
+    @Column(name="stok_awal_gudang",    nullable=true,  unique=false)
+    private java.lang.Integer stokAwalGudang; 
+    
+    @Column(name="stok_akhir_apotek",    nullable=true,  unique=false)
+    private java.lang.Integer stokAkhirApotek; 
+    
+    @Column(name="stok_akhir_gudang",    nullable=true,  unique=false)
+    private java.lang.Integer stokAkhirGudang; 
+    
     @MapsId ("id_retur_beli")
     @ManyToOne (fetch=FetchType.LAZY)
     @JoinColumn(name="id_retur_beli", nullable=false,  unique=false , insertable=false, updatable=false )
@@ -98,7 +110,47 @@ public class DetilReturPembelian extends GenericModel {
         this.jmlRedeliveryGudang =  jmlRedeliveryGudang;
     }
     
-    public ReturPembelian getIdReturBeli () {
+    public java.lang.Integer getStokAwalApotek() {
+		return stokAwalApotek;
+	}
+
+
+	public void setStokAwalApotek(java.lang.Integer stokAwalApotek) {
+		this.stokAwalApotek = stokAwalApotek;
+	}
+
+
+	public java.lang.Integer getStokAwalGudang() {
+		return stokAwalGudang;
+	}
+
+
+	public void setStokAwalGudang(java.lang.Integer stokAwalGudang) {
+		this.stokAwalGudang = stokAwalGudang;
+	}
+
+
+	public java.lang.Integer getStokAkhirApotek() {
+		return stokAkhirApotek;
+	}
+
+
+	public void setStokAkhirApotek(java.lang.Integer stokAkhirApotek) {
+		this.stokAkhirApotek = stokAkhirApotek;
+	}
+
+
+	public java.lang.Integer getStokAkhirGudang() {
+		return stokAkhirGudang;
+	}
+
+
+	public void setStokAkhirGudang(java.lang.Integer stokAkhirGudang) {
+		this.stokAkhirGudang = stokAkhirGudang;
+	}
+
+
+	public ReturPembelian getIdReturBeli () {
     	return idReturBeli;
     }
 	

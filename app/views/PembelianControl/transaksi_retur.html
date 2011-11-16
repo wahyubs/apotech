@@ -87,7 +87,10 @@ $(function() {
 		});		
 	});
 	#{if returPembelian.stsTransaksi!=null}
-	$(':input').attr('disabled', 'disabled');
+	$('#tutup').attr('value','Buka').attr('id','buka');
+	$(':input').not('#buka').attr('readonly', 'readonly');
+	$(':input').not('#buka').unbind();
+	$('#simpan').attr('disabled', 'disabled');
 	#{/if}
 });
 </script>

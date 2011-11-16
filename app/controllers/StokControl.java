@@ -10,11 +10,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import models.DetilOpname;
 import models.HargaObat;
 import models.HargaObatId;
 import models.JenisHarga;
+import models.JenisObatAlat;
 import models.ObatAlat;
 import models.StokObatAlat;
 import models.StokOpname;
@@ -36,7 +38,7 @@ public class StokControl extends BaseController {
 		if (stokOpname.getTglStokOpname() == null)
 			stokOpname.setTglStokOpname(new Date());
 		render(stokOpname, hasil);
-	}	
+	}
 
 	public static void saveOpname(String idStokOpname,
 			@Required @As("dd-MM-yyyy") Date tglStokOpname,
@@ -179,7 +181,29 @@ public class StokControl extends BaseController {
 	}
 
 	public static void monitoring_stok() {
-		render();
+		List jenisObatList = JenisObatAlat.findAll();
+		render(jenisObatList);
+	}
+
+	public static void cariStok(String jnsObatAlat, String key_idObatAlat) {
+		List jenisObatList = JenisObatAlat.findAll();
+		String sql = "select * from obat_alat where 1=1 ";
+		if (CommonUtil.isNotEmpty(key_idObatAlat)) {
+			sql += "and id_obat_alat=:key_idObatAlat ";
+		}
+		if (CommonUtil.isNotEmpty(jnsObatAlat)) {
+			sql += "and id_jns_obat_alat=:jnsObatAlat ";
+		}
+		sql+="order by id_obat_alat";
+		Query createNativeQuery = ObatAlat.em().createNativeQuery(sql,
+				ObatAlat.class);
+		if (CommonUtil.isNotEmpty(key_idObatAlat))
+			createNativeQuery.setParameter("key_idObatAlat", key_idObatAlat);
+		if (CommonUtil.isNotEmpty(jnsObatAlat))
+			createNativeQuery.setParameter("jnsObatAlat", jnsObatAlat);
+		List<ObatAlat> stokGlobalList = createNativeQuery.getResultList();
+		renderTemplate("StokControl/monitoring_stok.html", jnsObatAlat,
+				key_idObatAlat, stokGlobalList, jenisObatList);
 	}
 
 	public static void hargaObat() {
@@ -271,5 +295,29 @@ public class StokControl extends BaseController {
 		StokOpname stokOpname = StokOpname.findById(idStokOpname);
 		String hasil = null;
 		renderTemplate("StokControl/transaksi.html", stokOpname, hasil);
+	}
+
+	public static void autocompleteKodeObatDanJenis(final String jnsObatAlat,
+			final String term) {
+		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
+		String sql = "select * from obat_alat where 1=1 ";
+		if (CommonUtil.isNotEmpty(jnsObatAlat))
+			sql += "and id_jns_obat_alat=:jnsObatAlat ";
+		if (CommonUtil.isNotEmpty(term))
+			sql += "and lower(nama_obat_alat) like lower(:term) or lower(kode_obat_alat) like lower(:term) ";
+		Query createNativeQuery = ObatAlat.em().createNativeQuery(sql,
+				ObatAlat.class);
+		if (CommonUtil.isNotEmpty(jnsObatAlat))
+			createNativeQuery.setParameter("jnsObatAlat", jnsObatAlat);
+		if (CommonUtil.isNotEmpty(term))
+			createNativeQuery.setParameter("term", "%" + term + "%");
+		List<ObatAlat> findAll = createNativeQuery.getResultList();
+		for (Iterator iterator = findAll.iterator(); iterator.hasNext();) {
+			ObatAlat obatAlatTmp = (ObatAlat) iterator.next();
+			response.add(new AutocompleteValue(obatAlatTmp.getIdObatAlat(),
+					obatAlatTmp.getKodeObatAlat() + " - "
+							+ obatAlatTmp.getNamaObatAlat()));
+		}
+		renderJSON(response);
 	}
 }

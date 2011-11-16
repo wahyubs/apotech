@@ -1,7 +1,10 @@
 package models;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -55,9 +59,12 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
 	private Date tglAktivitas;
 	
-	@ManyToOne (fetch=FetchType.LAZY)
-    @JoinColumn(name="id_jns_obat_alat",  nullable=true,  unique=false  )
-    private JenisObatAlat idJnsObatAlat; 
+	@Column(name="minimum_stok",    nullable=true,  unique=false)
+    private java.lang.Integer minimumStok; 
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_jns_obat_alat", nullable = true, unique = false)
+	private JenisObatAlat idJnsObatAlat;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = true, unique = false)
@@ -122,14 +129,14 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	public void setTglAktivitas(Date tglAktivitas) {
 		this.tglAktivitas = tglAktivitas;
 	}
-	
-	public JenisObatAlat getIdJnsObatAlat () {
-    	return idJnsObatAlat;
-    }
-	
-    public void setIdJnsObatAlat (JenisObatAlat idJnsObatAlat) {
-    	this.idJnsObatAlat = idJnsObatAlat;
-    }
+
+	public JenisObatAlat getIdJnsObatAlat() {
+		return idJnsObatAlat;
+	}
+
+	public void setIdJnsObatAlat(JenisObatAlat idJnsObatAlat) {
+		this.idJnsObatAlat = idJnsObatAlat;
+	}
 
 	public UserPegawai getUserId() {
 		return userId;
@@ -138,7 +145,15 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	public void setUserId(UserPegawai userId) {
 		this.userId = userId;
 	}
-
+	
+	public java.lang.Integer getMinimumStok() {
+        return minimumStok;
+    }
+	
+    public void setMinimumStok (java.lang.Integer minimumStok) {
+        this.minimumStok =  minimumStok;
+    }
+    
 	public Set<HargaObat> getHargaObatIdObatAlat() {
 		if (hargaObatIdObatAlat == null) {
 			hargaObatIdObatAlat = new HashSet<HargaObat>();
@@ -181,5 +196,35 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	@Override
 	public String getGeneratedValue() {
 		return idObatAlat;
+	}
+
+	public Integer getTotalStokApotek() {
+		Query createNativeQuery = StokObatAlat
+				.em()
+				.createNativeQuery(
+						"select sum(x.jml_stok_apotek) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
+		createNativeQuery.setParameter("idObatAlat", idObatAlat);
+		Number totalStokApotek = (Number) createNativeQuery.getSingleResult();
+		return totalStokApotek == null ? 0 : totalStokApotek.intValue();
+	}
+	
+	public Integer getTotalStokGudang() {
+		Query createNativeQuery = StokObatAlat
+				.em()
+				.createNativeQuery(
+						"select sum(x.jml_stok_gudang) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
+		createNativeQuery.setParameter("idObatAlat", idObatAlat);
+		Number totalStokGudang = (Number) createNativeQuery.getSingleResult();
+		return totalStokGudang == null ? 0 : totalStokGudang.intValue();
+	}
+	
+	public String getClassBaris() {
+		Integer totalStok = getTotalStokApotek()+getTotalStokGudang();
+		if(totalStok==0) {
+			return "stokKosong";
+		} else if(minimumStok!=null && totalStok<minimumStok) {
+			return "stokKurang";
+		} 
+		return "stokNormal";
 	}
 }

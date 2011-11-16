@@ -10,7 +10,7 @@ import play.mvc.With;
 import controllers.Secure.Security;
 
 @With(Secure.class)
-public class Application extends Controller {
+public class Application extends BaseController {
 
 	public static void index(boolean logout) {
 		String hasil = logout ? "Anda Berhasil Logout" : null;

@@ -25,7 +25,10 @@ public class DetilPembelianId implements Serializable {
 	@Column(name = "id_pembelian", length = 32, nullable = false)
 	private String id_pembelian;
 
-	
+	public DetilPembelianId(String id_stok, String id_pembelian) {
+		this.id_stok=id_stok;
+		this.id_pembelian=id_pembelian;
+	}
 
 	public String getId_stok() {
 		return id_stok;

@@ -17,6 +17,10 @@ public class DetilPembelian_ {
     public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> ppn;
     public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> discountPercent;
     public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> discountCharge;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> stokAwalApotek;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> stokAwalGudang;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> stokAkhirApotek;
+    public static volatile SingularAttribute<DetilPembelian, java.lang.Integer> stokAkhirGudang;
 
     public static volatile SingularAttribute<DetilPembelian, Pembelian> idPembelian;
     public static volatile SingularAttribute<DetilPembelian, StokObatAlat> idStok;

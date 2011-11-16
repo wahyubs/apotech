@@ -7,12 +7,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import play.db.jpa.GenericModel;
 
@@ -25,16 +22,16 @@ import play.db.jpa.GenericModel;
  */
 @Entity (name="JenisHarga")
 @Table (name="jenis_harga")
-public class JenisHarga extends GenericModel implements IGeneratedModel {
+public class JenisHarga extends GenericModel {
 
-	@Id
-	@GeneratedValue(generator = "MyIdGenerator")
-	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")
-	@Column(name="id_jns_harga" ,length=32)
+    @Id @Column(name="id_jns_harga" ,length=32)
     private String idJnsHarga;
 
     @Column(name="jns_harga",  length=50,  nullable=true,  unique=false)
     private String jnsHarga; 
+    
+    @Column(name="kode_jns_harga",  length=20,  nullable=true,  unique=false)
+    private String kodeJnsHarga; 
     
     @OneToMany (targetEntity=HargaObat.class, fetch=FetchType.LAZY, mappedBy="idJnsHarga", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
     private Set <HargaObat> hargaObatIdJnsHarga = new HashSet<HargaObat>(); 
@@ -63,6 +60,14 @@ public class JenisHarga extends GenericModel implements IGeneratedModel {
 	
     public void setJnsHarga (String jnsHarga) {
         this.jnsHarga =  jnsHarga;
+    }
+    
+    public String getKodeJnsHarga() {
+        return kodeJnsHarga;
+    }
+	
+    public void setKodeJnsHarga (String kodeJnsHarga) {
+        this.kodeJnsHarga =  kodeJnsHarga;
     }
     
     public Set<HargaObat> getHargaObatIdJnsHarga() {
@@ -98,10 +103,4 @@ public class JenisHarga extends GenericModel implements IGeneratedModel {
     public String toString(){
        return jnsHarga+"";
     }
-
-
-	@Override
-	public String getGeneratedValue() {
-		return idJnsHarga;
-	}
 }
