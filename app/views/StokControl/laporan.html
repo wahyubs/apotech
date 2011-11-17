@@ -1,0 +1,18 @@
+#{extends 'menu.html' /}
+#{set title:'Laporan' /}
+%{labelObatAlat = null
+if(kodeObatAlat!=null)
+labelObatAlat = kodeObatAlat+" - "+namaObatAlat}%
+#{form @StokControl.generateLaporan(), method:'POST', id:'filterForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Filter Opname</legend>
+<div class="yui3-u-1-6"><div class="entriClass label">Range Tgl Beli</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglOpnameAwal', name:'tglOpnameAwal', value:tglOpnameAwal?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">s/d</div></div>
+<div class="yui3-u-1-2"><div class="entriClass">#{dateTime id:'tglOpnameAkhir', name:'tglOpnameAkhir', value:tglOpnameAkhir?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Supplier</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@StokControl.autocompleteKodeObat(),size:'50',value:idObatAlat,label:labelObatAlat /}</div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Generate Excel" id="generate" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{StokControl.laporan()}'"/></div></div>
+</fieldset>
+</div>
+#{/form}

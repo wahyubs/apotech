@@ -3,7 +3,9 @@ package controllers;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +15,20 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import models.DetilOpname;
+import models.DetilPembelian;
 import models.HargaObat;
 import models.HargaObatId;
 import models.JenisHarga;
 import models.JenisObatAlat;
+import models.LaporanJenisObat;
 import models.ObatAlat;
+import models.Pembelian;
 import models.StokObatAlat;
 import models.StokOpname;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.db.jpa.JPABase;
+import play.libs.MimeTypes;
 import play.mvc.Controller;
 import play.mvc.With;
 import tool.AutocompleteValue;
@@ -194,7 +200,7 @@ public class StokControl extends BaseController {
 		if (CommonUtil.isNotEmpty(jnsObatAlat)) {
 			sql += "and id_jns_obat_alat=:jnsObatAlat ";
 		}
-		sql+="order by id_obat_alat";
+		sql += "order by id_obat_alat";
 		Query createNativeQuery = ObatAlat.em().createNativeQuery(sql,
 				ObatAlat.class);
 		if (CommonUtil.isNotEmpty(key_idObatAlat))
@@ -319,5 +325,94 @@ public class StokControl extends BaseController {
 							+ obatAlatTmp.getNamaObatAlat()));
 		}
 		renderJSON(response);
+	}
+
+	public static void laporan(List stokOpname,
+			@As("dd-MM-yyyy") Date tglOpnameAwal,
+			@As("dd-MM-yyyy") Date tglOpnameAkhir, String idObatAlat) {
+		if (stokOpname == null)
+			stokOpname = new ArrayList();
+		tglOpnameAwal = new Date();
+		tglOpnameAkhir = new Date();
+		render(stokOpname, tglOpnameAwal, tglOpnameAkhir, idObatAlat);
+	}
+
+	public static void generateLaporan(String key_idObatAlat,
+			@As("dd-MM-yyyy") Date tglOpnameAwal,
+			@As("dd-MM-yyyy") Date tglOpnameAkhir) {
+		String sql = "select detil_opname.*"
+				+ " from stok_opname join detil_opname on stok_opname.id_stok_opname=detil_opname.id_stok_opname"
+				+ " join stok_obat_alat on detil_opname.id_stok=stok_obat_alat.id_stok"
+				+ " where sts_transaksi is not null";
+		if (tglOpnameAwal != null)
+			sql += " and stok_opname.tgl_stok_opname >= :tglOpnameAwal";
+		if (tglOpnameAkhir != null)
+			sql += " and stok_opname.tgl_stok_opname <= :tglOpnameAkhir";
+		if (!key_idObatAlat.equals(""))
+			sql += " and stok_obat_alat.id_obat_alat = :key_idObatAlat";
+
+		sql += " order by detil_opname.id_stok_opname";
+		Query createNativeQuery = StokOpname.em().createNativeQuery(sql,
+				DetilOpname.class);
+
+		if (tglOpnameAwal != null) {
+			createNativeQuery.setParameter("tglOpnameAwal", tglOpnameAwal);
+		}
+		if (tglOpnameAkhir != null) {
+			createNativeQuery.setParameter("tglOpnameAkhir", tglOpnameAkhir);
+		}
+		if (!key_idObatAlat.equals("")) {
+			createNativeQuery.setParameter("key_idObatAlat", key_idObatAlat);
+		}
+		List detilOpnameList = null;
+		try {
+			detilOpnameList = createNativeQuery.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		response.setContentTypeIfNotSet(MimeTypes
+				.getContentType("laporanStokOpname.xls"));
+		response.setHeader("Content-Disposition",
+				"attachment; filename=laporanStokOpname.xls");
+		renderTemplate("excel/laporanStokOpname.html", detilOpnameList);
+	}
+
+	public static void laporanPsikotropika(Integer[] tahunList,
+			Integer blnFilter, Integer thnFilter) {
+		Calendar instance = Calendar.getInstance();
+		blnFilter = instance.get(Calendar.MONTH);
+		thnFilter = instance.get(Calendar.YEAR);
+		if (tahunList == null) {
+			tahunList = new Integer[9];
+			instance.add(Calendar.YEAR, -3);
+			for (int i = 0; i < tahunList.length; i++) {
+				tahunList[i] = instance.get(Calendar.YEAR);
+				instance.add(Calendar.YEAR, 1);
+			}
+		}
+		render(tahunList, blnFilter, thnFilter);
+	}
+
+	public static void generateLaporanPsikotropika(Integer blnFilter,
+			Integer thnFilter) {
+		String sql = "select 1 as no,stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat,null as satuan_obat_alat"
+				+ " ,null as pemasukan_dari,null as pemasukan_jumlah,null as stok_awal,null as pengeluaran_untuk"
+				+ " ,null as pengeluaran_jumlah,null as stok_akhir"
+				+ " from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat"
+				+ " where 1=1";
+		sql += " order by stok_obat_alat.id_stok";
+		Query createNativeQuery = StokOpname.em().createNativeQuery(sql,
+				LaporanJenisObat.class);
+		List psikotropikaList = null;
+		try {
+			psikotropikaList = createNativeQuery.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		response.setContentTypeIfNotSet(MimeTypes
+				.getContentType("laporanPsikotropika.xls"));
+		response.setHeader("Content-Disposition",
+				"attachment; filename=laporanPsikotropika.xls");
+		renderTemplate("excel/laporanPsikotropika.html", psikotropikaList);
 	}
 }

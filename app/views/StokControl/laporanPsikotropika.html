@@ -1,0 +1,33 @@
+#{extends 'menu.html' /}
+#{set title:'Laporan' /}
+%{labelObatAlat = null
+if(kodeObatAlat!=null)
+labelObatAlat = kodeObatAlat+" - "+namaObatAlat}%
+#{form @StokControl.generateLaporanPsikotropika(), method:'POST', id:'filterForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Filter Psikotropika/Narkotika</legend>
+<div class="yui3-u-1-6"><div class="entriClass label">Bulan laporan</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{select 'blnFilter', value:blnFilter, id:'blnFilter'}
+	#{option 1}Januari#{/option}
+	#{option 2}Februari#{/option}
+	#{option 3}Maret#{/option}
+	#{option 4}April#{/option}
+	#{option 5}Mei#{/option}
+	#{option 6}Juni#{/option}
+	#{option 7}Juli#{/option}
+	#{option 8}Agustus#{/option}
+	#{option 9}September#{/option}
+	#{option 10}Oktober#{/option}
+	#{option 11}November#{/option}
+	#{option 12}Desember#{/option}
+#{/select}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Tahun Laporan</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{select 'thnFilter', value:thnFilter, id:'thnFilter'}
+#{list items:tahunList, as:'tahun'}
+	#{option tahun}${tahun}#{/option}
+#{/list}
+#{/select}</div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Generate Excel" id="generate" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{StokControl.laporanPsikotropika()}'"/></div></div>
+</fieldset>
+</div>
+#{/form}

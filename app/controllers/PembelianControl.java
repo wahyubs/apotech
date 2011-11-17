@@ -637,7 +637,7 @@ public class PembelianControl extends BaseController {
 				+ " from pembelian join detil_pembelian on pembelian.id_pembelian=detil_pembelian.id_pembelian"
 				+ " join stok_obat_alat on detil_pembelian.id_stok=stok_obat_alat.id_stok"
 				+ " join supplier on pembelian.id_supplier=supplier.id_supplier"
-				+ " where 1=1";
+				+ " where sts_transaksi is not null";
 		if (tglPembelianAwal != null)
 			sql += " and pembelian.tgl_pembelian >= :tglPembelianAwal";
 		if (tglPembelianAkhir != null)
