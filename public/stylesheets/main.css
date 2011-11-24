@@ -66,3 +66,9 @@ fieldset {
 .alamatApotek {
 	font-size: large;
 }
+.yui3-skin-sam {
+	width: 1200px;
+}
+.header {
+	font-size: x-small;
+}

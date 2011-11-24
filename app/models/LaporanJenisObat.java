@@ -6,10 +6,9 @@ import javax.persistence.Id;
 @Entity
 public class LaporanJenisObat {
 	@Id
-	private Integer no;
+	private String id_transaksi;
 	private String id_obat_alat;
 	private String nama_obat_alat;
-	private String satuan_obat_alat;
 	private String pemasukan_dari;
 	private Integer pemasukan_jumlah;
 	private Integer stok_awal;
@@ -17,12 +16,12 @@ public class LaporanJenisObat {
 	private Integer pengeluaran_jumlah;
 	private Integer stok_akhir;
 
-	public Integer getNo() {
-		return no;
+	public String getId_transaksi() {
+		return id_transaksi;
 	}
 
-	public void setNo(Integer no) {
-		this.no = no;
+	public void setId_transaksi(String id_transaksi) {
+		this.id_transaksi = id_transaksi;
 	}
 
 	public String getId_obat_alat() {
@@ -39,14 +38,6 @@ public class LaporanJenisObat {
 
 	public void setNama_obat_alat(String nama_obat_alat) {
 		this.nama_obat_alat = nama_obat_alat;
-	}
-
-	public String getSatuan_obat_alat() {
-		return satuan_obat_alat;
-	}
-
-	public void setSatuan_obat_alat(String satuan_obat_alat) {
-		this.satuan_obat_alat = satuan_obat_alat;
 	}
 
 	public String getPemasukan_dari() {
@@ -95,6 +86,10 @@ public class LaporanJenisObat {
 
 	public void setStok_akhir(Integer stok_akhir) {
 		this.stok_akhir = stok_akhir;
+	}
+	
+	public String getSatuan_obat_alat() {
+		return "-";
 	}
 
 }

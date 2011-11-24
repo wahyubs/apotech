@@ -8,11 +8,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import play.db.jpa.GenericModel;
 
@@ -29,12 +32,15 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "ReturPenjualan")
 @Table(name = "retur_penjualan")
-public class ReturPenjualan extends GenericModel {
+public class ReturPenjualan extends GenericModel implements
+		IGeneratedTransaction {
 
 	@Id
 	@Column(name = "id_retur_jual", length = 32)
 	private String idReturJual;
 
+	@GeneratedValue(generator = "MyDateIdGenerator")
+	@GenericGenerator(name = "MyDateGenerator", strategy = "tool.MyDateGenerator")
 	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
 	private Date tglAktivitas;
 
@@ -161,5 +167,10 @@ public class ReturPenjualan extends GenericModel {
 
 	public String toString() {
 		return tglAktivitas + "";
+	}
+
+	@Override
+	public Date getGeneratedDate() {
+		return tglAktivitas;
 	}
 }

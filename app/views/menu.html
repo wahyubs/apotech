@@ -11,6 +11,12 @@
         <link rel="stylesheet" href="@{'/public/stylesheets/node-menunav.css'}">
         <link rel="stylesheet" href="@{'/public/stylesheets/jquery-ui-1.8.16.custom.css'}">
        #{get 'moreStyles' /}
+       	<script>
+		   function changeScreenSize(w,h)
+		     {
+		       window.resizeTo( w,h )
+		     }
+		</script>
         <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
         <script src="@{'/public/javascripts/jquery-1.6.2.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
         <script src="@{'/public/javascripts/jquery-ui-1.8.16.custom.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
@@ -52,7 +58,7 @@
         <script src="@{'/public/javascripts/yui/intl-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
         #{get 'moreScripts' /}
     </head>
-    <body class="yui3-skin-sam">
+    <body class="yui3-skin-sam" onload="changeScreenSize(1024,800);">
     <div class="yui3-g" id="hd">
     <div class="yui3-u-1-5"></div>
     <div class="yui3-u-3-5">

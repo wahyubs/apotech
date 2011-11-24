@@ -4,9 +4,17 @@
 <div class="yui3-g" id="entri">
 <fieldset><legend>Entri Penjualan #{if resep.idResep!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idResep" type="hidden" value="${resep.idResep}"/>
 <div class="yui3-u-1-6"><div class="entriClass label">Kode Penjualan</div></div>
-<div class="yui3-u-1-3"><div class="entriClass"><input id="kodeResep" name="kodeResep" value="${resep.kodeResep}" readonly="readonly"/></div></div>
+<div class="yui3-u-1-3"><div class="entriClass"><input id="kodeResep" name="kodeResep" value="${resep.kodeResep}" readonly="readonly"/>&nbsp;#{if resep.idResep==null}<a href="#" onclick="return editSemua();">Edit</a>#{/if}</div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Tanggal Penjualan</div></div>
 <div class="yui3-u-1-3"><div class="entriClass"><input id="tglPenjualan" name="tglPenjualan" value="${resep.tglPenjualan.format('dd-MM-yyyy')}" readonly="readonly"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Nama Pasien</div></div>
+<div class="yui3-u-1-3"><div class="entriClass"><input id="namaPasien" name="namaPasien" value="${resep.namaPasien}" readonly="readonly"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Alamat Pasien</div></div>
+<div class="yui3-u-1-3"><div class="entriClass"><input id="alamatPasien" name="alamatPasien" value="${resep.alamatPasien}" readonly="readonly"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Nama Dokter</div></div>
+<div class="yui3-u-1-3"><div class="entriClass"><input id="namaDokter" name="namaDokter" value="${resep.namaDokter}" readonly="readonly"/></div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Alamat Dokter</div></div>
+<div class="yui3-u-1-3"><div class="entriClass"><input id="alamatDokter" name="alamatDokter" value="${resep.alamatDokter}" readonly="readonly"/></div></div>
 <div class="yui3-u-1-6"><div class="bigEntriClass label">Kode Obat</div></div>
 <div class="yui3-u-5-6"><div class="bigEntriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@PenjualanControl.autocompleteKodeObat(),size:'50',value:key_idObatAlat,label:labelObatAlat/}</div></div>
 <div class="yui3-u-1-6"><div class="entriClass label">Stok Obat Alat</div></div>
@@ -31,18 +39,27 @@
 <div class="yui3-u-1-2"><div class="isi ${detilResep.classBaris}">${detilResep.labelObatResep}</div></div><div class="yui3-u-1-4"><div class="isi ${detilResep.classBaris}">${detilResep.jmlObat}</div></div><div class="yui3-u-1-4"><div class="isi ${detilResep.classBaris}">${detilResep.labelHargaObat}</div></div>
 #{/list}
 <script>
-$(function() {
+function editSemua() {
+	$('#kodeResep').removeAttr('readonly');
+	$('#tglPenjualan').removeAttr('readonly');
+	$('#namaPasien').removeAttr('readonly');
+	$('#alamatPasien').removeAttr('readonly');
+	$('#namaDokter').removeAttr('readonly');
+	$('#alamatDokter').removeAttr('readonly');
+	$('#kodeResep').focus();
+	return false;
+}
+$(function() {	
 	var listActionStok = #{jsAction @showStok(':idObatAlat') /}
 	var listActionHarga = #{jsAction @showHargaStok(':idObatAlat',':idJnsHarga') /}
+	var listActionKategori = #{jsAction @showKategori(':idObatAlat') /}
 	$('#idJnsHarga').live('change',function() {
 		var key_obat=$('#key_idObatAlat').val();
 		var id_jns_harga=$('#idJnsHarga').val();
 		$('#hargaObatAlat').val("");
 		$.getJSON(listActionHarga({idObatAlat:key_obat,idJnsHarga:id_jns_harga}),function(data) {
-			$.each(data, function(key, val) {
-				if(val && val.label=='hargaObatAlat') {
-					$('#hargaObatAlat').val(val.value);
-				}
+			$.each(data, function(key, val) {		
+				$('[id="'+val.label+'"]').val(val.value);
 			  });
 		});
 	});
@@ -53,6 +70,24 @@ $(function() {
 		$('#pilihStok').val("");
 		$('#key_pilihStok').val("");
 		$('#jumlahObatAlat').val("");
+		$.getJSON(listActionKategori({idObatAlat:key_obat}),function(data) {
+			if(data[0]>'1') {
+				if($('#namaPasien').val()=='Pasien Umum') {
+					$('#namaPasien').removeAttr('readonly');
+					$('#alamatPasien').removeAttr('readonly');
+					$('#namaDokter').removeAttr('readonly');
+					$('#alamatDokter').removeAttr('readonly');
+					if(data[0]=='2') {
+						alert('Obat termasuk kategori Psikotropika! Harap Isi identitas Pasien!');
+					} else if(data[0]=='3') {
+						alert('Obat termasuk kategori Narkotika! Harap Isi identitas Pasien!');
+					} else if(data[0]=='4') {
+						alert('Obat termasuk kategori Obat Keras! Harap Isi identitas Pasien!');
+					}
+					$('#namaPasien').focus();
+				}
+			}
+		});
 		$.getJSON(listActionHarga({idObatAlat:key_obat,idJnsHarga:id_jns_harga}),function(data) {
 			$.each(data, function(key, val) {		
 				$('[id="'+val.label+'"]').val(val.value);
@@ -110,9 +145,16 @@ $(function() {
 		});		
 	});
 	#{if resep.stsTransaksi!=null}
-	$('#tutup').attr('value','Buka').attr('id','buka');
+	#{if session.contains("admin")}
+	$('#tutup').attr('value','Buka').attr('id','buka');	
 	$(':input').not('#buka').attr('readonly', 'readonly');
 	$(':input').not('#buka').unbind();
+	#{/if}
+	#{else}	
+	$('#tutup').attr('disabled', 'disabled');
+	$(':input').not('#buka').attr('readonly', 'readonly');
+	$(':input').not('#buka').unbind();
+	#{/else}
 	$('#simpan').attr('disabled', 'disabled');
 	#{/if}
 });

@@ -1,0 +1,24 @@
+#{extends 'menu.html' /}
+#{set title:'Monitoring Penjualan' /}
+%{labelObatAlat = null
+if(kodeObatAlat!=null)
+labelObatAlat = kodeObatAlat+" - "+namaObatAlat}%
+#{form @PenjualanControl.cariPenjualan(), method:'POST', id:'filterForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Filter Penjualan</legend>
+<div class="yui3-u-1-6"><div class="entriClass label">Range Tgl Penjualan</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglPenjualanAwal', name:'tglPenjualanAwal', value:tglPenjualanAwal?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">s/d</div></div>
+<div class="yui3-u-1-2"><div class="entriClass">#{dateTime id:'tglPenjualanAkhir', name:'tglPenjualanAkhir', value:tglPenjualanAkhir?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Obat/Alat</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@PenjualanControl.autocompleteKodeObat(),size:'50',value:idObatAlat,label:labelObatAlat /}</div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Cari" id="cari" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PenjualanControl.monitoring_penjualan()}'"/></div></div>
+</fieldset>
+</div>
+#{customgrid class:'yui3-g',id:'hasilFilter'}
+<div class="yui3-u-1-4"><div class="isi header">Tgl Penjualan</div></div><div class="yui3-u-1-4"><div class="isi header">Kode Penjualan</div></div><div class="yui3-u-1-4"><div class="isi header">Nama Pasien</div></div><div class="yui3-u-1-4"><div class="isi header">Jml Obat</div></div>
+#{list items:penjualanList, as:'penjualan_tmp'}
+<div class="yui3-u-1-4"><div class="isi"><a href="@{PenjualanControl.lihatPenjualan(penjualan_tmp[0])}">${penjualan_tmp[1].format('dd-MM-yyyy')}</a></div></div><div class="yui3-u-1-4"><div class="isi">${penjualan_tmp[2]}</div></div><div class="yui3-u-1-4"><div class="isi">${penjualan_tmp[3]}</div></div><div class="yui3-u-1-4"><div class="isi">${penjualan_tmp[4]}</div></div>
+#{/list}
+#{/customgrid}
+#{/form}

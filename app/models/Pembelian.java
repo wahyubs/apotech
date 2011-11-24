@@ -1,6 +1,5 @@
 package models;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import play.data.binding.As;
 import play.db.jpa.GenericModel;
-import play.db.jpa.JPA;
 
 /**
  * 
@@ -37,7 +35,8 @@ import play.db.jpa.JPA;
  */
 @Entity(name = "Pembelian")
 @Table(name = "pembelian")
-public class Pembelian extends GenericModel implements IGeneratedModel {
+public class Pembelian extends GenericModel implements IGeneratedModel,
+IGeneratedTransaction {
 
 	@Id
 	@Column(name = "id_pembelian", length = 32)
@@ -54,6 +53,8 @@ public class Pembelian extends GenericModel implements IGeneratedModel {
 	@Column(name = "no_faktur", length = 30, nullable = true, unique = false)
 	private String noFaktur;
 
+	@GeneratedValue(generator = "MyDateIdGenerator")
+	@GenericGenerator(name = "MyDateGenerator", strategy = "tool.MyDateGenerator")
 	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
 	private Date tglAktivitas;
 
@@ -167,8 +168,8 @@ public class Pembelian extends GenericModel implements IGeneratedModel {
 			@As("dd-MM-yyyy") Date tglPembelianAkhir) {
 		String sql = "select pembelian.id_pembelian, pembelian.tgl_pembelian, supplier.nama_supplier,"
 				+ " sum(detil_pembelian.jml_penerimaan_apotek) as jmlapotek, sum(detil_pembelian.jml_penerimaan_gudang) as jmlgudang, sum(detil_pembelian.harga_penerimaan) as harga, sum(detil_pembelian.discount_charge) as diskon"
-				+ " from pembelian join detil_pembelian on pembelian.id_pembelian=detil_pembelian.id_pembelian"
-				+ " join stok_obat_alat on detil_pembelian.id_stok=stok_obat_alat.id_stok"
+				+ " from pembelian left join detil_pembelian on pembelian.id_pembelian=detil_pembelian.id_pembelian"
+				+ " left join stok_obat_alat on detil_pembelian.id_stok=stok_obat_alat.id_stok"
 				+ " join supplier on pembelian.id_supplier=supplier.id_supplier"
 				+ " where 1=1";
 		if (tglPembelianAwal != null)
@@ -207,5 +208,10 @@ public class Pembelian extends GenericModel implements IGeneratedModel {
 	@Override
 	public String getGeneratedValue() {
 		return idPembelian;
+	}
+	
+	@Override
+	public Date getGeneratedDate() {
+		return tglAktivitas;
 	}
 }

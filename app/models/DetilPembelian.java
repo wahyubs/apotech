@@ -213,8 +213,30 @@ public class DetilPembelian extends GenericModel {
 	}
 
 	public java.lang.Integer getPpnCharge() {
-		if (ppn == null || hargaPenerimaan == null)
-			return 0;
-		return ppn * hargaPenerimaan / 100;
+		Integer ppnTemp = ppn;
+		Integer hargaPenerimaanTemp = hargaPenerimaan;
+		Integer discountChargeTemp = discountCharge;
+		if (ppnTemp == null)
+			ppnTemp = 0;
+		if (hargaPenerimaanTemp == null)
+			hargaPenerimaanTemp = 0;
+		if (discountChargeTemp == null)
+			discountChargeTemp = 0;
+		return ppnTemp * (hargaPenerimaanTemp - discountChargeTemp) / 100;
+	}
+
+	public java.lang.Integer getHargaBersih() {
+		Integer ppnTemp = ppn;
+		Integer hargaPenerimaanTemp = hargaPenerimaan;
+		Integer discountChargeTemp = discountCharge;
+		if (ppnTemp == null)
+			ppnTemp = 0;
+		if (hargaPenerimaanTemp == null)
+			hargaPenerimaanTemp = 0;
+		if (discountChargeTemp == null)
+			discountChargeTemp = 0;
+		Integer nilaiPpn = ppnTemp * (hargaPenerimaanTemp - discountChargeTemp)
+				/ 100;
+		return hargaPenerimaanTemp - discountChargeTemp + nilaiPpn;
 	}
 }

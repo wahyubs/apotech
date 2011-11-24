@@ -2,7 +2,6 @@ package controllers;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -11,19 +10,20 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import models.DetailResep;
-import models.DetilOpname;
-import models.DetilTransferStok;
-import models.DetilTransferStokId;
+import models.DetailReturPenjualan;
 import models.HargaObat;
 import models.JenisHarga;
+import models.ObatAlat;
 import models.ObatResep;
-import models.ObatResepId;
 import models.Resep;
+import models.ReturPenjualan;
 import models.StokObatAlat;
 import models.StokOpname;
+import models.TransaksiBulanan;
+import models.TransaksiHarian;
 import play.data.binding.As;
+import play.data.validation.Required;
 import play.libs.MimeTypes;
-import play.mvc.Controller;
 import play.mvc.With;
 import tool.AutocompleteValue;
 import tool.CommonUtil;
@@ -31,26 +31,200 @@ import tool.MyIdGenerator;
 
 @With(Secure.class)
 public class PenjualanControl extends BaseController {
-	public static void transaksiSusulan(Resep resep, String hasil) {
-		if (resep == null)
-			resep = new Resep();
-		if (resep.getTglPenjualan() == null)
-			resep.setTglPenjualan(new Date());
-		render(resep, hasil);
+	public static void transaksi_retur(ReturPenjualan returPenjualan,
+			String hasil) {
+		if (returPenjualan == null)
+			returPenjualan = new ReturPenjualan();
+		if (returPenjualan.getTglReturJual() == null)
+			returPenjualan.setTglReturJual(new Date());
+		render(returPenjualan, hasil);
+	}
+
+	public static void saveReturJual(String simpan, String idReturJual,
+			@Required @As("dd-MM-yyyy") Date tglReturJual,
+			String key_kodeResep, String namaPasien,
+			List<String> key_pilihStok, List<Integer> jmlRetur,
+			List<Integer> hargaRetur) {
+		ReturPenjualan returPenjualan = new ReturPenjualan();
+		returPenjualan.setTglReturJual(tglReturJual);
+		returPenjualan.setTglAktivitas(new Date());
+		if (returPenjualan.getTglReturJual() == null)
+			returPenjualan.setTglReturJual(new Date());
+		returPenjualan.setNamaPasien(namaPasien);
+		returPenjualan.setKodeResep(key_kodeResep);
+		if (CommonUtil.isEmpty(idReturJual)) {
+			returPenjualan.validateAndSave();
+		} else {
+			returPenjualan.setIdReturJual(idReturJual);
+			returPenjualan = returPenjualan.merge();
+			returPenjualan.validateAndSave();
+			DetailReturPenjualan.delete("id_retur_beli=?", idReturJual);
+		}
+		if (validation.hasErrors()) {
+			params.flash(); // add http parameters to the flash scope
+			validation.keep(); // keep the errors for the next request
+			transaksi_retur(returPenjualan, null);
+			return;
+		}
+		for (int i = 0; i < key_pilihStok.size(); i++) {
+			if (key_pilihStok.get(i) != null
+					&& !"".equals(key_pilihStok.get(i))) {
+				Integer jmlReturJual = jmlRetur.get(i) == null ? 0 : jmlRetur
+						.get(i);
+				Integer hargaReturJual = hargaRetur.get(i) == null ? 0
+						: hargaRetur.get(i);
+				DetailReturPenjualan detailReturPenjualan = new DetailReturPenjualan();
+				detailReturPenjualan.setIdReturJual(returPenjualan);
+				detailReturPenjualan.setIdStok((StokObatAlat) StokObatAlat
+						.findById(key_pilihStok.get(i)));
+				detailReturPenjualan.setJmlRetur(jmlReturJual);
+				detailReturPenjualan.setHargaRetur(hargaReturJual);
+				detailReturPenjualan.validateAndSave();
+				returPenjualan
+						.addDetailReturPenjualanIdReturJual(detailReturPenjualan);
+			}
+		}
+		String hasil = "Retur Penjualan Berhasil Disimpan!";
+		if (simpan.equals("Tutup")) {
+			for (int i = 0; i < key_pilihStok.size(); i++) {
+				if (key_pilihStok.get(i) != null
+						&& !"".equals(key_pilihStok.get(i))) {
+					StokObatAlat stokObatAlat = StokObatAlat
+							.findById(key_pilihStok.get(i));
+					Query createNativeQuery = ReturPenjualan
+							.em()
+							.createNativeQuery(
+									"select detail_retur_penjualan.* from detail_retur_penjualan where id_retur_jual= :idReturJual and id_stok= :idStok",
+									DetailReturPenjualan.class);
+					createNativeQuery.setParameter("idReturJual",
+							returPenjualan.getIdReturJual());
+					createNativeQuery.setParameter("idStok",
+							stokObatAlat.getIdStok());
+					DetailReturPenjualan detilReturPenjualan = (DetailReturPenjualan) createNativeQuery
+							.getResultList().get(0);
+					Integer jmlStokApotekSebelumnya = stokObatAlat
+							.getJmlStokApotek();
+					Integer jmlStokGudangSebelumnya = stokObatAlat
+							.getJmlStokGudang();
+					detilReturPenjualan
+							.setStokAwalApotek(jmlStokApotekSebelumnya);
+					detilReturPenjualan
+							.setStokAwalGudang(jmlStokGudangSebelumnya);
+					Integer jmlReturJual = jmlRetur.get(i) == null ? 0
+							: jmlRetur.get(i);
+					Integer hargaReturJual = hargaRetur.get(i) == null ? 0
+							: hargaRetur.get(i);
+					stokObatAlat.setJmlStokApotek(jmlStokApotekSebelumnya
+							+ jmlReturJual);
+					detilReturPenjualan
+							.setStokAkhirApotek(jmlStokApotekSebelumnya
+									+ jmlReturJual);
+					stokObatAlat = stokObatAlat.merge();
+					stokObatAlat.validateAndSave();
+					detilReturPenjualan = detilReturPenjualan.merge();
+					detilReturPenjualan.validateAndSave();
+					TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+							jmlStokApotekSebelumnya, jmlStokGudangSebelumnya,
+							jmlReturJual, 0, 0, 0, false);
+					TransaksiHarian.generate(returPenjualan.getIdReturJual(),
+							stokObatAlat.getIdStok(), jmlStokApotekSebelumnya,
+							jmlStokGudangSebelumnya, jmlReturJual, 0, 0, 0,
+							false);
+				}
+			}
+			returPenjualan.setIdReturJual(idReturJual);
+			returPenjualan.setStsTransaksi("1");
+			returPenjualan = returPenjualan.merge();
+			returPenjualan.validateAndSave();
+			hasil = "Retur Penjualan Berhasil Ditutup!";
+		} else if (simpan.equals("Buka")) {
+			for (int i = 0; i < key_pilihStok.size(); i++) {
+				if (key_pilihStok.get(i) != null
+						&& !"".equals(key_pilihStok.get(i))) {
+					StokObatAlat stokObatAlat = StokObatAlat
+							.findById(key_pilihStok.get(i));
+					Query createNativeQuery = ReturPenjualan
+							.em()
+							.createNativeQuery(
+									"select detail_retur_penjualan.* from detail_retur_penjualan where id_retur_jual= :idReturJual and id_stok= :idStok",
+									DetailReturPenjualan.class);
+					createNativeQuery.setParameter("idReturJual",
+							returPenjualan.getIdReturJual());
+					createNativeQuery.setParameter("idStok",
+							stokObatAlat.getIdStok());
+					DetailReturPenjualan detilReturPenjualan = (DetailReturPenjualan) createNativeQuery
+							.getResultList().get(0);
+					Integer jmlStokApotekSebelumnya = stokObatAlat
+							.getJmlStokApotek();
+					Integer jmlStokGudangSebelumnya = stokObatAlat
+							.getJmlStokGudang();
+					detilReturPenjualan
+							.setStokAwalApotek(jmlStokApotekSebelumnya);
+					detilReturPenjualan
+							.setStokAwalGudang(jmlStokGudangSebelumnya);
+					Integer jmlReturJual = jmlRetur.get(i) == null ? 0
+							: jmlRetur.get(i);
+					Integer hargaReturJual = hargaRetur.get(i) == null ? 0
+							: hargaRetur.get(i);
+					stokObatAlat.setJmlStokApotek(jmlStokApotekSebelumnya
+							- jmlReturJual);
+					detilReturPenjualan
+							.setStokAkhirApotek(jmlStokApotekSebelumnya
+									- jmlReturJual);
+					stokObatAlat = stokObatAlat.merge();
+					stokObatAlat.validateAndSave();
+					detilReturPenjualan = detilReturPenjualan.merge();
+					detilReturPenjualan.validateAndSave();
+					TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+							jmlStokApotekSebelumnya, jmlStokGudangSebelumnya,
+							jmlReturJual, 0, 0, 0, true);
+					TransaksiHarian.generate(returPenjualan.getIdReturJual(),
+							stokObatAlat.getIdStok(), jmlStokApotekSebelumnya,
+							jmlStokGudangSebelumnya, jmlReturJual, 0, 0, 0,
+							true);
+				}
+			}
+			returPenjualan.setIdReturJual(idReturJual);
+			returPenjualan.setStsTransaksi(null);
+			returPenjualan = returPenjualan.merge();
+			returPenjualan.validateAndSave();
+			hasil = "Retur Penjualan Berhasil Dibuka!";
+		}
+		renderTemplate("PenjualanControl/transaksi_retur.html", returPenjualan,
+				hasil);
+	}
+
+	public static void autocompleteResep(final String term) {
+		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
+		List<Resep> findAll = Resep.find("kode_resep like ?", "%" + term + "%")
+				.fetch();
+		for (Iterator iterator = findAll.iterator(); iterator.hasNext();) {
+			Resep resepTmp = (Resep) iterator.next();
+			response.add(new AutocompleteValue(resepTmp.getKodeResep(),
+					resepTmp.getKodeResep()));
+		}
+		renderJSON(response);
 	}
 
 	public static void savePenjualan(String simpan, String idResep,
-			String kodeResep, @As("dd-MM-yyyy") Date tglPenjualan,
-			String key_idObatAlat, String key_pilihStok,
-			Integer jumlahObatAlat, Integer hargaObatAlat) {
+			String kodeResep, String namaPasien, String alamatPasien,
+			String namaDokter, String alamatDokter,
+			@As("dd-MM-yyyy") Date tglPenjualan, String key_idObatAlat,
+			String key_pilihStok, Integer jumlahObatAlat, Integer hargaObatAlat) {
 		Resep resep = new Resep();
 		if (CommonUtil.isNotEmpty(idResep))
 			resep.setIdResep(idResep);
 		resep.setKodeResep(kodeResep);
 		resep.setTglPenjualan(tglPenjualan);
 		resep.setTglResep(tglPenjualan);
+		resep.setNamaPasien(namaPasien);
+		resep.setAlamatPasien(alamatPasien);
+		resep.setNamaDokter(namaDokter);
+		resep.setAlamatDokter(alamatDokter);
 		if ("Tutup".equals(simpan))
 			resep.setStsTransaksi("1");
+		else if ("Buka".equals(simpan))
+			resep.setStsTransaksi(null);
 		resep = resep.merge();
 		resep = resep.save();
 		if (!"Tutup".equals(simpan)) {
@@ -86,6 +260,8 @@ public class PenjualanControl extends BaseController {
 						.hasNext();) {
 					ObatResep obatResepTmp = (ObatResep) iterator2.next();
 					StokObatAlat stokObatAlat = obatResepTmp.getIdStok();
+					Integer jmlStokA = stokObatAlat.getJmlStokApotek();
+					Integer jmlStokG = stokObatAlat.getJmlStokGudang();
 					obatResepTmp.setStokAwalApotek(stokObatAlat
 							.getJmlStokApotek());
 					obatResepTmp.setStokAwalGudang(stokObatAlat
@@ -95,15 +271,61 @@ public class PenjualanControl extends BaseController {
 						Integer jmlStokApotek = stokObatAlat.getJmlStokApotek()
 								- obatResepTmp.getJmlObatResep();
 						stokObatAlat.setJmlStokApotek(jmlStokApotek);
+						obatResepTmp.setStokAkhirApotek(stokObatAlat
+								.getJmlStokApotek());
+						obatResepTmp.setStokAkhirGudang(stokObatAlat
+								.getJmlStokGudang());
+						stokObatAlat = stokObatAlat.merge();
+						stokObatAlat.validateAndSave();
+						obatResepTmp = obatResepTmp.merge();
+						obatResepTmp.save();
+						TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+								jmlStokA, jmlStokG, 0, 0,
+								obatResepTmp.getJmlObatResep(), 0, false);
+						TransaksiHarian.generate(dtlTmp.getIdResepDtl(),
+								stokObatAlat.getIdStok(), jmlStokA, jmlStokG,
+								0, 0, obatResepTmp.getJmlObatResep(), 0, false);
 					}
-					obatResepTmp.setStokAkhirApotek(stokObatAlat
+				}
+			}
+		} else if ("Buka".equals(simpan)) {
+			List<DetailResep> dtlResepList = DetailResep.find("id_resep=?",
+					resep.getIdResep()).fetch();
+			for (Iterator iterator = dtlResepList.iterator(); iterator
+					.hasNext();) {
+				DetailResep dtlTmp = (DetailResep) iterator.next();
+				Set<ObatResep> obatResepIdResepDtl = dtlTmp
+						.getObatResepIdResepDtl();
+				for (Iterator iterator2 = obatResepIdResepDtl.iterator(); iterator2
+						.hasNext();) {
+					ObatResep obatResepTmp = (ObatResep) iterator2.next();
+					StokObatAlat stokObatAlat = obatResepTmp.getIdStok();
+					Integer jmlStokA = stokObatAlat.getJmlStokApotek();
+					Integer jmlStokG = stokObatAlat.getJmlStokGudang();
+					obatResepTmp.setStokAwalApotek(stokObatAlat
 							.getJmlStokApotek());
-					obatResepTmp.setStokAkhirGudang(stokObatAlat
+					obatResepTmp.setStokAwalGudang(stokObatAlat
 							.getJmlStokGudang());
-					stokObatAlat = stokObatAlat.merge();
-					stokObatAlat.validateAndSave();
-					obatResepTmp = obatResepTmp.merge();
-					obatResepTmp.save();
+					if (obatResepTmp.getJmlObatResep() != null
+							&& obatResepTmp.getJmlObatResep() > 0) {
+						Integer jmlStokApotek = stokObatAlat.getJmlStokApotek()
+								+ obatResepTmp.getJmlObatResep();
+						stokObatAlat.setJmlStokApotek(jmlStokApotek);
+						obatResepTmp.setStokAkhirApotek(stokObatAlat
+								.getJmlStokApotek());
+						obatResepTmp.setStokAkhirGudang(stokObatAlat
+								.getJmlStokGudang());
+						stokObatAlat = stokObatAlat.merge();
+						stokObatAlat.validateAndSave();
+						obatResepTmp = obatResepTmp.merge();
+						obatResepTmp.save();
+						TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+								jmlStokA, jmlStokG, 0, 0,
+								obatResepTmp.getJmlObatResep(), 0, true);
+						TransaksiHarian.generate(dtlTmp.getIdResepDtl(),
+								stokObatAlat.getIdStok(), jmlStokA, jmlStokG,
+								0, 0, obatResepTmp.getJmlObatResep(), 0, true);
+					}
 				}
 			}
 		}
@@ -119,12 +341,27 @@ public class PenjualanControl extends BaseController {
 					CommonUtil.getFormatThn(new Date()), true));
 		if (resep.getTglPenjualan() == null)
 			resep.setTglPenjualan(new Date());
+		if (resep.getNamaPasien() == null)
+			resep.setNamaPasien("Pasien Umum");
+		if (resep.getAlamatPasien() == null)
+			resep.setAlamatPasien("-");
+		if (resep.getNamaDokter() == null)
+			resep.setNamaDokter("Dokter Umum");
+		if (resep.getAlamatDokter() == null)
+			resep.setAlamatDokter("-");
 		String key_idObatAlat = null;
 		Integer stokApotek = null;
 		Integer jumlahObatAlat = null;
 		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
 		render(resep, key_idObatAlat, stokApotek, jumlahObatAlat,
 				jenisHargaList);
+	}
+
+	public static void showKategori(String idObatAlat) {
+		final List data = new ArrayList();
+		ObatAlat obatAlat = ObatAlat.findById(idObatAlat);
+		data.add(obatAlat.getKategoriObat());
+		renderJSON(data);
 	}
 
 	public static void showHargaStok(String idObatAlat, String idJnsHarga) {
@@ -215,5 +452,31 @@ public class PenjualanControl extends BaseController {
 		response.setHeader("Content-Disposition",
 				"attachment; filename=laporanPenjualan.xls");
 		renderTemplate("excel/laporanPenjualan.html", obatResepList);
+	}
+
+	public static void monitoring_penjualan(List penjualanList,
+			@As("dd-MM-yyyy") Date tglPenjualanAwal,
+			@As("dd-MM-yyyy") Date tglPenjualanAkhir, String idObatAlat) {
+		if (penjualanList == null)
+			penjualanList = new ArrayList();
+		tglPenjualanAwal = new Date();
+		tglPenjualanAkhir = new Date();
+		render(penjualanList, tglPenjualanAwal, tglPenjualanAkhir, idObatAlat);
+	}
+
+	public static void cariPenjualan(String key_idObatAlat,
+			@As("dd-MM-yyyy") Date tglPenjualanAwal,
+			@As("dd-MM-yyyy") Date tglPenjualanAkhir) {
+		List penjualanList = Resep.monitoringPenjualan(key_idObatAlat,
+				tglPenjualanAwal, tglPenjualanAkhir);
+		renderTemplate("PenjualanControl/monitoring_penjualan.html",
+				penjualanList, tglPenjualanAwal, tglPenjualanAkhir,
+				key_idObatAlat);
+	}
+
+	public static void lihatPenjualan(String idResep) {
+		Resep resep = Resep.findById(idResep);
+		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
+		renderTemplate("PenjualanControl/transaksi.html", resep, jenisHargaList);
 	}
 }

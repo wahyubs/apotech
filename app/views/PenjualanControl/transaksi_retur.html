@@ -1,0 +1,83 @@
+#{extends 'menu.html' /}
+#{set title:'Retur Penjualan' /}
+#{ifErrors}
+   <span class="error">Oops…</span>
+#{/ifErrors}
+#{form @PenjualanControl.saveReturJual(), method:'POST', id:'returJualForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Entri Retur Penjualan #{if returPenjualan.idReturJual!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idReturJual" type="hidden" value="${returPenjualan.idReturJual}"/>
+<div class="yui3-u-1-5"><div class="entriClass label">Kode Retur</div></div>
+<div class="yui3-u-4-5"><div class="entriClass"><input id="kodeRetur" name="kodeRetur" value="${returPenjualan.kodeRetur}"/></div></div>
+<div class="yui3-u-1-5"><div class="entriClass label">Tanggal Retur Penjualan</div></div>
+<div class="yui3-u-4-5"><div class="entriClass">#{dateTime id:'tglReturJual', name:'tglReturJual', value:returPenjualan.tglReturJual.format('dd-MM-yyyy')/}<span class="error">#{error 'tglReturJual' /}</span></div></div>
+<div class="yui3-u-1-5"><div class="entriClass label">Kode Resep</div></div>
+<div class="yui3-u-4-5"><div class="entriClass">#{autocomplete id:'kodeResep',name:'kodeResep',url:@PenjualanControl.autocompleteResep(),size:'50',value:returPenjualan.kodeResep,label:returPenjualan.kodeResep /}</div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Simpan" id="simpan" name="simpan" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PenjualanControl.transaksi_retur()}'"/>&nbsp;#{if !returPenjualan.detailReturPenjualanIdReturJual.isEmpty()}<input value="Tutup" id="tutup" name="simpan" type="submit" />#{/if}</div></div>
+</fieldset>
+</div>
+#{customgrid class:'yui3-g',id:'detilReturPenjualan'}
+<div class="yui3-u-1-4"><div class="isi header">Kode-Nama</div></div><div class="yui3-u-1-4"><div class="isi header">Kadaluarsa</div></div><div class="yui3-u-1-4"><div class="isi header">Qty Retur</div></div><div class="yui3-u-1-4"><div class="isi header">Harga Retur</div></div>
+<div id="baris">
+#{list items:returPenjualan.detailReturPenjualanIdReturJual, as:'detilReturPenjualan'}
+%{ x=detilReturPenjualan_index-1 }%
+<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_'+x+'',name:'kode_obat['+x+']',url:@PenjualanControl.autocompleteKodeObat(),size:'30',value:detilReturPenjualan.idStok.idObatAlat,label:detilReturPenjualan.idStok.idObatAlat?.kodeObatAlat+" - "+detilReturPenjualan.idStok.idObatAlat?.namaObatAlat /}</div></div>
+<div class="yui3-u-1-4"><div class="isi"><input size="30" name="pilihStok[${x}]" id="pilihStok_${x}" value="${detilReturPenjualan.idStok.labelStok}"/><input size="30" type="hidden" name="key_pilihStok[${x}]" id="key_pilihStok_${x}" value="${detilReturPenjualan.idStok.idStok}"/></div></div>
+<div class="yui3-u-1-4"><div class="isi"><input name="jmlRetur[${x}]" id="jmlRetur_${x}" size="6" value="0" value="${detilReturPenjualan.jmlRetur}"/></div></div>
+<div class="yui3-u-1-4"><div class="isi"><input name="hargaRetur[${x}]" id="hargaRetur_${x}" size="6" value="0" value="${detilReturPenjualan.hargaRetur}"/></div></div>
+#{/list}
+#{else}
+<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PenjualanControl.autocompleteKodeObat(),size:'30' /}</div></div>
+<div class="yui3-u-1-4"><div class="isi"><input size="30" name="pilihStok[0]" id="pilihStok_0" /></div></div>
+<div class="yui3-u-1-4"><div class="isi"><input name="jmlRetur[0]" id="jmlRetur_0" size="6" value="0"/></div></div>
+<div class="yui3-u-1-4"><div class="isi"><input name="hargaRetur[0]" id="hargaRetur_0" size="6" value="0"/></div></div>
+#{/else}
+</div>
+#{/customgrid}
+<script type="text/javascript">
+$(function() {
+	var listAction = #{jsAction @showStok(':idObatAlat') /}
+	$('[id^="pilihStok"]').live('focus',function() {
+		var indeks=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_"));
+		var indek=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_")+1);
+		var key_obat=$('#key_kode_obat'+indeks).val();
+		$.getJSON(listAction({idObatAlat:key_obat}),function(data) {
+			var $hidden = $("#key_pilihStok"+indeks);
+			if($hidden.length==0) {
+				$hidden = $('<input type="hidden"/>').attr('name', "key_pilihStok["+indek+"]").attr('id', "key_pilihStok"+indeks);
+			}
+			var $input = $("#pilihStok"+indeks);
+			$input.after($hidden);
+			$input.autocomplete({
+			    source: data,
+			    focus: function(event, ui) {
+			       // Set the text input value to the focused item's label, instead of the value.
+			       $input.val(ui.item.label);
+			       return false;
+			    },
+			    select: function(event, ui) {
+			       // Save the selection item and value in the two inputs.
+			       $input.val(ui.item.label);
+			       $hidden.val(ui.item.value);
+			       return false;
+			    }
+			});
+			$input.autocomplete("search", " ");
+		});		
+	});
+	#{if returPenjualan.stsTransaksi!=null}
+	#{if session.contains("admin")}
+	$('#tutup').attr('value','Buka').attr('id','buka');	
+	$(':input').not('#buka').attr('readonly', 'readonly');
+	$(':input').not('#buka').unbind();
+	#{/if}
+	#{else}	
+	$('#tutup').attr('disabled', 'disabled');
+	$(':input').not('#buka').attr('readonly', 'readonly');
+	$(':input').not('#buka').unbind();
+	#{/else}
+	$('#simpan').attr('disabled', 'disabled');
+	#{/if}
+});
+</script>
+#{/form}
+#{if hasil!=null}<script>alert("${hasil}");</script>#{/if}

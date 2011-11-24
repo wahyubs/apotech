@@ -6,10 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import play.data.validation.Required;
 import play.db.jpa.GenericModel;
@@ -27,11 +30,13 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "HargaObat")
 @Table(name = "harga_obat")
-public class HargaObat extends GenericModel {
+public class HargaObat extends GenericModel implements IGeneratedTransaction {
 
 	@EmbeddedId
 	private HargaObatId hargaObatId;
 
+	@GeneratedValue(generator = "MyDateIdGenerator")
+	@GenericGenerator(name = "MyDateGenerator", strategy = "tool.MyDateGenerator")
 	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
 	private Date tglAktivitas;
 
@@ -133,5 +138,10 @@ public class HargaObat extends GenericModel {
 
 	public String toString() {
 		return hargaObatId + "";
+	}
+
+	@Override
+	public Date getGeneratedDate() {
+		return tglAktivitas;
 	}
 }

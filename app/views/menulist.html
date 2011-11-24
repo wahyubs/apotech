@@ -49,7 +49,9 @@
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
 								href="@{PenjualanControl.transaksi()}" " key="Ctrl+j">Penjualan</a></li>
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
-								href="#" key="Ctrl+u">Retur Penjualan</a></li>
+								href="@{PenjualanControl.monitoring_penjualan()}" key="Ctrl+u">Monitoring Penjualan</a></li>
+							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
+								href="@{PenjualanControl.transaksi_retur()}" key="Ctrl+u">Retur Penjualan</a></li>
 						</ul>
 					</div>
 				</div></li>
@@ -59,17 +61,17 @@
 					<div class="yui3-menu-content">
 						<ul>#{if session.contains("pembelian")}
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
-								href="@{PembelianControl.laporan()}" key="Ctrl+1">Laporan Pembelian</a></li>
+								href="@{PembelianControl.laporan()}">Laporan Pembelian</a></li>
 							#{/if}
 							#{if session.contains("stok")}
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
-								href="@{StokControl.laporan()}" key="Ctrl+2">Laporan Opname</a></li>
+								href="@{StokControl.laporan()}">Laporan Opname</a></li>
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
-								href="@{StokControl.laporanPsikotropika()}" key="Ctrl+3">Laporan Psikotropika/Narkotika</a></li>
+								href="@{StokControl.laporanPsikotropika()}">Laporan Psikotropika/Narkotika</a></li>
 							#{/if}
 							#{if session.contains("penjualan")}
 							<li class="yui3-menuitem"><a class="yui3-menuitem-content"
-								href="@{PenjualanControl.laporan()}" key="Ctrl+4">Laporan Penjualan</a></li>
+								href="@{PenjualanControl.laporan()}">Laporan Penjualan</a></li>
 							#{/if}
 						</ul>
 					</div>

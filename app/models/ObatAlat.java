@@ -36,7 +36,8 @@ import play.db.jpa.GenericModel;
  */
 @Entity(name = "ObatAlat")
 @Table(name = "obat_alat")
-public class ObatAlat extends GenericModel implements IGeneratedModel {
+public class ObatAlat extends GenericModel implements IGeneratedModel,
+		IGeneratedTransaction {
 
 	@Id
 	@Column(name = "id_obat_alat", length = 32)
@@ -56,11 +57,22 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	@Column(name = "volume_obat_alat", length = 30, nullable = true, unique = false)
 	private String volumeObatAlat;
 
+	@GeneratedValue(generator = "MyDateIdGenerator")
+	@GenericGenerator(name = "MyDateGenerator", strategy = "tool.MyDateGenerator")
 	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
 	private Date tglAktivitas;
-	
-	@Column(name="minimum_stok",    nullable=true,  unique=false)
-    private java.lang.Integer minimumStok; 
+
+	@Column(name = "minimum_stok", nullable = true, unique = false)
+	private java.lang.Integer minimumStok;
+
+	@Column(name = "satuan_obat_alat", length = 30, nullable = true, unique = false)
+	private String satuanObatAlat;
+
+	@Column(name = "kategori_obat", length = 1, nullable = true, unique = false)
+	private String kategoriObat;
+
+	@Column(name = "bentuk_obat_alat", length = 30, nullable = true, unique = false)
+	private String bentukObatAlat;	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_jns_obat_alat", nullable = true, unique = false)
@@ -145,15 +157,39 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 	public void setUserId(UserPegawai userId) {
 		this.userId = userId;
 	}
-	
+
 	public java.lang.Integer getMinimumStok() {
-        return minimumStok;
-    }
+		return minimumStok;
+	}
+
+	public void setMinimumStok(java.lang.Integer minimumStok) {
+		this.minimumStok = minimumStok;
+	}
 	
-    public void setMinimumStok (java.lang.Integer minimumStok) {
-        this.minimumStok =  minimumStok;
-    }
-    
+	public String getSatuanObatAlat() {
+		return satuanObatAlat;
+	}
+
+	public void setSatuanObatAlat(String satuanObatAlat) {
+		this.satuanObatAlat = satuanObatAlat;
+	}
+
+	public String getKategoriObat() {
+		return kategoriObat;
+	}
+
+	public void setKategoriObat(String kategoriObat) {
+		this.kategoriObat = kategoriObat;
+	}
+
+	public String getBentukObatAlat() {
+		return bentukObatAlat;
+	}
+
+	public void setBentukObatAlat(String bentukObatAlat) {
+		this.bentukObatAlat = bentukObatAlat;
+	}
+
 	public Set<HargaObat> getHargaObatIdObatAlat() {
 		if (hargaObatIdObatAlat == null) {
 			hargaObatIdObatAlat = new HashSet<HargaObat>();
@@ -207,7 +243,7 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 		Number totalStokApotek = (Number) createNativeQuery.getSingleResult();
 		return totalStokApotek == null ? 0 : totalStokApotek.intValue();
 	}
-	
+
 	public Integer getTotalStokGudang() {
 		Query createNativeQuery = StokObatAlat
 				.em()
@@ -217,14 +253,19 @@ public class ObatAlat extends GenericModel implements IGeneratedModel {
 		Number totalStokGudang = (Number) createNativeQuery.getSingleResult();
 		return totalStokGudang == null ? 0 : totalStokGudang.intValue();
 	}
-	
+
 	public String getClassBaris() {
-		Integer totalStok = getTotalStokApotek()+getTotalStokGudang();
-		if(totalStok==0) {
+		Integer totalStok = getTotalStokApotek() + getTotalStokGudang();
+		if (totalStok == 0) {
 			return "stokKosong";
-		} else if(minimumStok!=null && totalStok<minimumStok) {
+		} else if (minimumStok != null && totalStok < minimumStok) {
 			return "stokKurang";
-		} 
+		}
 		return "stokNormal";
+	}
+
+	@Override
+	public Date getGeneratedDate() {
+		return tglAktivitas;
 	}
 }

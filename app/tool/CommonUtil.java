@@ -21,4 +21,14 @@ public class CommonUtil {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
 		return dateFormat.format(date);
 	}
+	
+	public static String getFormatThnBlnTgl(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		return dateFormat.format(date);
+	}
+	
+	public static String formatTanggal(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		return dateFormat.format(date);
+	}
 }

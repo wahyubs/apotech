@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import models.ApotekConstant;
 import models.DetilOpname;
 import models.DetilPembelian;
 import models.HargaObat;
@@ -25,6 +26,8 @@ import models.ObatAlat;
 import models.Pembelian;
 import models.StokObatAlat;
 import models.StokOpname;
+import models.TransaksiBulanan;
+import models.TransaksiHarian;
 import play.data.binding.As;
 import play.data.validation.Required;
 import play.db.jpa.JPABase;
@@ -145,6 +148,8 @@ public class StokControl extends BaseController {
 											.getIdObatAlat(),
 									stokObatAlat.getTglKadaluarsa()).fetch();
 					StokObatAlat tmp = fetch.get(0);
+					Integer jmlStokApotekSblm = tmp.getJmlStokApotek();
+					Integer jmlStokGudangSblm = tmp.getJmlStokGudang();
 					stokObatAlat.setIdStok(tmp.getIdStok());
 					Integer jmlStokApotek = stokApotekSekarang.get(i) == null ? 0
 							: stokApotekSekarang.get(i);
@@ -154,6 +159,27 @@ public class StokControl extends BaseController {
 					stokObatAlat.setJmlStokGudang(jmlStokGudang);
 					stokObatAlat = stokObatAlat.merge();
 					stokObatAlat.validateAndSave();
+					TransaksiBulanan.generate(tmp.getIdStok(),
+							jmlStokApotekSblm, jmlStokGudangSblm, jmlStokApotek
+									- jmlStokApotekSblm > 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm > 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, jmlStokApotek
+									- jmlStokApotekSblm < 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm < 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, false);
+					TransaksiHarian.generate(stokOpname.getIdStokOpname(),
+							tmp.getIdStok(), jmlStokApotekSblm,
+							jmlStokGudangSblm, jmlStokApotek
+									- jmlStokApotekSblm > 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm > 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, jmlStokApotek
+									- jmlStokApotekSblm < 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm < 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, false);
 				}
 			}
 			stokOpname.setIdStokOpname(idStokOpname);
@@ -162,6 +188,60 @@ public class StokControl extends BaseController {
 			stokOpname.validateAndSave();
 
 			hasil = "Stok Opname Berhasil Ditutup!";
+		} else if (simpan.equals("Buka")) {
+			for (int i = 0; i < key_kode_obat.size(); i++) {
+				if (key_kode_obat.get(i) != null
+						&& !"".equals(key_kode_obat.get(i))) {
+					StokObatAlat stokObatAlat = new StokObatAlat();
+					stokObatAlat.setIdObatAlat((ObatAlat) ObatAlat
+							.findById(key_kode_obat.get(i)));
+					stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
+					List<StokObatAlat> fetch = StokObatAlat
+							.find("id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
+									stokObatAlat.getIdObatAlat()
+											.getIdObatAlat(),
+									stokObatAlat.getTglKadaluarsa()).fetch();
+					StokObatAlat tmp = fetch.get(0);
+					Integer jmlStokApotekSblm = tmp.getJmlStokApotek();
+					Integer jmlStokGudangSblm = tmp.getJmlStokGudang();
+					stokObatAlat.setIdStok(tmp.getIdStok());
+					Integer jmlStokApotek = stokApotekSekarang.get(i) == null ? 0
+							: stokApotekSekarang.get(i);
+					Integer jmlStokGudang = stokGudangSekarang.get(i) == null ? 0
+							: stokGudangSekarang.get(i);
+					stokObatAlat.setJmlStokApotek(jmlStokApotek);
+					stokObatAlat.setJmlStokGudang(jmlStokGudang);
+					stokObatAlat = stokObatAlat.merge();
+					stokObatAlat.validateAndSave();
+					TransaksiBulanan.generate(tmp.getIdStok(),
+							jmlStokApotekSblm, jmlStokGudangSblm, jmlStokApotek
+									- jmlStokApotekSblm > 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm > 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, jmlStokApotek
+									- jmlStokApotekSblm < 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm < 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, true);
+					TransaksiHarian.generate(stokOpname.getIdStokOpname(),
+							tmp.getIdStok(), jmlStokApotekSblm,
+							jmlStokGudangSblm, jmlStokApotek
+									- jmlStokApotekSblm > 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm > 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, jmlStokApotek
+									- jmlStokApotekSblm < 0 ? jmlStokApotek
+									- jmlStokApotekSblm : 0, jmlStokGudang
+									- jmlStokGudangSblm < 0 ? jmlStokGudang
+									- jmlStokGudangSblm : 0, true);
+				}
+			}
+			stokOpname.setIdStokOpname(idStokOpname);
+			stokOpname.setStsTransaksi(null);
+			stokOpname = stokOpname.merge();
+			stokOpname.validateAndSave();
+
+			hasil = "Stok Opname Berhasil Dibuka!";
 		}
 
 		renderTemplate("StokControl/transaksi.html", stokOpname, hasil);
@@ -255,7 +335,7 @@ public class StokControl extends BaseController {
 		Query createNativeQuery = StokObatAlat
 				.em()
 				.createNativeQuery(
-						"select avg(x.harga_beli_stok) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
+						"select avg(harga_beli_stok-coalesce(disc_charge,0)+((harga_beli_stok-coalesce(disc_charge,0))*coalesce(ppn_stok,0)/100)) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
 		createNativeQuery.setParameter("idObatAlat", idObatAlat);
 		Number hargaRata = (Number) createNativeQuery.getSingleResult();
 		DecimalFormat decimalFormat = new DecimalFormat();
@@ -380,7 +460,7 @@ public class StokControl extends BaseController {
 	public static void laporanPsikotropika(Integer[] tahunList,
 			Integer blnFilter, Integer thnFilter) {
 		Calendar instance = Calendar.getInstance();
-		blnFilter = instance.get(Calendar.MONTH);
+		blnFilter = instance.get(Calendar.MONTH) + 1;
 		thnFilter = instance.get(Calendar.YEAR);
 		if (tahunList == null) {
 			tahunList = new Integer[9];
@@ -393,26 +473,141 @@ public class StokControl extends BaseController {
 		render(tahunList, blnFilter, thnFilter);
 	}
 
-	public static void generateLaporanPsikotropika(Integer blnFilter,
-			Integer thnFilter) {
-		String sql = "select 1 as no,stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat,null as satuan_obat_alat"
-				+ " ,null as pemasukan_dari,null as pemasukan_jumlah,null as stok_awal,null as pengeluaran_untuk"
-				+ " ,null as pengeluaran_jumlah,null as stok_akhir"
-				+ " from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat"
-				+ " where 1=1";
-		sql += " order by stok_obat_alat.id_stok";
+	public static void generateLaporanPsikotropika(String generate,
+			Integer blnFilter, Integer thnFilter) {
+		if ("Rekap Psikotropika".equals(generate)) {
+			generateRekapPsikotropika(blnFilter, thnFilter, "2");
+		} else if ("Detail Psikotropika".equals(generate)) {
+			generateDetailPsikotropika(blnFilter, thnFilter, "2");
+		} else if ("Rekap Narkotika".equals(generate)) {
+			generateRekapPsikotropika(blnFilter, thnFilter, "3");
+		} else if ("Detail Narkotika".equals(generate)) {
+			generateDetailPsikotropika(blnFilter, thnFilter, "3");
+		}
+	}
+
+	public static void generateRekapPsikotropika(Integer blnFilter,
+			Integer thnFilter, String kategori) {
+		String blnharian = "";
+		String blnbulanan = "";
+		if (blnFilter != null) {
+			blnharian = " and transaksi_harian.thnblntgl_transaksi between :thnblnAwal and :thnblnAkhir ";
+			blnbulanan = " and thnbln_transaksi= :thnbln ";
+		}
+		String sql = "select coalesce(masuk.id_obat_alat,keluar.id_obat_alat) as id_obat_alat, "
+				+ "coalesce(masuk.id_obat_alat,keluar.id_obat_alat) as id_transaksi, "
+				+ "coalesce(masuk.nama_obat_alat,keluar.nama_obat_alat) as nama_obat_alat,"
+				+ "stok_awal,'' as pemasukan_dari,coalesce(pemasukan_jumlah,0) as pemasukan_jumlah,"
+				+ "'' as pengeluaran_untuk,coalesce(pengeluaran_jumlah,0) as pengeluaran_jumlah,stok_akhir "
+				+ "from (select stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat, "
+				+ "sum(transaksi_harian.penambahan_stok_apotek+transaksi_harian.penambahan_stok_gudang) as pemasukan_jumlah  "
+				+ "from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat  "
+				+ "join transaksi_harian on transaksi_harian.id_stok=stok_obat_alat.id_stok  "
+				+ "join pembelian on pembelian.id_pembelian=transaksi_harian.id_transaksi  "
+				+ "join supplier on supplier.id_supplier=pembelian.id_supplier  "
+				+ "where obat_alat.kategori_obat= :kategori "
+				+ blnharian
+				+ "group by stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat) masuk "
+				+ "full outer join (select stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat, "
+				+ "sum(transaksi_harian.pengurangan_stok_apotek+transaksi_harian.pengurangan_stok_gudang) as pengeluaran_jumlah  "
+				+ "from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat  "
+				+ "join transaksi_harian on transaksi_harian.id_stok=stok_obat_alat.id_stok  "
+				+ "join detail_resep on detail_resep.id_resep_dtl=transaksi_harian.id_transaksi  "
+				+ "join resep on detail_resep.id_resep=resep.id_resep  "
+				+ "where obat_alat.kategori_obat= :kategori "
+				+ blnharian
+				+ "group by stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat) keluar  "
+				+ "on masuk.id_obat_alat=keluar.id_obat_alat "
+				+ "join (select id_obat_alat,sum(stok_awal_apotek+stok_awal_gudang) as stok_awal,"
+				+ "sum(stok_akhir_apotek+stok_akhir_gudang) as stok_akhir from transaksi_bulanan "
+				+ "join stok_obat_alat on transaksi_bulanan.id_stok=stok_obat_alat.id_stok where thnbln_transaksi is not null"
+				+ blnbulanan
+				+ "group by id_obat_alat) transaksi "
+				+ "on transaksi.id_obat_alat=coalesce(masuk.id_obat_alat,keluar.id_obat_alat)";
 		Query createNativeQuery = StokOpname.em().createNativeQuery(sql,
 				LaporanJenisObat.class);
+		if (blnFilter != null) {
+			DecimalFormat blnFormat = new DecimalFormat("00");
+			String thnbln = thnFilter + blnFormat.format(blnFilter);
+			createNativeQuery.setParameter("thnbln", thnbln);
+			String thnblnAwal = thnFilter + blnFormat.format(blnFilter) + "01";
+			createNativeQuery.setParameter("thnblnAwal", thnblnAwal);
+			String thnblnAkhir = thnFilter + blnFormat.format(blnFilter) + "31";
+			createNativeQuery.setParameter("thnblnAkhir", thnblnAkhir);
+		}
+		createNativeQuery.setParameter("kategori", kategori);
 		List psikotropikaList = null;
 		try {
 			psikotropikaList = createNativeQuery.getResultList();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		String blnNama = ApotekConstant.getNamaBulan(blnFilter);
+		response.setContentTypeIfNotSet(MimeTypes
+				.getContentType("rekapLaporanPsikotropika.xls"));
+		response.setHeader("Content-Disposition",
+				"attachment; filename=rekapLaporanPsikotropika.xls");
+		renderTemplate("excel/rekapLaporanPsikotropika.html", psikotropikaList,
+				blnNama, thnFilter);
+	}
+
+	public static void generateDetailPsikotropika(Integer blnFilter,
+			Integer thnFilter, String kategori) {
+		String blnharian = "";
+		if (blnFilter != null) {
+			blnharian = " and transaksi_harian.thnblntgl_transaksi between :thnblnAwal and :thnblnAkhir ";
+		}
+		String sql = "select detail.id_obat_alat, "
+				+ "detail.id_transaksi, "
+				+ "detail.nama_obat_alat,"
+				+ "stok_awal,pemasukan_dari,coalesce(pemasukan_jumlah,0) as pemasukan_jumlah,"
+				+ "pengeluaran_untuk,coalesce(pengeluaran_jumlah,0) as pengeluaran_jumlah,stok_akhir "
+				+ "from ((select id_transaksi,stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat, supplier.nama_supplier as pemasukan_dari,  "
+				+ "sum(transaksi_harian.penambahan_stok_apotek+transaksi_harian.penambahan_stok_gudang) as pemasukan_jumlah, '' as pengeluaran_untuk, 0 as pengeluaran_jumlah "
+				+ "from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat  "
+				+ "join transaksi_harian on transaksi_harian.id_stok=stok_obat_alat.id_stok  "
+				+ "join pembelian on pembelian.id_pembelian=transaksi_harian.id_transaksi  "
+				+ "join supplier on supplier.id_supplier=pembelian.id_supplier  "
+				+ "where obat_alat.kategori_obat= :kategori "
+				+ blnharian
+				+ "group by id_transaksi,stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat,supplier.nama_supplier) "
+				+ "union all (select id_transaksi,stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat, resep.nama_pasien as pengeluaran_untuk, "
+				+ "sum(transaksi_harian.pengurangan_stok_apotek+transaksi_harian.pengurangan_stok_gudang) as pengeluaran_jumlah, '' as pemasukan_dari, 0 as pemasukan_jumlah "
+				+ "from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat  "
+				+ "join transaksi_harian on transaksi_harian.id_stok=stok_obat_alat.id_stok  "
+				+ "join detail_resep on detail_resep.id_resep_dtl=transaksi_harian.id_transaksi  "
+				+ "join resep on detail_resep.id_resep=resep.id_resep  "
+				+ "where obat_alat.kategori_obat= :kategori "
+				+ blnharian
+				+ "group by id_transaksi,stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat,resep.nama_pasien)) detail "
+				+ "join (select id_transaksi,id_obat_alat,sum(stok_awal_apotek+stok_awal_gudang) as stok_awal,"
+				+ "sum(stok_akhir_apotek+stok_akhir_gudang) as stok_akhir from transaksi_harian "
+				+ "join stok_obat_alat on transaksi_harian.id_stok=stok_obat_alat.id_stok where thnblntgl_transaksi is not null "
+				+ "group by id_transaksi,id_obat_alat) transaksi "
+				+ "on transaksi.id_obat_alat=detail.id_obat_alat and transaksi.id_transaksi=detail.id_transaksi";
+		sql += " order by detail.id_obat_alat,detail.id_transaksi";
+		Query createNativeQuery = StokOpname.em().createNativeQuery(sql,
+				LaporanJenisObat.class);
+		if (blnFilter != null) {
+			DecimalFormat blnFormat = new DecimalFormat("00");
+			String thnblnAwal = thnFilter + blnFormat.format(blnFilter) + "01";
+			createNativeQuery.setParameter("thnblnAwal", thnblnAwal);
+			String thnblnAkhir = thnFilter + blnFormat.format(blnFilter) + "31";
+			createNativeQuery.setParameter("thnblnAkhir", thnblnAkhir);
+		}
+		createNativeQuery.setParameter("kategori", kategori);
+		List psikotropikaList = null;
+		try {
+			psikotropikaList = createNativeQuery.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String blnNama = ApotekConstant.getNamaBulan(blnFilter);
 		response.setContentTypeIfNotSet(MimeTypes
 				.getContentType("laporanPsikotropika.xls"));
 		response.setHeader("Content-Disposition",
 				"attachment; filename=laporanPsikotropika.xls");
-		renderTemplate("excel/laporanPsikotropika.html", psikotropikaList);
+		renderTemplate("excel/laporanPsikotropika.html", psikotropikaList,
+				blnNama, thnFilter);
 	}
 }

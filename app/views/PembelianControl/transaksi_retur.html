@@ -87,9 +87,16 @@ $(function() {
 		});		
 	});
 	#{if returPembelian.stsTransaksi!=null}
-	$('#tutup').attr('value','Buka').attr('id','buka');
+	#{if session.contains("admin")}
+	$('#tutup').attr('value','Buka').attr('id','buka');	
 	$(':input').not('#buka').attr('readonly', 'readonly');
 	$(':input').not('#buka').unbind();
+	#{/if}
+	#{else}	
+	$('#tutup').attr('disabled', 'disabled');
+	$(':input').not('#buka').attr('readonly', 'readonly');
+	$(':input').not('#buka').unbind();
+	#{/else}
 	$('#simpan').attr('disabled', 'disabled');
 	#{/if}
 });

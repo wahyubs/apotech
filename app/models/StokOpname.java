@@ -37,7 +37,8 @@ import play.db.jpa.JPA;
  */
 @Entity(name = "StokOpname")
 @Table(name = "stok_opname")
-public class StokOpname extends GenericModel implements IGeneratedModel {
+public class StokOpname extends GenericModel implements IGeneratedModel,
+		IGeneratedTransaction {
 
 	@Id
 	@Column(name = "id_stok_opname", length = 32)
@@ -45,6 +46,8 @@ public class StokOpname extends GenericModel implements IGeneratedModel {
 	@GenericGenerator(name = "MyIdGenerator", strategy = "tool.MyIdGenerator")
 	private String idStokOpname;
 
+	@GeneratedValue(generator = "MyDateIdGenerator")
+	@GenericGenerator(name = "MyDateGenerator", strategy = "tool.MyDateGenerator")
 	@Column(name = "tgl_aktivitas", nullable = true, unique = false)
 	private Date tglAktivitas;
 
@@ -178,5 +181,10 @@ public class StokOpname extends GenericModel implements IGeneratedModel {
 	@Override
 	public String getGeneratedValue() {
 		return idStokOpname;
+	}
+
+	@Override
+	public Date getGeneratedDate() {
+		return tglAktivitas;
 	}
 }

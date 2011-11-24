@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +17,8 @@ import models.Pembelian;
 import models.ReturPembelian;
 import models.StokObatAlat;
 import models.Supplier;
+import models.TransaksiBulanan;
+import models.TransaksiHarian;
 import models.TransferStok;
 import play.data.binding.As;
 import play.data.validation.Required;
@@ -91,7 +94,8 @@ public class PembelianControl extends BaseController {
 
 	public static void savePembelian(String simpan, String idPembelian,
 			@Required @As("dd-MM-yyyy") Date tglPembelian,
-			@Required String key_idSupplier, List<String> key_kode_obat,
+			@Required String key_idSupplier, @As("dd-MM-yyyy") Date tglFaktur,
+			String noFaktur, List<String> key_kode_obat,
 			@As("dd-MM-yyyy") List<Date> tglKadaluarsa,
 			List<Integer> stokApotek, List<Integer> stokGudang,
 			List<Integer> harga, List<Integer> ppn, List<Integer> diskon) {
@@ -100,6 +104,8 @@ public class PembelianControl extends BaseController {
 		if (pembelian.getTglPembelian() == null)
 			pembelian.setTglPembelian(new Date());
 		pembelian.setIdSupplier((Supplier) Supplier.findById(key_idSupplier));
+		pembelian.setTglFaktur(tglFaktur);
+		pembelian.setNoFaktur(noFaktur);
 		if (CommonUtil.isEmpty(idPembelian)) {
 			pembelian.validateAndSave();
 		} else {
@@ -129,7 +135,12 @@ public class PembelianControl extends BaseController {
 				StokObatAlat stokObatAlat = new StokObatAlat();
 				stokObatAlat.setIdObatAlat((ObatAlat) ObatAlat
 						.findById(key_kode_obat.get(i)));
-				stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
+				if (tglKadaluarsa.get(i) == null) {
+					Calendar instance = Calendar.getInstance();
+					instance.add(Calendar.YEAR, 100);
+					stokObatAlat.setTglKadaluarsa(instance.getTime());
+				} else
+					stokObatAlat.setTglKadaluarsa(tglKadaluarsa.get(i));
 				List<StokObatAlat> fetch = StokObatAlat
 						.find("id_obat_alat=? and date_trunc('day', tgl_kadaluarsa)=?",
 								stokObatAlat.getIdObatAlat().getIdObatAlat(),
@@ -160,7 +171,12 @@ public class PembelianControl extends BaseController {
 				}
 				detilPembelian.setIdPembelian(pembelian);
 				detilPembelian.setIdStok(stokObatAlat);
-				detilPembelian.setTglKadaluarsa(tglKadaluarsa.get(i));
+				if (tglKadaluarsa.get(i) == null) {
+					Calendar instance = Calendar.getInstance();
+					instance.add(Calendar.YEAR, 100);
+					detilPembelian.setTglKadaluarsa(instance.getTime());
+				} else
+					detilPembelian.setTglKadaluarsa(tglKadaluarsa.get(i));
 				detilPembelian.setJmlPenerimaanApotek(jmlTerimaApotek);
 				detilPembelian.setJmlPenerimaanGudang(jmlTerimaGudang);
 				Integer diskonTmp = diskon.get(i) == null ? 0 : diskon.get(i);
@@ -194,6 +210,10 @@ public class PembelianControl extends BaseController {
 									stokObatAlat.getTglKadaluarsa()).fetch();
 					if (!fetch.isEmpty()) {
 						StokObatAlat tmp = fetch.get(0);
+						Integer jmlStokApotek = tmp.getJmlStokApotek() == null ? 0
+								: tmp.getJmlStokApotek();
+						Integer jmlStokGudang = tmp.getJmlStokGudang() == null ? 0
+								: tmp.getJmlStokGudang();
 						Query createNativeQuery = Pembelian
 								.em()
 								.createNativeQuery(
@@ -206,10 +226,6 @@ public class PembelianControl extends BaseController {
 						DetilPembelian detilPembelian = (DetilPembelian) createNativeQuery
 								.getResultList().get(0);
 						stokObatAlat.setIdStok(tmp.getIdStok());
-						Integer jmlStokApotek = tmp.getJmlStokApotek() == null ? 0
-								: tmp.getJmlStokApotek();
-						Integer jmlStokGudang = tmp.getJmlStokGudang() == null ? 0
-								: tmp.getJmlStokGudang();
 						detilPembelian.setStokAwalApotek(jmlStokApotek);
 						detilPembelian.setStokAwalGudang(jmlStokGudang);
 						stokObatAlat.setJmlStokApotek(jmlStokApotek
@@ -233,6 +249,12 @@ public class PembelianControl extends BaseController {
 						stokObatAlat.validateAndSave();
 						detilPembelian = detilPembelian.merge();
 						detilPembelian.save();
+						TransaksiBulanan.generate(tmp.getIdStok(),
+								jmlStokApotek, jmlStokGudang, jmlTerimaApotek,
+								jmlTerimaGudang, 0, 0, false);
+						TransaksiHarian.generate(pembelian.getIdPembelian(),
+								tmp.getIdStok(), jmlStokApotek, jmlStokGudang,
+								jmlTerimaApotek, jmlTerimaGudang, 0, 0, false);
 					}
 				}
 			}
@@ -276,6 +298,12 @@ public class PembelianControl extends BaseController {
 						stokObatAlat.setDiscCharge(diskonTmp * hargaTmp / 100);
 						stokObatAlat = stokObatAlat.merge();
 						stokObatAlat.validateAndSave();
+						TransaksiBulanan.generate(tmp.getIdStok(),
+								jmlStokApotek, jmlStokGudang, jmlTerimaApotek,
+								jmlTerimaGudang, 0, 0, true);
+						TransaksiHarian.generate(pembelian.getIdPembelian(),
+								tmp.getIdStok(), jmlStokApotek, jmlStokGudang,
+								jmlTerimaApotek, jmlTerimaGudang, 0, 0, true);
 					}
 				}
 			}
@@ -385,6 +413,15 @@ public class PembelianControl extends BaseController {
 					stokObatAlat.validateAndSave();
 					detilReturPembelian = detilReturPembelian.merge();
 					detilReturPembelian.validateAndSave();
+					TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+							jmlStokApotekSebelumnya, jmlStokGudangSebelumnya,
+							jmlRedeliveryApotek, jmlRedeliveryGudang,
+							jmlReturApotek, jmlReturGudang, false);
+					TransaksiHarian.generate(returPembelian.getIdReturBeli(),
+							stokObatAlat.getIdStok(), jmlStokApotekSebelumnya,
+							jmlStokGudangSebelumnya, jmlRedeliveryApotek,
+							jmlRedeliveryGudang, jmlReturApotek,
+							jmlReturGudang, false);
 				}
 			}
 			returPembelian.setIdReturBeli(idReturBeli);
@@ -407,16 +444,10 @@ public class PembelianControl extends BaseController {
 							returPembelian.getIdReturBeli());
 					createNativeQuery.setParameter("idStok",
 							stokObatAlat.getIdStok());
-					DetilReturPembelian detilReturPembelian = (DetilReturPembelian) createNativeQuery
-							.getResultList().get(0);
 					Integer jmlStokApotekSebelumnya = stokObatAlat
 							.getJmlStokApotek();
 					Integer jmlStokGudangSebelumnya = stokObatAlat
 							.getJmlStokGudang();
-					detilReturPembelian
-							.setStokAwalApotek(jmlStokApotekSebelumnya);
-					detilReturPembelian
-							.setStokAwalGudang(jmlStokGudangSebelumnya);
 					Integer jmlReturApotek = returApotek.get(i) == null ? 0
 							: returApotek.get(i);
 					Integer jmlReturGudang = returGudang.get(i) == null ? 0
@@ -429,16 +460,17 @@ public class PembelianControl extends BaseController {
 							+ jmlReturApotek - jmlRedeliveryApotek);
 					stokObatAlat.setJmlStokGudang(jmlStokGudangSebelumnya
 							+ jmlReturGudang - jmlRedeliveryGudang);
-					detilReturPembelian
-							.setStokAkhirApotek(jmlStokApotekSebelumnya
-									+ jmlReturApotek - jmlRedeliveryApotek);
-					detilReturPembelian
-							.setStokAkhirGudang(jmlStokGudangSebelumnya
-									+ jmlReturGudang - jmlRedeliveryGudang);
 					stokObatAlat = stokObatAlat.merge();
 					stokObatAlat.validateAndSave();
-					detilReturPembelian = detilReturPembelian.merge();
-					detilReturPembelian.validateAndSave();
+					TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+							jmlStokApotekSebelumnya, jmlStokGudangSebelumnya,
+							jmlRedeliveryApotek, jmlRedeliveryGudang,
+							jmlReturApotek, jmlReturGudang, true);
+					TransaksiHarian.generate(returPembelian.getIdReturBeli(),
+							stokObatAlat.getIdStok(), jmlStokApotekSebelumnya,
+							jmlStokGudangSebelumnya, jmlRedeliveryApotek,
+							jmlRedeliveryGudang, jmlReturApotek,
+							jmlReturGudang, true);
 				}
 			}
 			returPembelian.setIdReturBeli(idReturBeli);
@@ -533,6 +565,8 @@ public class PembelianControl extends BaseController {
 					DetilTransferStok detilTransferStok = DetilTransferStok
 							.findById(new DetilTransferStokId(transferStok
 									.getIdTransfer(), key_pilihStok.get(i)));
+					Integer jmlStokApotekSblm = stokObatAlat.getJmlStokApotek();
+					Integer jmlStokGudangSblm = stokObatAlat.getJmlStokGudang();
 					detilTransferStok.setStokAwalApotek(stokObatAlat
 							.getJmlStokApotek());
 					detilTransferStok.setStokAwalGudang(stokObatAlat
@@ -560,6 +594,19 @@ public class PembelianControl extends BaseController {
 							.getJmlStokGudang());
 					stokObatAlat = stokObatAlat.merge();
 					stokObatAlat.validateAndSave();
+					TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+							jmlStokApotekSblm, jmlStokGudangSblm,
+							detilTransferStok.getJmlKirimApotek(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimApotek(), false);
+					TransaksiHarian.generate(transferStok.getIdTransfer(),
+							stokObatAlat.getIdStok(), jmlStokApotekSblm,
+							jmlStokGudangSblm,
+							detilTransferStok.getJmlKirimApotek(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimApotek(), false);
 				}
 			}
 			hasil = "Transfer Berhasil Ditutup!";
@@ -572,6 +619,8 @@ public class PembelianControl extends BaseController {
 					DetilTransferStok detilTransferStok = DetilTransferStok
 							.findById(new DetilTransferStokId(transferStok
 									.getIdTransfer(), key_pilihStok.get(i)));
+					Integer jmlStokApotekSblm = stokObatAlat.getJmlStokApotek();
+					Integer jmlStokGudangSblm = stokObatAlat.getJmlStokGudang();
 					detilTransferStok.setStokAwalApotek(stokObatAlat
 							.getJmlStokApotek());
 					detilTransferStok.setStokAwalGudang(stokObatAlat
@@ -599,6 +648,19 @@ public class PembelianControl extends BaseController {
 							.getJmlStokGudang());
 					stokObatAlat = stokObatAlat.merge();
 					stokObatAlat.validateAndSave();
+					TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+							jmlStokApotekSblm, jmlStokGudangSblm,
+							detilTransferStok.getJmlKirimApotek(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimApotek(), true);
+					TransaksiHarian.generate(transferStok.getIdTransfer(),
+							stokObatAlat.getIdStok(), jmlStokApotekSblm,
+							jmlStokGudangSblm,
+							detilTransferStok.getJmlKirimApotek(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimGudang(),
+							detilTransferStok.getJmlKirimApotek(), true);
 				}
 			}
 			hasil = "Transfer Berhasil Ditutup!";

@@ -81,6 +81,12 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 	@OneToMany(targetEntity = DetailReturPenjualan.class, fetch = FetchType.LAZY, mappedBy = "idStok", cascade = CascadeType.REMOVE)
 	// , cascade=CascadeType.ALL)
 	private Set<DetailReturPenjualan> detailReturPenjualanIdStok = new HashSet<DetailReturPenjualan>();
+	
+	@OneToMany (targetEntity=TransaksiBulanan.class, fetch=FetchType.LAZY, mappedBy="idStok", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <TransaksiBulanan> transaksiBulananIdStok = new HashSet<TransaksiBulanan>(); 
+   
+    @OneToMany (targetEntity=TransaksiHarian.class, fetch=FetchType.LAZY, mappedBy="idStok", cascade=CascadeType.REMOVE)//, cascade=CascadeType.ALL)
+    private Set <TransaksiHarian> transaksiHarianIdStok = new HashSet<TransaksiHarian>(); 
 
 	/**
 	 * Default constructor
@@ -221,6 +227,36 @@ public class StokObatAlat extends GenericModel implements IGeneratedModel {
 			DetailReturPenjualan detailReturPenjualan) {
 		getDetailReturPenjualanIdStok().add(detailReturPenjualan);
 	}
+	
+	public Set<TransaksiBulanan> getTransaksiBulananIdStok() {
+        if (transaksiBulananIdStok == null){
+            transaksiBulananIdStok = new HashSet<TransaksiBulanan>();
+        }
+        return transaksiBulananIdStok;
+    }
+
+    public void setTransaksiBulananIdStok (Set<TransaksiBulanan> transaksiBulananIdStok) {
+        this.transaksiBulananIdStok = transaksiBulananIdStok;
+    }	
+    
+    public void addTransaksiBulananIdStok (TransaksiBulanan transaksiBulanan) {
+    	    getTransaksiBulananIdStok().add(transaksiBulanan);
+    }
+    
+    public Set<TransaksiHarian> getTransaksiHarianIdStok() {
+        if (transaksiHarianIdStok == null){
+            transaksiHarianIdStok = new HashSet<TransaksiHarian>();
+        }
+        return transaksiHarianIdStok;
+    }
+
+    public void setTransaksiHarianIdStok (Set<TransaksiHarian> transaksiHarianIdStok) {
+        this.transaksiHarianIdStok = transaksiHarianIdStok;
+    }	
+    
+    public void addTransaksiHarianIdStok (TransaksiHarian transaksiHarian) {
+    	    getTransaksiHarianIdStok().add(transaksiHarian);
+    }
 
 	public String toString() {
 		return tglKadaluarsa + "";
