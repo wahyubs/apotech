@@ -1,6 +1,7 @@
 package controllers;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -212,6 +213,7 @@ public class PenjualanControl extends BaseController {
 			@As("dd-MM-yyyy") Date tglPenjualan, String key_idObatAlat,
 			String key_pilihStok, Integer jumlahObatAlat, Integer hargaObatAlat) {
 		Resep resep = new Resep();
+		String hargaTotalPenjualan = null;
 		if (CommonUtil.isNotEmpty(idResep))
 			resep.setIdResep(idResep);
 		resep.setKodeResep(kodeResep);
@@ -227,110 +229,143 @@ public class PenjualanControl extends BaseController {
 			resep.setStsTransaksi(null);
 		resep = resep.merge();
 		resep = resep.save();
-		if (!"Tutup".equals(simpan)) {
-			DetailResep detailResep = new DetailResep();
-			detailResep.setIdResep(resep);
-			detailResep.setJmlObat(jumlahObatAlat);
-			detailResep = detailResep.merge();
-			detailResep = detailResep.save();
-			ObatResep obatResep = new ObatResep();
-			obatResep.setIdStok((StokObatAlat) StokObatAlat
-					.findById(key_pilihStok));
-			obatResep.setJmlObatResep(jumlahObatAlat);
-			obatResep.setHargaObat(hargaObatAlat);
-			obatResep.setIdResepDtl(detailResep);
-			obatResep = obatResep.merge();
-			obatResep.save();
-		}
-		List<DetailResep> fetch = DetailResep.find("id_resep=?",
-				resep.getIdResep()).fetch();
-		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
-			DetailResep tmp = (DetailResep) iterator.next();
-			resep.addDetailResepIdResep(tmp);
-		}
-		if ("Tutup".equals(simpan)) {
+		if (CommonUtil.isNotEmpty(key_idObatAlat)) {
+			if (!"Tutup".equals(simpan)) {
+				DetailResep detailResep = new DetailResep();
+				detailResep.setIdResep(resep);
+				detailResep.setJmlObat(jumlahObatAlat);
+				detailResep = detailResep.merge();
+				detailResep = detailResep.save();
+				ObatResep obatResep = new ObatResep();
+				obatResep.setIdStok((StokObatAlat) StokObatAlat
+						.findById(key_pilihStok));
+				obatResep.setJmlObatResep(jumlahObatAlat);
+				obatResep.setHargaObat(hargaObatAlat);
+				obatResep.setIdResepDtl(detailResep);
+				obatResep = obatResep.merge();
+				obatResep.save();
+			}
+			List<DetailResep> fetch = DetailResep.find("id_resep=?",
+					resep.getIdResep()).fetch();
+			for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
+				DetailResep tmp = (DetailResep) iterator.next();
+				resep.addDetailResepIdResep(tmp);
+			}
+			if ("Tutup".equals(simpan)) {
+				List<DetailResep> dtlResepList = DetailResep.find("id_resep=?",
+						resep.getIdResep()).fetch();
+				for (Iterator iterator = dtlResepList.iterator(); iterator
+						.hasNext();) {
+					DetailResep dtlTmp = (DetailResep) iterator.next();
+					Set<ObatResep> obatResepIdResepDtl = dtlTmp
+							.getObatResepIdResepDtl();
+					for (Iterator iterator2 = obatResepIdResepDtl.iterator(); iterator2
+							.hasNext();) {
+						ObatResep obatResepTmp = (ObatResep) iterator2.next();
+						StokObatAlat stokObatAlat = obatResepTmp.getIdStok();
+						Integer jmlStokA = stokObatAlat.getJmlStokApotek();
+						Integer jmlStokG = stokObatAlat.getJmlStokGudang();
+						obatResepTmp.setStokAwalApotek(stokObatAlat
+								.getJmlStokApotek());
+						obatResepTmp.setStokAwalGudang(stokObatAlat
+								.getJmlStokGudang());
+						if (obatResepTmp.getJmlObatResep() != null
+								&& obatResepTmp.getJmlObatResep() > 0) {
+							Integer jmlStokApotek = stokObatAlat
+									.getJmlStokApotek()
+									- obatResepTmp.getJmlObatResep();
+							stokObatAlat.setJmlStokApotek(jmlStokApotek);
+							obatResepTmp.setStokAkhirApotek(stokObatAlat
+									.getJmlStokApotek());
+							obatResepTmp.setStokAkhirGudang(stokObatAlat
+									.getJmlStokGudang());
+							stokObatAlat = stokObatAlat.merge();
+							stokObatAlat.validateAndSave();
+							obatResepTmp = obatResepTmp.merge();
+							obatResepTmp.save();
+							TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+									jmlStokA, jmlStokG, 0, 0,
+									obatResepTmp.getJmlObatResep(), 0, false);
+							TransaksiHarian.generate(dtlTmp.getIdResepDtl(),
+									stokObatAlat.getIdStok(), jmlStokA,
+									jmlStokG, 0, 0,
+									obatResepTmp.getJmlObatResep(), 0, false);
+						}
+					}
+				}
+			} else if ("Buka".equals(simpan)) {
+				List<DetailResep> dtlResepList = DetailResep.find("id_resep=?",
+						resep.getIdResep()).fetch();
+				for (Iterator iterator = dtlResepList.iterator(); iterator
+						.hasNext();) {
+					DetailResep dtlTmp = (DetailResep) iterator.next();
+					Set<ObatResep> obatResepIdResepDtl = dtlTmp
+							.getObatResepIdResepDtl();
+					for (Iterator iterator2 = obatResepIdResepDtl.iterator(); iterator2
+							.hasNext();) {
+						ObatResep obatResepTmp = (ObatResep) iterator2.next();
+						StokObatAlat stokObatAlat = obatResepTmp.getIdStok();
+						Integer jmlStokA = stokObatAlat.getJmlStokApotek();
+						Integer jmlStokG = stokObatAlat.getJmlStokGudang();
+						obatResepTmp.setStokAwalApotek(stokObatAlat
+								.getJmlStokApotek());
+						obatResepTmp.setStokAwalGudang(stokObatAlat
+								.getJmlStokGudang());
+						if (obatResepTmp.getJmlObatResep() != null
+								&& obatResepTmp.getJmlObatResep() > 0) {
+							Integer jmlStokApotek = stokObatAlat
+									.getJmlStokApotek()
+									+ obatResepTmp.getJmlObatResep();
+							stokObatAlat.setJmlStokApotek(jmlStokApotek);
+							obatResepTmp.setStokAkhirApotek(stokObatAlat
+									.getJmlStokApotek());
+							obatResepTmp.setStokAkhirGudang(stokObatAlat
+									.getJmlStokGudang());
+							stokObatAlat = stokObatAlat.merge();
+							stokObatAlat.validateAndSave();
+							obatResepTmp = obatResepTmp.merge();
+							obatResepTmp.save();
+							TransaksiBulanan.generate(stokObatAlat.getIdStok(),
+									jmlStokA, jmlStokG, 0, 0,
+									obatResepTmp.getJmlObatResep(), 0, true);
+							TransaksiHarian.generate(dtlTmp.getIdResepDtl(),
+									stokObatAlat.getIdStok(), jmlStokA,
+									jmlStokG, 0, 0,
+									obatResepTmp.getJmlObatResep(), 0, true);
+						}
+					}
+				}
+			}
+			DecimalFormat decimalFormat = new DecimalFormat("###########0");
+			DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+			formatSymbols.setGroupingSeparator('.');
+			formatSymbols.setDecimalSeparator(',');
+			decimalFormat.setDecimalFormatSymbols(formatSymbols);
+			decimalFormat.setGroupingUsed(true);
+			decimalFormat.setGroupingSize(3);
+			Integer hargaTotal = 0;
 			List<DetailResep> dtlResepList = DetailResep.find("id_resep=?",
 					resep.getIdResep()).fetch();
 			for (Iterator iterator = dtlResepList.iterator(); iterator
 					.hasNext();) {
-				DetailResep dtlTmp = (DetailResep) iterator.next();
-				Set<ObatResep> obatResepIdResepDtl = dtlTmp
-						.getObatResepIdResepDtl();
-				for (Iterator iterator2 = obatResepIdResepDtl.iterator(); iterator2
+				DetailResep detailResepTmp = (DetailResep) iterator.next();
+				List<ObatResep> obatResepList = ObatResep.find(
+						"id_resep_dtl=?", detailResepTmp.getIdResepDtl())
+						.fetch();
+				for (Iterator iterator2 = obatResepList.iterator(); iterator2
 						.hasNext();) {
 					ObatResep obatResepTmp = (ObatResep) iterator2.next();
-					StokObatAlat stokObatAlat = obatResepTmp.getIdStok();
-					Integer jmlStokA = stokObatAlat.getJmlStokApotek();
-					Integer jmlStokG = stokObatAlat.getJmlStokGudang();
-					obatResepTmp.setStokAwalApotek(stokObatAlat
-							.getJmlStokApotek());
-					obatResepTmp.setStokAwalGudang(stokObatAlat
-							.getJmlStokGudang());
-					if (obatResepTmp.getJmlObatResep() != null
-							&& obatResepTmp.getJmlObatResep() > 0) {
-						Integer jmlStokApotek = stokObatAlat.getJmlStokApotek()
-								- obatResepTmp.getJmlObatResep();
-						stokObatAlat.setJmlStokApotek(jmlStokApotek);
-						obatResepTmp.setStokAkhirApotek(stokObatAlat
-								.getJmlStokApotek());
-						obatResepTmp.setStokAkhirGudang(stokObatAlat
-								.getJmlStokGudang());
-						stokObatAlat = stokObatAlat.merge();
-						stokObatAlat.validateAndSave();
-						obatResepTmp = obatResepTmp.merge();
-						obatResepTmp.save();
-						TransaksiBulanan.generate(stokObatAlat.getIdStok(),
-								jmlStokA, jmlStokG, 0, 0,
-								obatResepTmp.getJmlObatResep(), 0, false);
-						TransaksiHarian.generate(dtlTmp.getIdResepDtl(),
-								stokObatAlat.getIdStok(), jmlStokA, jmlStokG,
-								0, 0, obatResepTmp.getJmlObatResep(), 0, false);
-					}
+					if (obatResepTmp.getHargaObat() != null
+							&& obatResepTmp.getJmlObatResep() != null)
+						hargaTotal += obatResepTmp.getHargaObat()
+								* obatResepTmp.getJmlObatResep();
 				}
 			}
-		} else if ("Buka".equals(simpan)) {
-			List<DetailResep> dtlResepList = DetailResep.find("id_resep=?",
-					resep.getIdResep()).fetch();
-			for (Iterator iterator = dtlResepList.iterator(); iterator
-					.hasNext();) {
-				DetailResep dtlTmp = (DetailResep) iterator.next();
-				Set<ObatResep> obatResepIdResepDtl = dtlTmp
-						.getObatResepIdResepDtl();
-				for (Iterator iterator2 = obatResepIdResepDtl.iterator(); iterator2
-						.hasNext();) {
-					ObatResep obatResepTmp = (ObatResep) iterator2.next();
-					StokObatAlat stokObatAlat = obatResepTmp.getIdStok();
-					Integer jmlStokA = stokObatAlat.getJmlStokApotek();
-					Integer jmlStokG = stokObatAlat.getJmlStokGudang();
-					obatResepTmp.setStokAwalApotek(stokObatAlat
-							.getJmlStokApotek());
-					obatResepTmp.setStokAwalGudang(stokObatAlat
-							.getJmlStokGudang());
-					if (obatResepTmp.getJmlObatResep() != null
-							&& obatResepTmp.getJmlObatResep() > 0) {
-						Integer jmlStokApotek = stokObatAlat.getJmlStokApotek()
-								+ obatResepTmp.getJmlObatResep();
-						stokObatAlat.setJmlStokApotek(jmlStokApotek);
-						obatResepTmp.setStokAkhirApotek(stokObatAlat
-								.getJmlStokApotek());
-						obatResepTmp.setStokAkhirGudang(stokObatAlat
-								.getJmlStokGudang());
-						stokObatAlat = stokObatAlat.merge();
-						stokObatAlat.validateAndSave();
-						obatResepTmp = obatResepTmp.merge();
-						obatResepTmp.save();
-						TransaksiBulanan.generate(stokObatAlat.getIdStok(),
-								jmlStokA, jmlStokG, 0, 0,
-								obatResepTmp.getJmlObatResep(), 0, true);
-						TransaksiHarian.generate(dtlTmp.getIdResepDtl(),
-								stokObatAlat.getIdStok(), jmlStokA, jmlStokG,
-								0, 0, obatResepTmp.getJmlObatResep(), 0, true);
-					}
-				}
-			}
+			hargaTotalPenjualan = decimalFormat.format(hargaTotal);
 		}
 		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
-		renderTemplate("PenjualanControl/transaksi.html", resep, jenisHargaList);
+		renderTemplate("PenjualanControl/transaksi.html", resep,
+				jenisHargaList, hargaTotalPenjualan);
 	}
 
 	public static void transaksi(Resep resep, String hasil) {
@@ -352,9 +387,10 @@ public class PenjualanControl extends BaseController {
 		String key_idObatAlat = null;
 		Integer stokApotek = null;
 		Integer jumlahObatAlat = null;
+		String hargaTotalPenjualan = "0";
 		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
 		render(resep, key_idObatAlat, stokApotek, jumlahObatAlat,
-				jenisHargaList);
+				jenisHargaList, hargaTotalPenjualan);
 	}
 
 	public static void showKategori(String idObatAlat) {
@@ -372,7 +408,7 @@ public class PenjualanControl extends BaseController {
 						"select sum(x.jml_stok_apotek) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
 		createNativeQuery.setParameter("idObatAlat", idObatAlat);
 		Number stokApotek = (Number) createNativeQuery.getSingleResult();
-		DecimalFormat decimalFormat = new DecimalFormat();
+		DecimalFormat decimalFormat = new DecimalFormat("###########0");
 		decimalFormat.setDecimalSeparatorAlwaysShown(false);
 		resp.add(new AutocompleteValue(stokApotek == null ? "0" : decimalFormat
 				.format(stokApotek), "stokApotek"));
@@ -476,7 +512,33 @@ public class PenjualanControl extends BaseController {
 
 	public static void lihatPenjualan(String idResep) {
 		Resep resep = Resep.findById(idResep);
+		DecimalFormat decimalFormat = new DecimalFormat("###########0");
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+		formatSymbols.setGroupingSeparator('.');
+		formatSymbols.setDecimalSeparator(',');
+		decimalFormat.setDecimalFormatSymbols(formatSymbols);
+		decimalFormat.setGroupingUsed(true);
+		decimalFormat.setGroupingSize(3);
+		String hargaTotalPenjualan = null;
+		Integer hargaTotal = 0;
+		List<DetailResep> dtlResepList = DetailResep.find("id_resep=?",
+				resep.getIdResep()).fetch();
+		for (Iterator iterator = dtlResepList.iterator(); iterator.hasNext();) {
+			DetailResep detailResepTmp = (DetailResep) iterator.next();
+			List<ObatResep> obatResepList = ObatResep.find("id_resep_dtl=?",
+					detailResepTmp.getIdResepDtl()).fetch();
+			for (Iterator iterator2 = obatResepList.iterator(); iterator2
+					.hasNext();) {
+				ObatResep obatResepTmp = (ObatResep) iterator2.next();
+				if (obatResepTmp.getHargaObat() != null
+						&& obatResepTmp.getJmlObatResep() != null)
+					hargaTotal += obatResepTmp.getHargaObat()
+							* obatResepTmp.getJmlObatResep();
+			}
+		}
+		hargaTotalPenjualan = decimalFormat.format(hargaTotal);
 		List<JenisHarga> jenisHargaList = JenisHarga.findAll();
-		renderTemplate("PenjualanControl/transaksi.html", resep, jenisHargaList);
+		renderTemplate("PenjualanControl/transaksi.html", resep,
+				jenisHargaList, hargaTotalPenjualan);
 	}
 }

@@ -67,10 +67,22 @@ public class PembelianControl extends BaseController {
 		render(pembelian, tglPembelianAwal, tglPembelianAkhir, idSupplier,
 				idObatAlat);
 	}
+	
+	public static void monitoring_retur(List retur,
+			@As("dd-MM-yyyy") Date tglReturAwal,
+			@As("dd-MM-yyyy") Date tglReturAkhir, String idSupplier,
+			String idObatAlat) {
+		if (retur == null)
+			retur = new ArrayList();
+		tglReturAwal = new Date();
+		tglReturAkhir = new Date();
+		render(retur, tglReturAwal, tglReturAkhir, idSupplier,
+				idObatAlat);
+	}
 
 	public static void autocompleteSupplier(final String term) {
 		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
-		List<Supplier> findAll = Supplier.find("nama_supplier like ?",
+		List<Supplier> findAll = Supplier.find("lower(nama_supplier) like lower(?)",
 				"%" + term + "%").fetch();
 		for (Iterator iterator = findAll.iterator(); iterator.hasNext();) {
 			Supplier supplierTmp = (Supplier) iterator.next();
@@ -82,7 +94,7 @@ public class PembelianControl extends BaseController {
 
 	public static void autocompleteFaktur(final String term) {
 		final List<AutocompleteValue> response = new ArrayList<AutocompleteValue>();
-		List<Pembelian> findAll = Pembelian.find("no_faktur like ?",
+		List<Pembelian> findAll = Pembelian.find("lower(no_faktur) like lower(?)",
 				"%" + term + "%").fetch();
 		for (Iterator iterator = findAll.iterator(); iterator.hasNext();) {
 			Pembelian pembelianTmp = (Pembelian) iterator.next();
@@ -121,6 +133,7 @@ public class PembelianControl extends BaseController {
 		if (validation.hasErrors()) {
 			params.flash(); // add http parameters to the flash scope
 			validation.keep(); // keep the errors for the next request
+			pembelian = new Pembelian();
 			transaksi(pembelian, null);
 			return;
 		}
@@ -188,6 +201,12 @@ public class PembelianControl extends BaseController {
 				detilPembelian.setDiscountCharge(diskonTmp * hargaTmp / 100);
 				detilPembelian.validateAndSave();
 				pembelian.addDetilPembelianIdPembelian(detilPembelian);
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		String hasil = "Pembelian Berhasil Disimpan!";
@@ -481,6 +500,17 @@ public class PembelianControl extends BaseController {
 		}
 		renderTemplate("PembelianControl/transaksi_retur.html", returPembelian,
 				hasil);
+	}
+	
+	public static void cariRetur(String key_idSupplier,
+			String key_idObatAlat, @As("dd-MM-yyyy") Date tglReturAwal,
+			@As("dd-MM-yyyy") Date tglReturAkhir) {
+		ReturPembelian p = new ReturPembelian();
+		List pembelian = p.monitoring(key_idSupplier, key_idObatAlat,
+				tglReturAwal, tglReturAkhir);
+		renderTemplate("PembelianControl/monitoring_retur.html", pembelian,
+				tglReturAwal, tglReturAkhir, key_idSupplier,
+				key_idObatAlat);
 	}
 
 	public static void cariPembelian(String key_idSupplier,

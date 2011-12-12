@@ -1,13 +1,13 @@
 package models;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
 public class LaporanJenisObat {
-	@Id
-	private String id_transaksi;
-	private String id_obat_alat;
+	@EmbeddedId
+	private LaporanJenisObatId laporanJenisObatId;
 	private String nama_obat_alat;
 	private String pemasukan_dari;
 	private Integer pemasukan_jumlah;
@@ -16,20 +16,28 @@ public class LaporanJenisObat {
 	private Integer pengeluaran_jumlah;
 	private Integer stok_akhir;
 
+	public LaporanJenisObatId getLaporanJenisObatId() {
+		return laporanJenisObatId;
+	}
+
+	public void setLaporanJenisObatId(LaporanJenisObatId laporanJenisObatId) {
+		this.laporanJenisObatId = laporanJenisObatId;
+	}
+
 	public String getId_transaksi() {
-		return id_transaksi;
+		return laporanJenisObatId.getId_transaksi();
 	}
 
 	public void setId_transaksi(String id_transaksi) {
-		this.id_transaksi = id_transaksi;
+		laporanJenisObatId.setId_transaksi(id_transaksi);
 	}
 
 	public String getId_obat_alat() {
-		return id_obat_alat;
+		return laporanJenisObatId.getId_obat_alat();
 	}
 
 	public void setId_obat_alat(String id_obat_alat) {
-		this.id_obat_alat = id_obat_alat;
+		laporanJenisObatId.setId_obat_alat(id_obat_alat);
 	}
 
 	public String getNama_obat_alat() {
@@ -87,7 +95,7 @@ public class LaporanJenisObat {
 	public void setStok_akhir(Integer stok_akhir) {
 		this.stok_akhir = stok_akhir;
 	}
-	
+
 	public String getSatuan_obat_alat() {
 		return "-";
 	}

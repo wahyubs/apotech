@@ -264,7 +264,7 @@ public class Resep extends GenericModel implements IGeneratedModel,
 
 	public static List monitoringPenjualan(String key_idObatAlat,
 			Date tglPenjualanAwal, Date tglPenjualanAkhir) {
-		String sql = "select resep.id_resep, resep.tgl_penjualan, resep.nama_pasien, count(obat_resep.id_stok)"
+		String sql = "select resep.id_resep, resep.tgl_penjualan, resep.kode_resep, resep.nama_pasien, count(obat_resep.id_stok)"
 				+ " from resep left join detail_resep on resep.id_resep=detail_resep.id_resep"
 				+" left join obat_resep on detail_resep.id_resep_dtl=obat_resep.id_resep_dtl"
 				+ " left join stok_obat_alat on obat_resep.id_stok=stok_obat_alat.id_stok"
@@ -273,10 +273,10 @@ public class Resep extends GenericModel implements IGeneratedModel,
 			sql += " and resep.tgl_penjualan >= :tglPenjualanAwal";
 		if (tglPenjualanAkhir != null)
 			sql += " and resep.tgl_penjualan <= :tglPenjualanAkhir";
-		if (!key_idObatAlat.equals(""))
+		if (key_idObatAlat!=null && !key_idObatAlat.equals(""))
 			sql += " and stok_obat_alat.id_obat_alat = :key_idObatAlat";
 
-		sql += " group by resep.id_resep, resep.tgl_penjualan, resep.nama_pasien";
+		sql += " group by resep.id_resep, resep.tgl_penjualan, resep.kode_resep, resep.nama_pasien";
 		Query query = StokObatAlat.em().createNativeQuery(sql);
 
 		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
@@ -286,7 +286,7 @@ public class Resep extends GenericModel implements IGeneratedModel,
 		if (tglPenjualanAkhir != null) {
 			query.setParameter("tglPenjualanAkhir", tglPenjualanAkhir);
 		}
-		if (!key_idObatAlat.equals("")) {
+		if (key_idObatAlat!=null && !key_idObatAlat.equals("")) {
 			query.setParameter("key_idObatAlat", key_idObatAlat);
 		}
 		List a = null;

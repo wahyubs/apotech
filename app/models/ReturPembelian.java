@@ -2,6 +2,7 @@ package models;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -169,5 +171,47 @@ public class ReturPembelian extends GenericModel implements IGeneratedModel,
 	@Override
 	public Date getGeneratedDate() {
 		return tglAktivitas;
+	}
+
+	public List monitoring(String key_idSupplier, String key_idObatAlat,
+			Date tglReturAwal, Date tglReturAkhir) {
+		String sql = "select retur_pembelian.id_retur_beli, retur_pembelian.tgl_retur_beli, supplier.nama_supplier,"
+				+ " sum(detil_retur_pembelian.jml_retur_beli_apotek) as jmlapotek, sum(detil_retur_pembelian.jml_retur_beli_gudang) as jmlgudang, " +
+				"sum(detil_retur_pembelian.jml_redelivery_apotek) as jml_terima_apotek, sum(detil_retur_pembelian.jml_redelivery_gudang) as jml_terima_gudang"
+				+ " from retur_pembelian left join detil_retur_pembelian on retur_pembelian.id_retur_beli=detil_retur_pembelian.id_retur_beli"
+				+ " left join stok_obat_alat on detil_retur_pembelian.id_stok=stok_obat_alat.id_stok"
+				+ " join supplier on retur_pembelian.id_supplier=supplier.id_supplier"
+				+ " where 1=1";
+		if (tglReturAwal != null)
+			sql += " and retur_pembelian.tgl_retur_beli >= :tglReturAwal";
+		if (tglReturAkhir != null)
+			sql += " and retur_pembelian.tgl_retur_beli <= :tglReturAkhir";
+		if (!key_idSupplier.equals(""))
+			sql += " and pembelian.id_supplier = :key_idSupplier";
+		if (!key_idObatAlat.equals(""))
+			sql += " and stok_obat_alat.id_obat_alat = :key_idObatAlat";
+
+		sql += " group by retur_pembelian.id_retur_beli, retur_pembelian.tgl_retur_beli, supplier.nama_supplier";
+		Query query = StokObatAlat.em().createNativeQuery(sql);
+
+		if (tglReturAwal != null) {
+			query.setParameter("tglReturAwal", tglReturAwal);
+		}
+		if (tglReturAkhir != null) {
+			query.setParameter("tglReturAkhir", tglReturAkhir);
+		}
+		if (!key_idSupplier.equals("")) {
+			query.setParameter("key_idSupplier", key_idSupplier);
+		}
+		if (!key_idObatAlat.equals("")) {
+			query.setParameter("key_idObatAlat", key_idObatAlat);
+		}
+		List a = null;
+		try {
+			a = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return a;
 	}
 }

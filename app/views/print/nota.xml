@@ -1,0 +1,30 @@
+<print page="half" width="70">
+<table>
+<row vborder="none" hborder="none"><column part="1-2" align="left">Apotek "TIMEBERI"</column><column part="1-2" align="right">Kepada</column></row>
+<row vborder="none" hborder="none"><column part="1-2" align="left">Kaimana. Telp: 0957-2102</column><column part="1-2" align="right">Yth:              </column></row>
+<row vborder="none" hborder="none"><column part="1-2" align="left"><fill>-</fill></column><column part="1-2" align="right"></column></row>
+<row vborder="none" hborder="none"><column align="left">Kode Nota: ${tmp.kodeResep}</column></row>
+<row vborder="none" hborder="none"><column align="left">Tgl Penjualan: ${tmp.tglPenjualan.format('dd-MM-yyyy')}</column></row>
+</table>
+<table>
+<row><column part="1-16" align="center">No</column><column part="7-16" align="center">Nama Obat</column>
+<column part="1-8" align="center">Jumlah</column><column part="1-8" align="center">harga</column>
+<column part="1-4" align="center">Total</column></row>
+%{ total=0 }%
+#{list items:tmp.detailResepIdResep, as:'detilResep'}
+%{ x=detilResep_index }%
+#{list items:detilResep.obatResepIdResepDtl, as:'obatResep'}
+%{ total=total+(obatResep.hargaObat*obatResep.jmlObatResep) }%
+<row><column part="1-16" align="left">${x}</column><column part="7-16" align="left">${obatResep.idStok.idObatAlat.namaObatAlat}</column>
+<column part="1-8" align="right">${obatResep.jmlObatResep}</column><column part="1-8" align="right">${obatResep.hargaObat}</column>
+<column part="1-4" align="right">${obatResep.hargaObat*obatResep.jmlObatResep}</column></row>
+#{/list}
+#{/list}
+<row><column part="3-4" align="center">Total</column>
+<column part="1-4" align="right">${total}</column></row>
+</table>
+<table>
+<row vborder="none" hborder="none"><column align="left" underline="true" bold="true">${terbilang}</column></row>
+<row vborder="none" hborder="none"><column align="right">Hormat Kami,</column></row>
+</table>
+</print>

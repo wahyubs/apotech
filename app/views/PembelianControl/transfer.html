@@ -1,5 +1,12 @@
 #{extends 'menu.html' /}
 #{set title:'Transfer' /}
+#{ifErrors}
+<script>
+$(function() {
+	alert('Harap Anda Mengisi Data dengan Lengkap!');
+})
+</script>
+#{/ifErrors}
 #{form @PembelianControl.saveTransfer(), method:'POST', id:'transferForm'}
 <div class="yui3-g" id="entri">
 <fieldset><legend>Entri Transfer #{if transferStok.idTransfer!=null}<span class="error">(UPDATE)</span>#{/if}</legend><input name="idTransfer" type="hidden" value="${transferStok.idTransfer}"/>
@@ -15,7 +22,7 @@
 <div id="baris">
 #{list items:transferStok.detilTransferStokIdTransfer, as:'detilTransferStok'}
 %{ x=detilTransferStok_index-1 }%
-<div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat_'+x,name:'kode_obat['+x+']',url:@PembelianControl.autocompleteKodeObat(),size:'50',value:detilTransferStok.idStok.idObatAlat.idObatAlat,label:detilTransferStok.idStok.idObatAlat.labelObat /}</div>
+<div class="yui3-u-1-3"><div class="isi"><input type="button" value="X" name="hapus[${x}]" id="hapus_${x}"/>#{autocomplete id:'kode_obat_'+x,name:'kode_obat['+x+']',url:@PembelianControl.autocompleteKodeObat(),size:'40',value:detilTransferStok.idStok.idObatAlat.idObatAlat,label:detilTransferStok.idStok.idObatAlat.labelObat /}</div>
 </div><div class="yui3-u-1-3"><div class="isi"><input size="40" name="pilihStok[${x}]" id="pilihStok_${x}" value="${detilTransferStok.idStok.labelStok}"/><input type="hidden" size="40" name="key_pilihStok[${x}]" id="key_pilihStok_${x}" value="${detilTransferStok.idStok.idStok}"/></div></div><div class="yui3-u-1-6"><div class="isi">
 #{select 'tujuan['+x+']', value:detilTransferStok.tujuan, id:'tujuan_'+x+''}
 	#{option 1}Apotek#{/option}
@@ -23,7 +30,7 @@
 #{/select}</div></div><div class="yui3-u-1-6"><div class="isi"><input name="kirim[${x}]" id="kirim_${x}" type="text" value="${detilTransferStok.jmlKirim}"/></div></div>
 #{/list}
 #{else}
-<div class="yui3-u-1-3"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'50' /}</div></div><div class="yui3-u-1-3"><div class="isi"><input size="40" name="pilihStok[0]" id="pilihStok_0" /></div></div><div class="yui3-u-1-6"><div class="isi">
+<div class="yui3-u-1-3"><div class="isi"><input type="button" value="X" name="hapus[0]" id="hapus_0"/>#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PembelianControl.autocompleteKodeObat(),size:'40' /}</div></div><div class="yui3-u-1-3"><div class="isi"><input size="40" name="pilihStok[0]" id="pilihStok_0" /></div></div><div class="yui3-u-1-6"><div class="isi">
 #{select 'tujuan[0]', value:1, id:'tujuan_0'}
 	#{option 1}Apotek#{/option}
 	#{option 2}Gudang#{/option}

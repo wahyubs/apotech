@@ -1,6 +1,7 @@
 package models;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -161,7 +162,13 @@ public class DetailResep extends GenericModel implements IGeneratedModel {
 	}
 
 	public String getLabelHargaObat() {
-		DecimalFormat decimalFormat = new DecimalFormat("#######0");
+		DecimalFormat decimalFormat = new DecimalFormat("###########0");
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+		formatSymbols.setGroupingSeparator('.');
+		formatSymbols.setDecimalSeparator(',');
+		decimalFormat.setDecimalFormatSymbols(formatSymbols);
+		decimalFormat.setGroupingUsed(true);
+		decimalFormat.setGroupingSize(3);
 		List<ObatResep> fetch = ObatResep.find("id_resep_dtl=?", idResepDtl)
 				.fetch();
 		String hasil = "";
@@ -174,11 +181,34 @@ public class DetailResep extends GenericModel implements IGeneratedModel {
 		return hasil;
 	}
 
+	public String getLabelTotalHarga() {
+		DecimalFormat decimalFormat = new DecimalFormat("###########0");
+		DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+		formatSymbols.setGroupingSeparator('.');
+		formatSymbols.setDecimalSeparator(',');
+		decimalFormat.setDecimalFormatSymbols(formatSymbols);
+		decimalFormat.setGroupingUsed(true);
+		decimalFormat.setGroupingSize(3);
+		List<ObatResep> fetch = ObatResep.find("id_resep_dtl=?", idResepDtl)
+				.fetch();
+		String hasil = "";
+		Integer totalHarga = 0;
+		for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
+			ObatResep obatResep = (ObatResep) iterator.next();
+			if (obatResep.getHargaObat() != null
+					&& obatResep.getJmlObatResep() != null)
+				totalHarga += obatResep.getHargaObat()
+						* obatResep.getJmlObatResep();
+		}
+		hasil = decimalFormat.format(totalHarga);
+		return hasil;
+	}
+
 	public String getClassBaris() {
 		if (getIdResep().getStsTransaksi() == null) {
-			List<ObatResep> fetch = ObatResep.find("id_resep_dtl=?", getIdResepDtl()).fetch();
-			for (Iterator iterator = fetch.iterator(); iterator
-					.hasNext();) {
+			List<ObatResep> fetch = ObatResep.find("id_resep_dtl=?",
+					getIdResepDtl()).fetch();
+			for (Iterator iterator = fetch.iterator(); iterator.hasNext();) {
 				ObatResep obatResep = (ObatResep) iterator.next();
 				Date tglKadaluarsa = obatResep.getIdStok().getTglKadaluarsa();
 				Calendar instance = Calendar.getInstance();

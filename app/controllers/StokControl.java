@@ -338,7 +338,7 @@ public class StokControl extends BaseController {
 						"select avg(harga_beli_stok-coalesce(disc_charge,0)+((harga_beli_stok-coalesce(disc_charge,0))*coalesce(ppn_stok,0)/100)) from stok_obat_alat x where x.id_obat_alat= :idObatAlat");
 		createNativeQuery.setParameter("idObatAlat", idObatAlat);
 		Number hargaRata = (Number) createNativeQuery.getSingleResult();
-		DecimalFormat decimalFormat = new DecimalFormat();
+		DecimalFormat decimalFormat = new DecimalFormat("###########0");
 		decimalFormat.setDecimalSeparatorAlwaysShown(false);
 		resp.add(new AutocompleteValue(hargaRata != null ? decimalFormat
 				.format(hargaRata) : null, "hargaRata"));
@@ -490,15 +490,27 @@ public class StokControl extends BaseController {
 			Integer thnFilter, String kategori) {
 		String blnharian = "";
 		String blnbulanan = "";
+		String blnsblmbulanan = "";
 		if (blnFilter != null) {
 			blnharian = " and transaksi_harian.thnblntgl_transaksi between :thnblnAwal and :thnblnAkhir ";
 			blnbulanan = " and thnbln_transaksi= :thnbln ";
+			blnsblmbulanan = " and thnbln_transaksi< :thnbln ";
 		}
 		String sql = "select coalesce(masuk.id_obat_alat,keluar.id_obat_alat) as id_obat_alat, "
 				+ "coalesce(masuk.id_obat_alat,keluar.id_obat_alat) as id_transaksi, "
 				+ "coalesce(masuk.nama_obat_alat,keluar.nama_obat_alat) as nama_obat_alat,"
-				+ "stok_awal,'' as pemasukan_dari,coalesce(pemasukan_jumlah,0) as pemasukan_jumlah,"
-				+ "'' as pengeluaran_untuk,coalesce(pengeluaran_jumlah,0) as pengeluaran_jumlah,stok_akhir "
+				+ "stok_awal+coalesce(("
+				+ "select sum(stok_akhir_apotek+stok_akhir_gudang) from transaksi_bulanan tb "
+				+ "join stok_obat_alat soa on tb.id_stok=soa.id_stok "
+				+ "where soa.id_obat_alat=coalesce(masuk.id_obat_alat,keluar.id_obat_alat) "
+				+ blnsblmbulanan
+				+ "),0) as stok_awal,'' as pemasukan_dari,coalesce(pemasukan_jumlah,0) as pemasukan_jumlah,"
+				+ "'' as pengeluaran_untuk,coalesce(pengeluaran_jumlah,0) as pengeluaran_jumlah,stok_akhir+coalesce(("
+				+ "select sum(stok_akhir_apotek+stok_akhir_gudang) from transaksi_bulanan tb "
+				+ "join stok_obat_alat soa on tb.id_stok=soa.id_stok "
+				+ "where soa.id_obat_alat=coalesce(masuk.id_obat_alat,keluar.id_obat_alat) "
+				+ blnsblmbulanan
+				+ "),0) as stok_akhir "
 				+ "from (select stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat, "
 				+ "sum(transaksi_harian.penambahan_stok_apotek+transaksi_harian.penambahan_stok_gudang) as pemasukan_jumlah  "
 				+ "from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat  "
@@ -520,7 +532,7 @@ public class StokControl extends BaseController {
 				+ "on masuk.id_obat_alat=keluar.id_obat_alat "
 				+ "join (select id_obat_alat,sum(stok_awal_apotek+stok_awal_gudang) as stok_awal,"
 				+ "sum(stok_akhir_apotek+stok_akhir_gudang) as stok_akhir from transaksi_bulanan "
-				+ "join stok_obat_alat on transaksi_bulanan.id_stok=stok_obat_alat.id_stok where thnbln_transaksi is not null"
+				+ "join stok_obat_alat on transaksi_bulanan.id_stok=stok_obat_alat.id_stok where thnbln_transaksi is not null "
 				+ blnbulanan
 				+ "group by id_obat_alat) transaksi "
 				+ "on transaksi.id_obat_alat=coalesce(masuk.id_obat_alat,keluar.id_obat_alat)";
@@ -560,8 +572,15 @@ public class StokControl extends BaseController {
 		String sql = "select detail.id_obat_alat, "
 				+ "detail.id_transaksi, "
 				+ "detail.nama_obat_alat,"
-				+ "stok_awal,pemasukan_dari,coalesce(pemasukan_jumlah,0) as pemasukan_jumlah,"
-				+ "pengeluaran_untuk,coalesce(pengeluaran_jumlah,0) as pengeluaran_jumlah,stok_akhir "
+				+ "stok_awal+coalesce((select sum(stok_akhir_apotek+stok_akhir_gudang) as stok_awal "
+				+ "from transaksi_harian th join stok_obat_alat soa on th.id_stok=soa.id_stok "
+				+ "where soa.id_obat_alat=detail.id_obat_alat "
+				+ "and th.id_transaksi<detail.id_transaksi),0) as stok_awal,pemasukan_dari,coalesce(pemasukan_jumlah,0) as pemasukan_jumlah,"
+				+ "pengeluaran_untuk,coalesce(pengeluaran_jumlah,0) as pengeluaran_jumlah,"
+				+ "stok_akhir+coalesce((select sum(stok_akhir_apotek+stok_akhir_gudang) as stok_awal "
+				+ "from transaksi_harian th join stok_obat_alat soa on th.id_stok=soa.id_stok "
+				+ "where soa.id_obat_alat=detail.id_obat_alat "
+				+ "and th.id_transaksi<detail.id_transaksi),0) as stok_akhir "
 				+ "from ((select id_transaksi,stok_obat_alat.id_obat_alat,obat_alat.nama_obat_alat, supplier.nama_supplier as pemasukan_dari,  "
 				+ "sum(transaksi_harian.penambahan_stok_apotek+transaksi_harian.penambahan_stok_gudang) as pemasukan_jumlah, '' as pengeluaran_untuk, 0 as pengeluaran_jumlah "
 				+ "from stok_obat_alat join obat_alat on obat_alat.id_obat_alat=stok_obat_alat.id_obat_alat  "

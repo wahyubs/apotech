@@ -3,6 +3,14 @@
 </div>
 <script>
 $(function() {
+	$(':input[name^="hapus"]').live('click',function(event) {
+		if($(this).attr('id').lastIndexOf("_")>=0) {
+			var strip_number=$(this).attr('id').substring($(this).attr('id').lastIndexOf("_"));
+			$(':input[id$='+strip_number+']').not(':button').each(function() {
+				$(this).val('');
+			});
+		}
+	});
 	$('#${_id} :input').live('keydown', function(event) {
 		if(event.which==9) {
 			var pos = $(this).getTabIndex();
@@ -24,6 +32,9 @@ $(function() {
 					$(this).attr('name',myId+'['+jml+']');
 				}
 				}
+				$(this).not(':button').each(function() {
+					$(this).val('');
+				});
 				});
 				$('#${_id}').append(kopian);
 				var tabindex = 1;
@@ -60,7 +71,7 @@ $(function() {
 			      },
 			      select: function(event, ui) {
 			         // Save the selection item and value in the two inputs.
-			         $input.val(ui.item.label);
+			         $input.val(ui.item.label);			         
 			         $hidden.val(ui.item.value);
 			         $input.trigger('ubah');
 			         return false;

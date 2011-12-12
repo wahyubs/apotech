@@ -1,7 +1,11 @@
 #{extends 'menu.html' /}
 #{set title:'Harga Obat' /}
 #{ifErrors}
-   <span class="error">Oops</span>
+<script>
+$(function() {
+	alert('Harap Anda Mengisi Data dengan Lengkap!');
+})
+</script>
 #{/ifErrors}
 #{form @StokControl.saveHarga(), method:'POST', id:'hargaForm'}
 <div class="yui3-g" id="entri">

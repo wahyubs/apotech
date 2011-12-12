@@ -56,7 +56,7 @@
         <script src="@{'/public/javascripts/yui/node-focusmanager-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
         <script src="@{'/public/javascripts/yui/node-menunav-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
         <script src="@{'/public/javascripts/yui/intl-min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
-        #{get 'moreScripts' /}
+        #{get 'moreScripts' /}        
     </head>
     <body class="yui3-skin-sam" onload="changeScreenSize(1024,800);">
     <div class="yui3-g" id="hd">
@@ -105,6 +105,8 @@
 	</script>
 <script>
 $(function() {
+$('#bd').equalHeights();
+var listNotaAction = #{jsAction @Application.generateDirectNota(':resepId') /}
 var listAction = #{jsAction @Application.saveConfigColor(':colorId') /}
 $('a.colorLink').click(function() {
 	var teks = $(this).text();
@@ -167,6 +169,35 @@ $.getJSON(listActionGetColor({userId:userid}), function(data) {
 	hrefCss=hrefCss.substring(0,hrefCss.lastIndexOf('/'))+'/'+data+'.css';
 	$('#colorCss').attr('href',hrefCss);
 });
+$('#printer').click(function() {
+            var applet = document.jZebra;
+            if (applet != null) {
+               // Searches for locally installed printer with "zebra" in the name
+               applet.findPrinter('EPSON LX-300+II ESC/P');
+			   var resepId = "${resep?.idResep}";
+			   var hasil = "";
+			   $.getJSON(listNotaAction({resepId:resepId}),function(data) {
+					applet.clear();
+		            applet.append(data);
+					applet.print();
+					while (!applet.isDonePrinting()) {
+				            	// Wait
+				    }
+					var e = applet.getException();
+					if(e != null){
+						//alert("Exception occured: " + e.getLocalizedMessage());
+						alert("Printer tidak ditemukan atau belum terhubung\n"+
+					    	"atau nama printer tidak sesuai dengan settingan properties di aplikasi");
+					}
+					if(e == null) {
+				     	_sendValueCetak();
+				    }
+				});
+            }
+         });
 });</script>
+<applet name="jZebra" code="jzebra.RawPrintApplet.class" alt="jZebra did not load properly" archive="@{'/public/applets/jzebra.jar'}" width="0" height="0">
+         <param name="printer" value="zebra">
+      </applet>
     </body>
 </html>

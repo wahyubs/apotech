@@ -1,7 +1,11 @@
 #{extends 'menu.html' /}
 #{set title:'Retur Penjualan' /}
 #{ifErrors}
-   <span class="error">Oops…</span>
+<script>
+$(function() {
+	alert('Harap Anda Mengisi Data dengan Lengkap!');
+})
+</script>
 #{/ifErrors}
 #{form @PenjualanControl.saveReturJual(), method:'POST', id:'returJualForm'}
 <div class="yui3-g" id="entri">
@@ -20,13 +24,13 @@
 <div id="baris">
 #{list items:returPenjualan.detailReturPenjualanIdReturJual, as:'detilReturPenjualan'}
 %{ x=detilReturPenjualan_index-1 }%
-<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_'+x+'',name:'kode_obat['+x+']',url:@PenjualanControl.autocompleteKodeObat(),size:'30',value:detilReturPenjualan.idStok.idObatAlat,label:detilReturPenjualan.idStok.idObatAlat?.kodeObatAlat+" - "+detilReturPenjualan.idStok.idObatAlat?.namaObatAlat /}</div></div>
+<div class="yui3-u-1-4"><div class="isi"><input type="button" value="X" name="hapus[${x}]" id="hapus_${x}"/>#{autocomplete id:'kode_obat_'+x+'',name:'kode_obat['+x+']',url:@PenjualanControl.autocompleteKodeObat(),size:'30',value:detilReturPenjualan.idStok.idObatAlat,label:detilReturPenjualan.idStok.idObatAlat?.kodeObatAlat+" - "+detilReturPenjualan.idStok.idObatAlat?.namaObatAlat /}</div></div>
 <div class="yui3-u-1-4"><div class="isi"><input size="30" name="pilihStok[${x}]" id="pilihStok_${x}" value="${detilReturPenjualan.idStok.labelStok}"/><input size="30" type="hidden" name="key_pilihStok[${x}]" id="key_pilihStok_${x}" value="${detilReturPenjualan.idStok.idStok}"/></div></div>
 <div class="yui3-u-1-4"><div class="isi"><input name="jmlRetur[${x}]" id="jmlRetur_${x}" size="6" value="0" value="${detilReturPenjualan.jmlRetur}"/></div></div>
 <div class="yui3-u-1-4"><div class="isi"><input name="hargaRetur[${x}]" id="hargaRetur_${x}" size="6" value="0" value="${detilReturPenjualan.hargaRetur}"/></div></div>
 #{/list}
 #{else}
-<div class="yui3-u-1-4"><div class="isi">#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PenjualanControl.autocompleteKodeObat(),size:'30' /}</div></div>
+<div class="yui3-u-1-4"><div class="isi"><input type="button" value="X" name="hapus[0]" id="hapus_0"/>#{autocomplete id:'kode_obat_0',name:'kode_obat[0]',url:@PenjualanControl.autocompleteKodeObat(),size:'30' /}</div></div>
 <div class="yui3-u-1-4"><div class="isi"><input size="30" name="pilihStok[0]" id="pilihStok_0" /></div></div>
 <div class="yui3-u-1-4"><div class="isi"><input name="jmlRetur[0]" id="jmlRetur_0" size="6" value="0"/></div></div>
 <div class="yui3-u-1-4"><div class="isi"><input name="hargaRetur[0]" id="hargaRetur_0" size="6" value="0"/></div></div>

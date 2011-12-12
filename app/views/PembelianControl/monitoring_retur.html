@@ -1,0 +1,26 @@
+#{extends 'menu.html' /}
+#{set title:'Monitoring' /}
+%{labelObatAlat = null
+if(kodeObatAlat!=null)
+labelObatAlat = kodeObatAlat+" - "+namaObatAlat}%
+#{form @PembelianControl.cariRetur(), method:'POST', id:'filterForm'}
+<div class="yui3-g" id="entri">
+<fieldset><legend>Filter retur</legend>
+<div class="yui3-u-1-6"><div class="entriClass label">Range Tgl Retur</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">#{dateTime id:'tglReturAwal', name:'tglReturAwal', value:tglReturAwal?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass">s/d</div></div>
+<div class="yui3-u-1-2"><div class="entriClass">#{dateTime id:'tglReturAkhir', name:'tglReturAkhir', value:tglReturAkhir?.format('dd-MM-yyyy')/}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Supplier</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idSupplier',name:'idSupplier',url:@PembelianControl.autocompleteSupplier(),size:'50',value:idSupplier,label:namaSupplier /}</div></div>
+<div class="yui3-u-1-6"><div class="entriClass label">Obat/Alat</div></div>
+<div class="yui3-u-5-6"><div class="entriClass">#{autocomplete id:'idObatAlat',name:'idObatAlat',url:@PembelianControl.autocompleteKodeObat(),size:'50',value:idObatAlat,label:labelObatAlat /}</div></div>
+<div class="yui3-u"><div class="entriClass"><input value="Cari" id="cari" type="submit"/>&nbsp;<input value="Reset" id="reset" type="button" onclick="window.location='@{PembelianControl.monitoring_retur()}'"/></div></div>
+</fieldset>
+</div>
+#{customgrid class:'yui3-g',id:'hasilFilter'}
+<div class="yui3-u-1-8"><div class="isi header">Tgl Retur</div></div><div class="yui3-u-1-8"><div class="isi header">Supplier</div></div><div class="yui3-u-1-8"><div class="isi header">Jml Retur A</div></div><div class="yui3-u-1-8"><div class="isi header">Jml Retur G</div></div><div class="yui3-u-1-8"><div class="isi header">Total</div></div><div class="yui3-u-1-8"><div class="isi header">Jml Terima A</div></div><div class="yui3-u-1-8"><div class="isi header">Jml Terima G</div></div><div class="yui3-u-1-8"><div class="isi header">Total</div></div>
+#{list items:retur, as:'retur_tmp'}
+<div class="yui3-u-1-8"><div class="isi"><a href="@{returControl.lihatRetur(retur_tmp[0])}">${retur_tmp[1].format('dd-MM-yyyy')}</a></div></div><div class="yui3-u-1-8"><div class="isi">${retur_tmp[2]}</div></div><div class="yui3-u-1-8"><div class="isi">${retur_tmp[3]}</div></div><div class="yui3-u-1-8"><div class="isi">${retur_tmp[4]}</div></div><div class="yui3-u-1-8"><div class="isi">${retur_tmp[3]+retur_tmp[4]}</div></div><div class="yui3-u-1-8"><div class="isi">${retur_tmp[5]?retur_tmp[5]:0}</div></div><div class="yui3-u-1-8"><div class="isi">${retur_tmp[6]?retur_tmp[6]:0}</div></div><div class="yui3-u-1-8"><div class="isi">${(retur_tmp[5]?retur_tmp[5]:0)-(retur_tmp[6]?retur_tmp[6]:0)}</div></div>
+#{/list}
+#{/customgrid}
+#{/form}
